@@ -3,34 +3,31 @@ import Sidebar from '../components/Sidebar';
 import ExameList from '../components/ExameList';
 import ExameDetail from '../components/ExameDetail';
 import { Exame } from '../types/Exame';
+import MenuIcon from '@mui/icons-material/Menu'; // Importando o ícone de menu
 
 const Home: React.FC = () => {
   const [exames, setExames] = useState<Exame[]>([]);
   const [selectedExame, setSelectedExame] = useState<Exame | null>(null);
-  const [usuario, setUsuario] = useState<string>(''); // Estado para armazenar o nome do usuário
-  const [loading, setLoading] = useState<boolean>(true); // Estado para controle de carregamento
+  const [usuario, setUsuario] = useState<string>(''); 
+  const [loading, setLoading] = useState<boolean>(true);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false); // Estado para abrir/fechar o menu lateral em mobile
 
   // Simulação de requisição à API
   useEffect(() => {
-    // Simula uma chamada à API para buscar exames e usuário
     const fetchData = async () => {
-      setLoading(true); // Inicia o carregamento
+      setLoading(true);
 
-      // Exemplo de delay para simular tempo de resposta da API
       setTimeout(() => {
-        // Dados mockados para exames e usuário
         const mockExames: Exame[] = [
           { id: '1', nome: 'Hemograma Completo', consultorio: 'Laboratório A', data: '13/02/2023', horario: '07:57', resultado: 'Normal', resumo: 'Resumo do exame Hemograma Completo' },
           { id: '2', nome: 'Glicose', consultorio: 'Laboratório B', data: '08/08/2017', horario: '09:55', resultado: 'Elevado', resumo: 'Resumo do exame Glicose' },
         ];
 
         const mockUsuario = 'Joao Bejarano';
-
-        // Atualiza o estado com os dados recebidos
         setExames(mockExames);
         setUsuario(mockUsuario);
-        setLoading(false); // Termina o carregamento
-      }, 2000); // Simula uma resposta da API com 2 segundos de delay
+        setLoading(false);
+      }, 2000);
     };
 
     fetchData();
@@ -46,10 +43,19 @@ const Home: React.FC = () => {
   }
 
   return (
-    <div className="home flex">
-      <Sidebar />
-      <div className="content flex-1 ml-6">
-        <ExameList exames={exames} onSelect={handleSelectExame} usuario={usuario} /> {/* Passando o usuário para ExameList */}
+    <div className="home flex flex-col md:flex-row">
+      {/* Botão de Menu para dispositivos móveis */}
+      <button className="md:hidden text-blue p-4" onClick={() => setMenuOpen(!menuOpen)}>
+        <MenuIcon />
+      </button>
+
+      {/* Sidebar visível em telas grandes e mobile quando menuOpen for true */}
+      <div className={`md:block ${menuOpen ? 'block' : 'hidden'} w-60`}>
+        <Sidebar />
+      </div>
+
+      <div className="content flex-1 ml-0 md:ml-6">
+        <ExameList exames={exames} onSelect={handleSelectExame} usuario={usuario} />
         <ExameDetail exame={selectedExame} />
       </div>
     </div>
@@ -57,28 +63,3 @@ const Home: React.FC = () => {
 };
 
 export default Home;
-
-
-
-// useEffect(() => {
-//   const fetchData = async () => {
-//     setLoading(true);
-    
-//     try {
-//       const resExames = await fetch('/api/exames');
-//       const examesData = await resExames.json();
-
-//       const resUsuario = await fetch('/api/usuario');
-//       const usuarioData = await resUsuario.json();
-
-//       setExames(examesData);
-//       setUsuario(usuarioData.nome);
-//     } catch (error) {
-//       console.error('Erro ao buscar dados', error);
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   fetchData();
-// }, []);

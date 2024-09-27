@@ -1,7 +1,7 @@
 import React from 'react';
 import logoClintia from '../assets/logoClintia.png';
 import { Divider } from '@mui/material';
-import { Home, Science, People, ExitToApp, Vaccines, FamilyRestroom } from '@mui/icons-material'; // Ícones para o menu
+import { Home, Science, People, ExitToApp, Vaccines, FamilyRestroom } from '@mui/icons-material';
 
 const Sidebar: React.FC = () => {
   return (
@@ -33,7 +33,6 @@ const Sidebar: React.FC = () => {
 
         <p className="text-lg text-xs font-semibold uppercase text-skyBlue mb-4 mt-4">Geral</p>
         <ul className="space-y-4">
-          
           <li className="flex items-center text-white hover:text-skyBlue transition">
             <People className="mr-3 text-lg" />
             <a href="#" className="font-medium">Dados cadastrais</a>
@@ -46,7 +45,6 @@ const Sidebar: React.FC = () => {
 
         <Divider className="my-4 border-gray-600" />
 
-        {/* Sair */}
         <ul className="space-y-4">
           <li className="flex items-center text-skyBlue hover:text-white transition mt-4">
             <ExitToApp className="mr-3 text-lg" />
