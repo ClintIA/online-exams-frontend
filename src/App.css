@@ -1,0 +1,33 @@
+/* Ajuste para ocupar a altura inteira da tela */
+html, body, #root, .App {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.home {
+  display: flex;
+  height: 100%;
+}
+
+.sidebar {
+  width: 20%; /* Menu ocupa 20% da tela */
+  background-color: #f0f0f0;
+  padding: 20px;
+}
+
+.content {
+  display: flex;
+  width: 80%;
+}
+
+.exame-list {
+  width: 50%; /* Lista de exames ocupa 50% do restante da tela */
+  padding-right: 20px;
+  border-right: 1px solid #ccc;
+}
+
+.exame-detail {
+  width: 50%; /* Detalhes do exame ocupam 50% */
+  padding-left: 20px;
+}
