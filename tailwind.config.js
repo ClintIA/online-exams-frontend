@@ -5,6 +5,9 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        imageHome: "url('./src/assets/logoClintia.png')",
+      },
       fontFamily: {
         sans: ['Red Hat Display', 'sans-serif'],
       },

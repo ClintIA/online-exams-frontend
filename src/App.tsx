@@ -2,7 +2,7 @@ import React from 'react';
 import Home from './pages/Home';
 import './App.css';
 
-const App: React.FC = () => {
+const Root: React.FC = () => {
   return (
     <div className="App">
       <Home />
@@ -10,4 +10,4 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+export default Root;
