@@ -2,6 +2,8 @@ import {createBrowserRouter} from "react-router-dom";
 import Root from "../App.tsx";
 import LoginPatient from "../pages/LoginPatient.tsx";
 import LoginAdmin from "../pages/LoginAdmin.tsx";
+import Home from "../pages/Home.tsx";
+import AuthProvider from "../contexts/AuthContext.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -9,16 +11,20 @@ export const router = createBrowserRouter([
         element: <Root />
     },
     {
+        path: "/home",
+        element: <Home />
+    },
+    {
         path: "/login",
         children: [
             {
                 path:'paciente',
-                element: <LoginPatient />
+                element:<AuthProvider><LoginPatient /></AuthProvider>
             },
             {
                 path:'admin',
-                element: <LoginAdmin />
-            }
+                element: <AuthProvider><LoginAdmin /></AuthProvider>
+    }
         ]
     }
 ]);

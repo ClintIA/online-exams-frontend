@@ -5,7 +5,7 @@ import './App.css';
 const Root: React.FC = () => {
   return (
     <div className="App">
-      <Home />
+            <Home />
     </div>
   );
 };
