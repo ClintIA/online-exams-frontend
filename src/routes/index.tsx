@@ -1,5 +1,4 @@
-import {createBrowserRouter} from "react-router-dom";
-import Root from "../App.tsx";
+import {createBrowserRouter, Navigate} from "react-router-dom";
 import LoginPatient from "../pages/LoginPatient.tsx";
 import LoginAdmin from "../pages/LoginAdmin.tsx";
 import Home from "../pages/Home.tsx";
@@ -8,7 +7,7 @@ import AuthProvider from "../contexts/AuthContext.tsx";
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <Root />
+        element: <Navigate to='/login/paciente' replace />
     },
     {
         path: "/home",
