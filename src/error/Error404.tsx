@@ -1,5 +1,3 @@
-'use client'
-
 import { Button } from "@/components/ui/button.tsx"
 import { Stethoscope, HardHat, Home, Link } from 'lucide-react'
 import React from "react";

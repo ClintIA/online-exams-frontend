@@ -1,5 +1,3 @@
-'use client'
-
 import { HardHat, Stethoscope, Mail, Phone } from 'lucide-react'
 import React from "react";
 
