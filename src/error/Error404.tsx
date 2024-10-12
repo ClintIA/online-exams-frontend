@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button.tsx"
 import { Stethoscope, HardHat, Home, Link } from 'lucide-react'
 import React from "react";
 
-export const Error404: React.FC = () => {
+const Error404: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="py-6 bg-oxfordBlue text-primary-foreground">
@@ -42,3 +42,4 @@ export const Error404: React.FC = () => {
     </div>
   )
 }
+export default Error404;

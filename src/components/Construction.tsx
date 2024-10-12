@@ -3,7 +3,7 @@
 import { HardHat, Stethoscope, Mail, Phone } from 'lucide-react'
 import React from "react";
 
-export const Construction: React.FC = () => {
+const Construction: React.FC = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="py-6 bg-oxfordBlue text-primary-foreground">
@@ -48,3 +48,5 @@ export const Construction: React.FC = () => {
     </div>
   )
 }
+
+export default Construction;
