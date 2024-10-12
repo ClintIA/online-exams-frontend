@@ -1,7 +1,6 @@
 import {createBrowserRouter, Navigate} from "react-router-dom";
 import LoginPatient from "../pages/LoginPatient.tsx";
 import Home from "../pages/Home.tsx";
-import AuthProvider from "../contexts/AuthContext.tsx";
 import Construction from "../components/Construction.tsx";
 import LoginAdmin from "../pages/LoginAdmin.tsx";
 import Error404 from "../error/Error404.tsx";
@@ -25,11 +24,11 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'admin',
-                element: <AuthProvider><LoginAdmin /></AuthProvider>,
+                element:<LoginAdmin />,
             },
             {
                 path:'paciente',
-                element:<AuthProvider><LoginPatient /></AuthProvider>,
+                element:<LoginPatient />,
             },
         ]
     },
@@ -44,7 +43,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element:<AuthProvider><Construction /></AuthProvider>,
+        element:<Construction />,
     },
 ]);
 

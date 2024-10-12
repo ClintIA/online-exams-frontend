@@ -1,35 +1,48 @@
-import React, { useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import logoClintia from '../assets/logoClintia.png';
-import {Button, Input} from "@mui/material";
-import LoginError from "@/components/LoginError.tsx";
+import {Input} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@/hooks/auth.tsx";
-import {isAxiosError} from "axios";
+import ErrorModal from "@/error/ErrorModal.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import {ITokenPayload} from "@/types/Auth.ts";
 
 const LoginPatient: React.FC = () => {
     const [patientCpf, setPatientCpf] = useState("");
     const navigate = useNavigate();
     const auth = useAuth();
-    const [showError, setShowError] = useState(false);
-    const [error, setError] = useState("");
-    const handleLogin = () => {
-        if (!patientCpf) {
-            setShowError(true)
-            throw Error('Preencha seu email e senha')
+    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        const user = localStorage.getItem('user')
+        if(user && token) {
+            const tokenPayload: ITokenPayload = JSON.parse(user)
+            if(tokenPayload.isAdmin) {
+                navigate('/admin');
+            } else {
+                navigate('/paciente/home')
+            }
         }
-        try {
-           auth.patientLogin(patientCpf).then((result) => {
-               if(isAxiosError(result)) {
-                   if(result.status === 200) {
-                       navigate("/paciente");
-                   }
-                   if(result.status === 401) {
-                       navigate('/error-401')
-                   }
-               }
-           })
-        } catch (err) {
-            setError(err instanceof Error ? err.message : "Erro ao realizar login")
+
+    }, [])
+    const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault()
+        if (!patientCpf) {
+            setErrorMessage('Preencha seu CPF')
+            setIsErrorModalOpen(true)
+        }
+        if (patientCpf) {
+            await auth.patientLogin(patientCpf)
+                .then((result) => {
+                    if(result?.status == "error") {
+                        setErrorMessage(result.message)
+                        setIsErrorModalOpen(true)
+                    }
+                    if(result?.status == "success") {
+                        navigate('/paciente/home')
+                    }
+                })
         }
     }
 
@@ -61,7 +74,7 @@ const LoginPatient: React.FC = () => {
                                             {/* CPF Input */}
                                             <div className="flex flex-col relative">
                                                 <div className="mb-4">
-                                                    <Input error={showError} placeholder="Digite seu CPF"
+                                                    <Input placeholder="Digite seu CPF"
                                                            className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
                                                            type='text' value={patientCpf}
                                                            onChange={(e) => setPatientCpf(e.target.value)}/>
@@ -70,13 +83,17 @@ const LoginPatient: React.FC = () => {
                                             {/* Submit Button */}
                                             <div className="mb-12 pb-1 pt-1 text-center">
                                                 <Button
-                                                    variant="outlined"
-                                                    onClick={handleLogin}
+                                                    variant="outline"
+                                                    onClick={(e) => handleLogin(e)}
                                                     className="mb-3 inline-block w-full bg-gray-800 hover:bg-amber-100 hover:text-black rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-dark-3 transition duration-150 ease-in-out hover:shadow-dark-2 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:shadow-dark-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
                                                 >
                                                     Acessar
                                                 </Button>
-                                                {error && <LoginError message={error}/>}
+                                                    Acessar
+                                                    <ErrorModal
+                                                        isOpen={isErrorModalOpen}
+                                                        onClose={() => setIsErrorModalOpen(false)}
+                                                        message={errorMessage}/>
                                             </div>
                                         </form>
                                     </div>

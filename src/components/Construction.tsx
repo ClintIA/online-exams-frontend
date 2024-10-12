@@ -23,12 +23,8 @@ const Construction: React.FC = () => {
 
   }, [])
   const handleLogout = async () => {
-    try {
       auth.logOut()
       navigate('/login/admin')
-    } catch (error) {
-      console.error('Logout failed:', error)
-    }
   }
   return (
     <div className="min-h-screen flex flex-col bg-background">

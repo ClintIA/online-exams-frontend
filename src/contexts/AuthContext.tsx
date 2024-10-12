@@ -13,10 +13,10 @@ const saveStorage =  (user: ITokenPayload, token: string) => {
 const AuthProvider = ({ children }: Props) => {
     const [token, setToken] = useState<string>();
     const [user, setUser] = useState<ITokenPayload>();
-    const adminLogin = async (email: string,password: string): Promise<void> => {
+    const adminLogin = async (email: string,password: string): Promise<ILoginAdmin | undefined> => {
            const res = await loginAdmin(email, password);
-           if(res.status === 'success') {
-               if (res.data.token) {
+           if(res?.status === 'success') {
+               if (res?.data?.token) {
                    const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
                    saveStorage(decoded, res.data.token)
                }
@@ -24,27 +24,15 @@ const AuthProvider = ({ children }: Props) => {
            return res
     };
     const patientLogin = async (cpf: string): Promise<ILoginAdmin | undefined> => {
-        try {
-           return await loginPatient(cpf).then((result) => {
-               if (result?.status == "error") {
-                   return result;
-               }
-               if (result?.data?.token) {
-                   const getToken = result.data?.token
-                   if (getToken) {
-                       const decoded: ITokenPayload = jwtDecode(getToken) as ITokenPayload;
-                       setUser(decoded);
-                       setToken(token);
-                       saveStorage(decoded, getToken)
-                   }
-               }
-               return result;
-           })
-        } catch (err) {
-            console.error(err);
+        const res = await loginPatient(cpf);
+        if(res?.status === 'success') {
+            if (res?.data?.token) {
+                const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
+                saveStorage(decoded, res.data.token)
+            }
         }
+        return res
     };
-
     const logOut =  () => {
             localStorage.removeItem("token")
             localStorage.removeItem("user")
