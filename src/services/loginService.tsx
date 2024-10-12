@@ -2,7 +2,7 @@ import axios, {isAxiosError} from 'axios';
 import {ILoginAdmin} from "@/types/Auth.ts";
 
 const apiClient = axios.create({
-    baseURL: 'https://online-exams-backend.vercel.app//auth',
+    baseURL: 'https://online-exams-backend.vercel.app/auth',
 });
 
 export const loginAdmin = async (email: string, password: string): Promise<ILoginAdmin | undefined> => {
