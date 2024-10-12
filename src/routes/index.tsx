@@ -46,7 +46,7 @@ export const router = createBrowserRouter([
         path: "/admin",
         children: [
             {
-                path:'',
+                path:'/',
                 element:<Construction />,
             }
         ]
