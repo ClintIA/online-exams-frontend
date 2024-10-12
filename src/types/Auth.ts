@@ -8,10 +8,10 @@ export interface ILoginAdmin {
     }
 }
 export type IAuthContextType = {
-    token: unknown;
-    user: unknown;
-    patientLogin: any;
-    adminLogin: any;
+    token?: string;
+    user?: ITokenPayload;
+    patientLogin: (cpf: string) => Promise<void>;
+    adminLogin: (email: string, password:string) => Promise<void>;
     logOut: unknown;
 }
 export interface ITokenPayload {

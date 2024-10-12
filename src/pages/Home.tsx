@@ -31,7 +31,7 @@ const Home: React.FC = () => {
       }, 2000);
     };
 
-    fetchData();
+    fetchData().then();
   }, []);
 
   const handleSelectExame = (id: string) => {

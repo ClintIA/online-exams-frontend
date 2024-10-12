@@ -20,7 +20,7 @@ const LoginAdmin: React.FC = () => {
         }
         try {
              auth.adminLogin(email, password).then(() => {
-                navigate("/home");
+                navigate("/admin");
             })
         } catch (err) {
             setError(err instanceof Error ? err.message : "Erro ao realizar login")
@@ -59,11 +59,11 @@ const LoginAdmin: React.FC = () => {
                                             {/* Username Input */}
                                             <div className="flex flex-col relative">
                                                 <div className="mb-4">
-                                                    <Input error={showError} placeholder="Email" className='!text-white focus:text-white border-b border-blue-500 p-1' type='text' value={email} onChange={(e) => setEmail(e.target.value)} />
+                                                    <Input error={showError} placeholder="Email" className='!text-white focus:text-white border-b border-blue-500 p-1 w-full' type='text' value={email} onChange={(e) => setEmail(e.target.value)} />
 
                                                 </div>
                                                 <div className='mb-4'>
-                                                    <Input error={showError} placeholder="Senha" className='!text-white focus:text-white border-b border-blue-500 p-1' type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
+                                                    <Input error={showError} placeholder="Senha" className='!text-white focus:text-white border-b border-blue-500 p-1 w-full' type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
 
                                                 </div>
                                             </div>
