@@ -3,7 +3,6 @@ import {useNavigate} from "react-router-dom";
 import {IAuthContextType, ILoginAdmin, ITokenPayload, Props} from "../types/Auth.ts";
 import { loginPatient, loginAdmin} from "../services/loginService.tsx";
 import {jwtDecode} from "jwt-decode";
-import {isAxiosError} from "axios";
 
 export const AuthContext = createContext<IAuthContextType>({} as IAuthContextType);
 
@@ -22,13 +21,7 @@ const AuthProvider = ({ children }: Props) => {
                 setToken(token);
             })
         } catch (err) {
-            if(isAxiosError(err)){
-                if(err.status === 401) {
-                    navigate('/error-401')
-                } else {
-                    navigate('/error')
-                }
-            }
+            console.error(err);
         }
     };
     const patientLogin = async (cpf: string): Promise<void> => {

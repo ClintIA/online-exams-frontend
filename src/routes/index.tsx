@@ -24,13 +24,13 @@ export const router = createBrowserRouter([
         path: "/login",
         children: [
             {
+                path:'admin',
+                element: <AuthProvider><LoginAdmin /></AuthProvider>,
+            },
+            {
                 path:'paciente',
                 element:<AuthProvider><LoginPatient /></AuthProvider>,
             },
-            {
-                path:'admin',
-                element: <AuthProvider><LoginAdmin /></AuthProvider>,
-            }
         ]
     },
     {
