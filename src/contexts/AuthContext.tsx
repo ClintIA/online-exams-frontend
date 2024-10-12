@@ -33,11 +33,11 @@ const AuthProvider = ({ children }: Props) => {
     };
     const patientLogin = async (cpf: string): Promise<ILoginAdmin | undefined> => {
         try {
-           return await loginPatient(cpf).then((result: ILoginAdmin) => {
-                if(result.status == "error") {
+           return await loginPatient(cpf).then((result) => {
+                if(result?.status == "error") {
                     return result;
                 }
-                if(result.data?.token) {
+                if(result?.data?.token) {
                     const getToken = result.data?.token
                     if (getToken) {
                         const decoded: ITokenPayload = jwtDecode(getToken) as ITokenPayload;
