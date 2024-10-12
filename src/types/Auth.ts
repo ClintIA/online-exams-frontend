@@ -3,15 +3,15 @@ import React from "react";
 export interface ILoginAdmin {
     status: string;
     message: string;
-    data: {
-        token:string
+    data?: {
+        token?:string
     }
 }
 export type IAuthContextType = {
     token?: string;
     user?: ITokenPayload;
-    patientLogin: (cpf: string) => Promise<void>;
-    adminLogin: (email: string, password:string) => Promise<void>;
+    patientLogin: (cpf: string) => Promise<ILoginAdmin | undefined>;
+    adminLogin: (email: string, password:string) => Promise<ILoginAdmin | undefined>;
     logOut: unknown;
 }
 export interface ITokenPayload {
