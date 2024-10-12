@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from "react-router-dom";
 import logoClintia from '../assets/logoClintia.png';
 import {useAuth} from "../hooks/auth.tsx";
 import ErrorModal from "../error/ErrorModal.tsx";
-import {ILoginAdmin} from "../types/Auth.ts";
+import { ITokenPayload} from "../types/Auth.ts";
 import { Button } from "@/components/ui/button"
 import {Input} from "@mui/material";
+
 
 const LoginAdmin: React.FC = () => {
 
@@ -16,29 +17,37 @@ const LoginAdmin: React.FC = () => {
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
-    const handleLogin = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    useEffect(() => {
+        const token = localStorage.getItem('token')
+        const user = localStorage.getItem('user')
+        if(user && token) {
+            const tokenPayload: ITokenPayload = JSON.parse(user)
+            if(tokenPayload.isAdmin) {
+                navigate('/admin');
+            } else {
+                navigate('/paciente')
+            }
+        }
+
+    }, [])
+    const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         if (!email || !password) {
             setErrorMessage('Preencha seu email e senha')
             setIsErrorModalOpen(true)
         }
-        try {
-            if(email && password) {
-                auth.adminLogin(email, password).then((result: ILoginAdmin | undefined) => {
+        if (email && password) {
+
+            await auth.adminLogin(email, password)
+                .then((result) => {
                     if(result?.status == "error") {
+                        setErrorMessage(result.message)
                         setIsErrorModalOpen(true)
-                        setErrorMessage(result?.message)
-                        return
-                    } else {
-                        navigate("/admin");
                     }
-
+                    if(result?.status == "success") {
+                        navigate('/admin')
+                    }
                 })
-            }
-
-        } catch (err) {
-            setErrorMessage(err instanceof Error ? err.message : "Erro ao realizar login")
-            setIsErrorModalOpen(true)
         }
     }
     return (

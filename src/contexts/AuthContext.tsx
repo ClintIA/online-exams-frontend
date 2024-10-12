@@ -1,28 +1,41 @@
 import {createContext, useState} from "react";
-import {useNavigate} from "react-router-dom";
 import {IAuthContextType, ILoginAdmin, ITokenPayload, Props} from "../types/Auth.ts";
 import {loginAdmin, loginPatient} from "../services/loginService.tsx";
 import {jwtDecode} from "jwt-decode";
 
 export const AuthContext = createContext<IAuthContextType>({} as IAuthContextType);
 
+const saveStorage =  (user: ITokenPayload, token: string) => {
+    localStorage.setItem("token", token);
+    localStorage.setItem("user", JSON.stringify(user));
+}
 
 const AuthProvider = ({ children }: Props) => {
     const [token, setToken] = useState<string>();
     const [user, setUser] = useState<ITokenPayload>();
-    const navigate = useNavigate();
-    const adminLogin = async (email: string,password: string): Promise<ILoginAdmin | undefined> => {
+    const adminLogin = async (email: string,password: string): Promise<void> => {
+           const res = await loginAdmin(email, password);
+           if(res.status === 'success') {
+               if (res.data.token) {
+                   const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
+                   saveStorage(decoded, res.data.token)
+               }
+           }
+           return res
+    };
+    const patientLogin = async (cpf: string): Promise<ILoginAdmin | undefined> => {
         try {
-            return await loginAdmin(email, password).then((result) => {
+           return await loginPatient(cpf).then((result) => {
                if (result?.status == "error") {
                    return result;
-               } else {
-                   const getToken = result?.data?.token
+               }
+               if (result?.data?.token) {
+                   const getToken = result.data?.token
                    if (getToken) {
                        const decoded: ITokenPayload = jwtDecode(getToken) as ITokenPayload;
-                       if (!decoded.isAdmin) throw Error('Você não possui permissão.');
                        setUser(decoded);
                        setToken(token);
+                       saveStorage(decoded, getToken)
                    }
                }
                return result;
@@ -31,37 +44,13 @@ const AuthProvider = ({ children }: Props) => {
             console.error(err);
         }
     };
-    const patientLogin = async (cpf: string): Promise<ILoginAdmin | undefined> => {
-        try {
-           return await loginPatient(cpf).then((result) => {
-                if(result?.status == "error") {
-                    return result;
-                }
-                if(result?.data?.token) {
-                    const getToken = result.data?.token
-                    if (getToken) {
-                        const decoded: ITokenPayload = jwtDecode(getToken) as ITokenPayload;
-                        setUser(decoded);
-                        setToken(token);
-                    }
-                }
-                return result;
-            })
-        } catch (err) {
-            console.error(err);
-        }
-    };
 
-    const logOut = () => {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-
-        if (user?.isAdmin) {
-            navigate("/auth/login/admin")
-        } else {
-            navigate("/auth/login/paciente")
-        }
-    };
+    const logOut =  () => {
+            localStorage.removeItem("token")
+            localStorage.removeItem("user")
+            setToken('')
+            setUser({} as ITokenPayload);
+    }
 
     return (
         <AuthContext.Provider value={{ token, user, adminLogin, patientLogin, logOut }}>

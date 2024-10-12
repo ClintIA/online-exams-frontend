@@ -1,16 +1,51 @@
-import { HardHat, Stethoscope, Mail, Phone } from 'lucide-react'
-import React from "react";
+import { Stethoscope, Mail, Phone, LogOut} from 'lucide-react'
+import React, {useEffect} from "react";
+import {Button} from "@/components/ui/button.tsx";
+import {useAuth} from "@/hooks/auth.tsx";
+import {useNavigate} from "react-router-dom";
+import {ITokenPayload} from "@/types/Auth.ts";
+
 
 const Construction: React.FC = () => {
+  const auth = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    const user = localStorage.getItem('user')
+    if(user && token) {
+      const tokenPayload: ITokenPayload = JSON.parse(user)
+      if(tokenPayload.isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/paciente')
+      }
+    }
+
+  }, [])
+  const handleLogout = async () => {
+    try {
+      auth.logOut()
+      navigate('/login/admin')
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
   return (
     <div className="min-h-screen flex flex-col bg-background">
       <header className="py-6 bg-oxfordBlue text-primary-foreground">
-        <div className="container mx-auto px-4 flex justify-between items-center">
+        <div className="container mx-auto px-2 flex justify-between items-center">
           <div className="flex items-center space-x-2">
             <Stethoscope className="h-8 w-8" />
             <span className="text-2xl font-bold">Clint IA - Soluções Tecnológicas</span>
           </div>
-          <HardHat className="h-8 w-8" />
+          <Button
+              variant="outline"
+              size="sm"
+              className={`flex text-black items-center space-x-2 hover:bg-gray-200`}
+              onClick={handleLogout}
+          >
+            <LogOut className="h-4 w-4" />
+          </Button>
         </div>
       </header>
 

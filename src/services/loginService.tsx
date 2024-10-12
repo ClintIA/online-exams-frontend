@@ -1,26 +1,28 @@
-import axios from 'axios';
+import axios, {isAxiosError} from 'axios';
 import {ILoginAdmin} from "@/types/Auth.ts";
 
 const apiClient = axios.create({
-    baseURL: 'https://online-exams-backend.vercel.app/auth',
+    baseURL: 'http://localhost:3000/auth',
 });
 
-export const loginAdmin = async (email: string, password: string): Promise<ILoginAdmin | undefined> => {
-    try {
-        const data = {
-            email: email,
-            password: password,
-        }
-         return await apiClient.post<ILoginAdmin>('/login/admin', data)
-             .catch((result) => {
-           return result.response.data;
-        })
+export const loginAdmin = async (email: string, password: string): Promise<any> => {
+     try {
+             const data = {
+                 email: email,
+                 password: password,
+             }
+             const response = await apiClient.post('/login/admin', data);
+             console.log(response.data)
+             return response.data;
+         } catch (error) {
+         if(isAxiosError(error)) {
+             return error.response?.data
+         } else {
+             return 'Erro ao realizar login'
+         }
+     }
 
-        } catch (error) {
 
-        new Error(error instanceof Error ? error.message : 'Não possível realizar login')
-
-    }
 };
 
 export const loginPatient = async (patientCpf: string): Promise<ILoginAdmin | undefined> => {

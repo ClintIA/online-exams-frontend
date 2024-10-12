@@ -44,7 +44,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element:<Construction />,
+        element:<AuthProvider><Construction /></AuthProvider>,
     },
 ]);
 
