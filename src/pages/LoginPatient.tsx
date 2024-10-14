@@ -18,10 +18,8 @@ const LoginPatient: React.FC = () => {
         const user = localStorage.getItem('user')
         if(user && token) {
             const tokenPayload: ITokenPayload = JSON.parse(user)
-            if(tokenPayload.isAdmin) {
-                navigate('/admin');
-            } else {
-                navigate('/paciente/home')
+            if(!tokenPayload.isAdmin) {
+                navigate('/paciente/home');
             }
         }
 

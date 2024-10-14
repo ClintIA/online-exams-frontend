@@ -24,8 +24,6 @@ const LoginAdmin: React.FC = () => {
             const tokenPayload: ITokenPayload = JSON.parse(user)
             if(tokenPayload.isAdmin) {
                 navigate('/admin');
-            } else {
-                navigate('/paciente')
             }
         }
 
