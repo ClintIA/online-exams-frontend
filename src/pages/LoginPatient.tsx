@@ -87,7 +87,6 @@ const LoginPatient: React.FC = () => {
                                                 >
                                                     Acessar
                                                 </Button>
-                                                    Acessar
                                                     <ErrorModal
                                                         isOpen={isErrorModalOpen}
                                                         onClose={() => setIsErrorModalOpen(false)}
