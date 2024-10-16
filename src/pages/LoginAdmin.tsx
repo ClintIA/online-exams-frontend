@@ -6,7 +6,7 @@ import ErrorModal from "../error/ErrorModal.tsx";
 import { ITokenPayload} from "../types/Auth.ts";
 import { Button } from "@/components/ui/button"
 import {Input} from "@mui/material";
-
+import Cookies from 'js-cookie';
 
 const LoginAdmin: React.FC = () => {
 
@@ -18,8 +18,8 @@ const LoginAdmin: React.FC = () => {
     const [errorMessage, setErrorMessage] = useState('')
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        const user = localStorage.getItem('user')
+        const token = Cookies.get('token')
+        const user = Cookies.get('user')
         if(user && token) {
             const tokenPayload: ITokenPayload = JSON.parse(user)
             if(tokenPayload.isAdmin) {

@@ -2,12 +2,13 @@ import {createContext, useState} from "react";
 import {IAuthContextType, ILoginAdmin, ITokenPayload, Props} from "../types/Auth.ts";
 import {loginAdmin, loginPatient} from "../services/loginService.tsx";
 import {jwtDecode} from "jwt-decode";
+import Cookies from 'js-cookie';
 
 export const AuthContext = createContext<IAuthContextType>({} as IAuthContextType);
 
 const saveStorage =  (user: ITokenPayload, token: string) => {
-    localStorage.setItem("token", token);
-    localStorage.setItem("user", JSON.stringify(user));
+    Cookies.set('token', token);
+    Cookies.set('user', JSON.stringify(user));
 }
 
 const AuthProvider = ({ children }: Props) => {
@@ -34,8 +35,8 @@ const AuthProvider = ({ children }: Props) => {
         return res
     };
     const logOut =  () => {
-            localStorage.removeItem("token")
-            localStorage.removeItem("user")
+            Cookies.remove("token")
+            Cookies.remove("user")
             setToken('')
             setUser({} as ITokenPayload);
     }

@@ -4,20 +4,20 @@ import {Button} from "@/components/ui/button.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {useNavigate} from "react-router-dom";
 import {ITokenPayload} from "@/types/Auth.ts";
-
+import Cookies from 'js-cookie';
 
 const Construction: React.FC = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    const user = localStorage.getItem('user')
+    const token = Cookies.get('token')
+    const user = Cookies.get('user')
     if(user && token) {
       const tokenPayload: ITokenPayload = JSON.parse(user)
       if(tokenPayload.isAdmin) {
         navigate('/admin');
       } else {
-        navigate('/paciente')
+        navigate('/error-401');
       }
     }
 

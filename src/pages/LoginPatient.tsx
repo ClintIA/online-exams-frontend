@@ -6,6 +6,7 @@ import {useAuth} from "@/hooks/auth.tsx";
 import ErrorModal from "@/error/ErrorModal.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
+import Cookies from "js-cookie";
 
 const LoginPatient: React.FC = () => {
     const [patientCpf, setPatientCpf] = useState("");
@@ -14,8 +15,8 @@ const LoginPatient: React.FC = () => {
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        const user = localStorage.getItem('user')
+        const token = Cookies.get('token')
+        const user = Cookies.get('user')
         if(user && token) {
             const tokenPayload: ITokenPayload = JSON.parse(user)
             if(!tokenPayload.isAdmin) {
