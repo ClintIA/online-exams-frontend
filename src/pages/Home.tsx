@@ -6,6 +6,7 @@ import { Exame } from '../types/Exame';
 import MenuIcon from '@mui/icons-material/Menu'; // Importando o ícone de menu
 
 const Home: React.FC = () => {
+
   const [exames, setExames] = useState<Exame[]>([]);
   const [selectedExame, setSelectedExame] = useState<Exame | null>(null);
   const [usuario, setUsuario] = useState<string>(''); 
@@ -30,7 +31,7 @@ const Home: React.FC = () => {
       }, 2000);
     };
 
-    fetchData();
+    fetchData().then();
   }, []);
 
   const handleSelectExame = (id: string) => {
