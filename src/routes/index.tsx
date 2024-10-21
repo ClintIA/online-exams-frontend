@@ -5,6 +5,7 @@ import Construction from "../components/Construction.tsx";
 import LoginAdmin from "../pages/LoginAdmin.tsx";
 import Error404 from "../error/Error404.tsx";
 import Error401 from "../error/Error401.tsx";
+import CheckCPF from "@/components/CheckCPF.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -38,6 +39,10 @@ export const router = createBrowserRouter([
             {
                 path:'home',
                 element:<Home />,
+            },
+            {
+                path:'agendamento',
+                element:<CheckCPF />,
             },
         ]
     },

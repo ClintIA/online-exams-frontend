@@ -1,4 +1,4 @@
-import {createContext, useState} from "react";
+import {createContext, useEffect, useState} from "react";
 import {IAuthContextType, ILoginAdmin, ITokenPayload, Props} from "../types/Auth.ts";
 import {loginAdmin, loginPatient} from "../services/loginService.tsx";
 import {jwtDecode} from "jwt-decode";
@@ -14,6 +14,18 @@ const saveStorage =  (user: ITokenPayload, token: string) => {
 const AuthProvider = ({ children }: Props) => {
     const [token, setToken] = useState<string>();
     const [user, setUser] = useState<ITokenPayload>();
+
+    useEffect(() => {
+        const token = Cookies.get('token');
+        const user = Cookies.get('user');
+        if(token && user) {
+            Cookies.set('user', JSON.stringify(user));
+            Cookies.set('token', token);
+            setToken(token);
+            setUser(JSON.parse(user));
+        }
+
+    },[])
     const adminLogin = async (email: string,password: string): Promise<ILoginAdmin | undefined> => {
            const res = await loginAdmin(email, password);
            if(res?.status === 'success') {
