@@ -1,10 +1,11 @@
-import {createBrowserRouter, Navigate} from "react-router-dom";
-import LoginPatient from "../pages/LoginPatient.tsx";
-import Home from "../pages/Home.tsx";
-import Construction from "../components/Construction.tsx";
-import LoginAdmin from "../pages/LoginAdmin.tsx";
-import Error404 from "../error/Error404.tsx";
+import { AdminExamsList } from "@/pages/AdminExamsList.tsx";
+import { createBrowserRouter, Navigate } from "react-router-dom";
+// import Construction from "../components/Construction.tsx";
 import Error401 from "../error/Error401.tsx";
+import Error404 from "../error/Error404.tsx";
+import Home from "../pages/Home.tsx";
+import LoginAdmin from "../pages/LoginAdmin.tsx";
+import LoginPatient from "../pages/LoginPatient.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -43,7 +44,13 @@ export const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element:<Construction />,
+        element: <AdminExamsList />,
+        children: [
+            {
+                path: 'exames',
+                element: <AdminExamsList />,
+            }
+        ]
     },
 ]);
 
