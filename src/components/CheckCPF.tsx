@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -10,25 +10,28 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import {AlertCircle, Construction} from "lucide-react"
+import {AlertCircle} from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import RegisterPatient from "@/components/RegisterPatient.tsx";
+import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
-import {listPatient} from "@/services/patientService.tsx";
+import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
+import Booking from "@/components/Booking.tsx";
 
 const CheckCPF: React.FC = () => {
     const [cpf, setCpf] = useState('')
-    const [tenant, setTenant] = useState<number>(1)
+    const [tenant, setTenant] = useState<number | undefined>()
+
     const [erro, setErro] = useState<string | null>(null)
     const [pacienteEncontrado, setPacienteEncontrado] = useState(false)
+    const [patientEncontrado, setPatientEncontrado] = useState({})
     const [mostrarCadastro, setMostrarCadastro] = useState(false)
-    const [patientList, setPatientList] = useState([])
     const auth = useAuth()
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCpf(e.target.value)
     }
-
+    if(auth.user?.tenantId && auth.user) {
+        setTenant(auth.user.tenantId)
+    }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
@@ -43,11 +46,11 @@ const CheckCPF: React.FC = () => {
         try {
             // Simulando uma chamada de API para verificar o CPF
             if(tenant) {
-                const result = await listPatient(cpf, tenant)
-                const data = result?.data.data as []
-                console.log(data)
-                setPatientList(data)
-               if(data.length === 0) {
+                const result = await getPatientByCpfAndTenant(cpf, tenant)
+                const data = result?.data.data
+                setPatientEncontrado(data)
+                setPacienteEncontrado(true)
+               if(!data) {
                    setMostrarCadastro(true)
                }
             }
@@ -58,9 +61,13 @@ const CheckCPF: React.FC = () => {
     if (mostrarCadastro) {
         return <RegisterPatient />
     }
+    if(pacienteEncontrado && patientEncontrado) {
+        return <Booking {...patientEncontrado as DadosPaciente} />
+    }
 
     return (
-        <Card className="w-full max-w-md mx-auto">
+        <div className="mt-10">
+        <Card className="w-full max-w-md mx-auto ">
             <CardHeader>
                 <CardTitle>Verificação de Paciente</CardTitle>
                 <CardDescription>
@@ -98,6 +105,7 @@ const CheckCPF: React.FC = () => {
                 )}
             </CardFooter>
         </Card>
+        </div>
     )
 }
 

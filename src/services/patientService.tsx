@@ -4,7 +4,7 @@ const apiPatient = axios.create({
     baseURL: 'http://localhost:3000/patient',
 });
 
-export const listPatient = async (cpf: string, tenantId: number) => {
+export const getPatientByCpfAndTenant = async (cpf: string, tenantId: number) => {
     const data = {
         cpf: cpf,
     }

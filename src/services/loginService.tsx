@@ -1,7 +1,8 @@
 import axios, {isAxiosError} from 'axios';
 import {ILoginAdmin} from "@/types/Auth.ts";
+import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 
-const apiClient = axios.create({
+const apiAuth = axios.create({
     baseURL: 'http://localhost:3000/auth',
 });
 
@@ -11,7 +12,7 @@ export const loginAdmin = async (email: string, password: string): Promise<ILogi
                  email: email,
                  password: password,
              }
-             const response = await apiClient.post('/login/admin', data);
+             const response = await apiAuth.post('/login/admin', data);
              return response.data;
          } catch (error) {
          if(isAxiosError(error)) {
@@ -27,8 +28,23 @@ export const loginPatient = async (patientCpf: string): Promise<ILoginAdmin | un
         const data = {
             cpf: patientCpf,
         }
-        const response = await apiClient.post('/login/patient', data);
+        const response = await apiAuth.post('/login/patient', data);
         return response.data;
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+};
+
+export const registerPatient = async (patientData: DadosPaciente, tenantId: number) => {
+
+    try {
+        return await apiAuth.post('/register/patient', patientData,{
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
     } catch (error) {
         if(isAxiosError(error)) {
             return error.response?.data
