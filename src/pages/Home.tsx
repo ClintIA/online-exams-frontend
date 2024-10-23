@@ -3,15 +3,25 @@ import Sidebar from '../components/Sidebar';
 import ExameList from '../components/ExameList';
 import ExameDetail from '../components/ExameDetail';
 import { Exame } from '../types/Exame';
-import MenuIcon from '@mui/icons-material/Menu'; // Importando o ícone de menu
+import MenuIcon from '@mui/icons-material/Menu';
+
+import {useAuth} from "@/hooks/auth.tsx";
+ // Importando o ícone de menu
 
 const Home: React.FC = () => {
 
+  const [isAdmin, setIsAdmin ] = useState<boolean | undefined>(false);
   const [exames, setExames] = useState<Exame[]>([]);
   const [selectedExame, setSelectedExame] = useState<Exame | null>(null);
   const [usuario, setUsuario] = useState<string>(''); 
   const [loading, setLoading] = useState<boolean>(true);
   const [menuOpen, setMenuOpen] = useState<boolean>(false); // Estado para abrir/fechar o menu lateral em mobile
+  const auth = useAuth();
+  useEffect(() => {
+    if(auth?.user) {
+      setIsAdmin(auth.user.isAdmin)
+    }
+  },[auth])
 
   // Simulação de requisição à API
   useEffect(() => {

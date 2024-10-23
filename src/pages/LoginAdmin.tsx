@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import logoClintia from '../assets/logoClintia.png';
 import {useAuth} from "../hooks/auth.tsx";
 import ErrorModal from "../error/ErrorModal.tsx";
@@ -27,7 +27,7 @@ const LoginAdmin: React.FC = () => {
             }
         }
 
-    }, [])
+    }, [navigate])
     const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         if (!email || !password) {
@@ -36,16 +36,13 @@ const LoginAdmin: React.FC = () => {
         }
         if (email && password) {
 
-            await auth.adminLogin(email, password)
-                .then((result) => {
-                    if(result?.status == "error") {
-                        setErrorMessage(result.message)
-                        setIsErrorModalOpen(true)
-                    }
-                    if(result?.status == "success") {
-                        navigate('/admin')
-                    }
-                })
+            const result = await auth.adminLogin(email, password)
+                if(result?.status == "error") {
+                    setErrorMessage(result.message)
+                    setIsErrorModalOpen(true)
+                } else {
+                    navigate('/admin/home')
+                }
         }
     }
     return (
@@ -80,14 +77,14 @@ const LoginAdmin: React.FC = () => {
                                                 {/* Username Input */}
                                                 <div className="flex flex-col relative">
                                                     <div className="mb-4">
-                                                        <Input placeholder="Email"
+                                                        <Input autoComplete="true"  placeholder="Email"
                                                                className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
                                                                type='text' value={email}
                                                                onChange={(e) => setEmail(e.target?.value)}/>
 
                                                     </div>
                                                     <div className='mb-4'>
-                                                        <Input placeholder="Senha"
+                                                        <Input autoComplete="true" placeholder="Senha"
                                                                className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
                                                                type='password' value={password}
                                                                onChange={(e) => setPassword(e.target.value)}/>

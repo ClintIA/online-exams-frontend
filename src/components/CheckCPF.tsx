@@ -16,16 +16,19 @@ import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
 import Booking from "@/components/Booking.tsx";
+import {validarCPF} from "@/lib/utils.ts";
+
 
 const CheckCPF: React.FC = () => {
     const [cpf, setCpf] = useState('')
     const [tenant, setTenant] = useState<number | undefined>()
-
     const [erro, setErro] = useState<string | null>(null)
     const [pacienteEncontrado, setPacienteEncontrado] = useState(false)
     const [patientEncontrado, setPatientEncontrado] = useState({})
     const [mostrarCadastro, setMostrarCadastro] = useState(false)
     const auth = useAuth()
+
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCpf(e.target.value)
     }
@@ -37,14 +40,17 @@ const CheckCPF: React.FC = () => {
         setErro(null)
         setPacienteEncontrado(false)
         setMostrarCadastro(false)
+        const checkCPF = validarCPF(cpf)
 
         if (!cpf) {
             setErro('Por favor, insira um CPF')
             return
         }
+        if (!checkCPF) {
+            setErro('CPF Inválido')
+        }
 
         try {
-            // Simulando uma chamada de API para verificar o CPF
             if(tenant) {
                 const result = await getPatientByCpfAndTenant(cpf, tenant)
                 const data = result?.data.data
@@ -53,6 +59,8 @@ const CheckCPF: React.FC = () => {
                if(!data) {
                    setMostrarCadastro(true)
                }
+            } else {
+                setErro('Por favor, realize o login para identificarmos a Clínica')
             }
         } catch (error) {
             setErro('Falha ao verificar o CPF. Por favor, tente novamente.' + error)
