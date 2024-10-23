@@ -1,13 +1,11 @@
 import React from 'react';
-import Home from './pages/Home';
 import './App.css';
+import {RouterProvider} from "react-router-dom";
+import {router} from "@/routes";
 
-const Root: React.FC = () => {
-  return (
-    <div className="App">
-            <Home />
-    </div>
-  );
+const App: React.FC = () => {
+
+    return (<RouterProvider router={router}/>)
 };
 
-export default Root;
+export default App;

@@ -3,25 +3,15 @@ import Sidebar from '../components/Sidebar';
 import ExameList from '../components/ExameList';
 import ExameDetail from '../components/ExameDetail';
 import { Exame } from '../types/Exame';
-import MenuIcon from '@mui/icons-material/Menu';
-
-import {useAuth} from "@/hooks/auth.tsx";
- // Importando o ícone de menu
+import MenuIcon from '@mui/icons-material/Menu'; // Importando o ícone de menu
 
 const Home: React.FC = () => {
 
-  const [isAdmin, setIsAdmin ] = useState<boolean | undefined>(false);
   const [exames, setExames] = useState<Exame[]>([]);
   const [selectedExame, setSelectedExame] = useState<Exame | null>(null);
-  const [usuario, setUsuario] = useState<string>(''); 
+  const [usuario, setUsuario] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
   const [menuOpen, setMenuOpen] = useState<boolean>(false); // Estado para abrir/fechar o menu lateral em mobile
-  const auth = useAuth();
-  useEffect(() => {
-    if(auth?.user) {
-      setIsAdmin(auth.user.isAdmin)
-    }
-  },[auth])
 
   // Simulação de requisição à API
   useEffect(() => {
@@ -54,22 +44,22 @@ const Home: React.FC = () => {
   }
 
   return (
-    <div className="home flex flex-col md:flex-row">
-      {/* Botão de Menu para dispositivos móveis */}
-      <button className="md:hidden text-blue p-4" onClick={() => setMenuOpen(!menuOpen)}>
-        <MenuIcon />
-      </button>
+      <div className="home flex flex-col md:flex-row">
+        {/* Botão de Menu para dispositivos móveis */}
+        <button className="md:hidden text-blue p-4" onClick={() => setMenuOpen(!menuOpen)}>
+          <MenuIcon />
+        </button>
 
-      {/* Sidebar visível em telas grandes e mobile quando menuOpen for true */}
-      <div className={`md:block ${menuOpen ? 'block' : 'hidden'} w-60`}>
-        <Sidebar />
-      </div>
+        {/* Sidebar visível em telas grandes e mobile quando menuOpen for true */}
+        <div className={`md:block ${menuOpen ? 'block' : 'hidden'} w-60`}>
+          <Sidebar />
+        </div>
 
-      <div className="content flex-1 ml-0 md:ml-6">
-        <ExameList exames={exames} onSelect={handleSelectExame} usuario={usuario} />
-        <ExameDetail exame={selectedExame} />
+        <div className="content flex-1 ml-0 md:ml-6">
+          <ExameList exames={exames} onSelect={handleSelectExame} usuario={usuario} />
+          <ExameDetail exame={selectedExame} />
+        </div>
       </div>
-    </div>
   );
 };
 

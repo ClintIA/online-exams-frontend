@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -32,9 +32,12 @@ const CheckCPF: React.FC = () => {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCpf(e.target.value)
     }
-    if(auth.user?.tenantId && auth.user) {
-        setTenant(auth.user.tenantId)
-    }
+    useEffect(() => {
+        if(auth.user?.tenantId && auth.user) {
+            setTenant(auth.user.tenantId)
+        }
+        }, [auth.user]
+    )
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
