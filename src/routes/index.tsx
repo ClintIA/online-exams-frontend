@@ -1,10 +1,10 @@
-import {createBrowserRouter, Navigate} from "react-router-dom";
-import LoginPatient from "../pages/LoginPatient.tsx";
-import Home from "../pages/Home.tsx";
-import Construction from "../components/Construction.tsx";
-import LoginAdmin from "../pages/LoginAdmin.tsx";
-import Error404 from "../error/Error404.tsx";
+import { AdminDashboard } from "@/pages/AdminDashboard.tsx";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import Error401 from "../error/Error401.tsx";
+import Error404 from "../error/Error404.tsx";
+import Home from "../pages/Home.tsx";
+import LoginAdmin from "../pages/LoginAdmin.tsx";
+import LoginPatient from "../pages/LoginPatient.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -43,7 +43,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element:<Construction />,
+        element:<AdminDashboard />,
     },
 ]);
 
