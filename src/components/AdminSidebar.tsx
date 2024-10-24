@@ -2,7 +2,7 @@ import { useAuth } from "@/hooks/auth.tsx";
 import { Home, People, Science, Vaccines} from '@mui/icons-material';
 import { Divider } from '@mui/material';
 import React from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import logoClintia from '../assets/logoClintia.png';
 import {Button} from "@/components/ui/button.tsx";
 import {LogOut} from "lucide-react";
@@ -30,19 +30,19 @@ const AdminSidebar: React.FC = () => {
           <ul className="space-y-4">
             <li className="flex items-center text-white hover:text-skyBlue transition">
               <Home className="mr-3 text-lg"/>
-              <a href="#" className="font-medium">Início</a>
+              <NavLink to="/admin/home" className="font-medium">Início</NavLink>
             </li>
             <li className="flex items-center text-white hover:text-skyBlue transition">
               <Vaccines className="mr-3 text-lg"/>
-              <a href="/admin/agendamento" className="font-medium">Agendamentos</a>
+              <NavLink to="/admin/agendamento" className="font-medium">Agendamentos</NavLink>
             </li>
-            <li className="flex items-center text-skyBlue font-bold">
+            <li className="flex items-center text-white hover:text-skyBlue transition">
               <Science className="mr-3 text-lg"/>
-              <a href="#" className="font-medium">Exames</a>
+              <NavLink to="#" className="font-medium">Exames</NavLink>
             </li>
             <li className="flex items-center text-white hover:text-skyBlue transition">
               <Vaccines className="mr-3 text-lg"/>
-              <a href="#" className="font-medium">Pacientes</a>
+              <NavLink to="#" className="font-medium">Pacientes</NavLink>
             </li>
           </ul>
 
