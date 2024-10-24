@@ -33,7 +33,7 @@ const AuthProvider = ({ children }: Props) => {
                if (res?.data?.token) {
                    const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
                    saveStorage(decoded, res.data.token)
-                   setToken(token);
+                   setToken(res.data.token);
                    setUser(decoded);
                }
            }
@@ -45,7 +45,7 @@ const AuthProvider = ({ children }: Props) => {
             if (res?.data?.token) {
                 const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
                 saveStorage(decoded, res.data.token)
-                setToken(token);
+                setToken(res.data.token);
                 setUser(decoded);
             }
         }

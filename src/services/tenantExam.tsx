@@ -1,12 +1,9 @@
 import {isAxiosError} from 'axios';
-import {DadosBooking} from "@/components/Booking.tsx";
 import apiClient from "@/lib/interceptor.ts";
 
-
-export const registerPatientExam = async (dadosBooking: DadosBooking, tenantId: number) => {
-
+export const listTenantExam = async (tenantId:  number)=> {
     try {
-        return await apiClient.post('patientExams/registerPatientExam', dadosBooking,{
+        return await apiClient.get('clinicexams/',{
             headers: {
                 'x-tenant-id': tenantId
             }

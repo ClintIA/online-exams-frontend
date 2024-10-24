@@ -44,7 +44,7 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
         e.preventDefault()
         setErro(null)
         const checkCPF = validarCPF(cpf)
-
+        console.log(cpf)
         if (!cpf) {
             setErro('Por favor, insira um CPF')
             return
@@ -77,7 +77,7 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
         <div className="mt-10">
         <Card className="w-full max-w-md mx-auto ">
             <CardHeader>
-                <CardTitle>Verificação de Paciente</CardTitle>
+                <CardTitle className='text-xl text-blue-900'>Verificação de Paciente</CardTitle>
                 <CardDescription>
                     Insira o CPF do paciente para verificar o cadastro.
                 </CardDescription>
@@ -86,7 +86,7 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-4">
                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="cpf" className="text-right">
+                            <Label htmlFor="cpf" className="text-right text-blue-800">
                                 CPF
                             </Label>
                             <Input
@@ -99,7 +99,7 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
                         </div>
                     </div>
                     <div className="flex justify-end mt-6">
-                        <Button type="submit">Verificar</Button>
+                        <Button className="bg-skyBlue text-white" type="submit">Verificar</Button>
                     </div>
                 </form>
             </CardContent>

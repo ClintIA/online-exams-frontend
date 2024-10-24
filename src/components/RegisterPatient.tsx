@@ -27,6 +27,7 @@ export interface DadosPaciente {
     address: string | undefined
     gender: string | undefined
     health_card_number: string | undefined
+    tenants?: any[]
 }
 interface RegisterPatientProps {
     dadosIniciais?: Partial<DadosPaciente>
@@ -239,7 +240,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                            </div>
                        </div>
                        <div className="flex justify-end mt-6">
-                           <Button className="bg-oxfordBlue" type="submit">Salvar Paciente</Button>
+                           <Button className="bg-skyBlue text-white" type="submit">Salvar Paciente</Button>
                        </div>
                    </form>
                </CardContent>

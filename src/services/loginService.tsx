@@ -1,10 +1,7 @@
-import axios, {isAxiosError} from 'axios';
+import {isAxiosError} from 'axios';
 import {ILoginAdmin} from "@/types/Auth.ts";
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
-
-const apiAuth = axios.create({
-    baseURL: 'https://api-pre.clintia.com.br/auth',
-});
+import apiClient from "@/lib/interceptor.ts";
 
 export const loginAdmin = async (email: string, password: string): Promise<ILoginAdmin | undefined> => {
      try {
@@ -12,7 +9,7 @@ export const loginAdmin = async (email: string, password: string): Promise<ILogi
                  email: email,
                  password: password,
              }
-             const response = await apiAuth.post('/login/admin', data);
+             const response = await apiClient.post('auth/login/admin', data);
              return response.data;
          } catch (error) {
          if(isAxiosError(error)) {
@@ -28,7 +25,7 @@ export const loginPatient = async (patientCpf: string): Promise<ILoginAdmin | un
         const data = {
             cpf: patientCpf,
         }
-        const response = await apiAuth.post('/login/patient', data);
+        const response = await apiClient.post('auth/login/patient', data);
         return response.data;
     } catch (error) {
         if(isAxiosError(error)) {
@@ -40,7 +37,7 @@ export const loginPatient = async (patientCpf: string): Promise<ILoginAdmin | un
 export const registerPatient = async (patientData: DadosPaciente, tenantId: number) => {
 
     try {
-        return await apiAuth.post('/register/patient', patientData,{
+        return await apiClient.post('auth/register/patient', patientData,{
             headers: {
                 'x-tenant-id': tenantId
             }

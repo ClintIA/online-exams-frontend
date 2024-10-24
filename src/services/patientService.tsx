@@ -1,15 +1,12 @@
-import axios, {isAxiosError} from 'axios';
-
-const apiPatient = axios.create({
-    baseURL: 'https://api-pre.clintia.com.br/patient',
-});
+import {isAxiosError} from 'axios';
+import apiClient from "@/lib/interceptor.ts";
 
 export const getPatientByCpfAndTenant = async (cpf: string, tenantId: number) => {
     const data = {
         cpf: cpf,
     }
     try {
-       return await apiPatient.post('/cpf', data,{
+       return await apiClient.post('patient/cpf', data,{
            headers: {
                'x-tenant-id': tenantId
            }
