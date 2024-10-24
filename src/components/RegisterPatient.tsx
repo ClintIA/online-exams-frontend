@@ -18,15 +18,15 @@ import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {validarDataNascimento, validarEmail, validarTelefone} from "@/lib/utils.ts";
 export interface DadosPaciente {
-    id?: number | null
-    full_name: string
-    email: string
-    phone: string
-    dob: string
-    cpf: string
-    address: string
-    gender: string
-    health_card_number: string
+    id?: number | undefined
+    full_name: string | undefined
+    email: string | undefined
+    phone: string | undefined
+    dob: string | undefined
+    cpf?: string | undefined
+    address: string | undefined
+    gender: string | undefined
+    health_card_number: string | undefined
 }
 interface RegisterPatientProps {
     dadosIniciais?: Partial<DadosPaciente>

@@ -27,7 +27,6 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
     const [cpf, setCpf] = useState('')
     const [tenant, setTenant] = useState<number | undefined>()
     const [erro, setErro] = useState<string | null>(null)
-    const [dadosPaciente, setDadosPaciente] = useState({} as DadosPaciente)
     const auth = useAuth()
 
             useEffect(() => {
@@ -58,13 +57,12 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
         try {
             if(tenant) {
                 const result = await getPatientByCpfAndTenant(cpf, tenant)
-                const data = result?.data.data
+                const data = result?.data.data as DadosPaciente
+                data.cpf = cpf
                 if(!data) {
-                    setDadosPaciente(data)
-                    onCPFVerificado({...dadosPaciente, cpf: cpf},false)
+                    onCPFVerificado(data, false)
                 } else {
-                    onCPFVerificado(data,true)
-
+                    onCPFVerificado(data, true)
                 }
             } else {
                 setErro('Por favor, realize o login para identificarmos a Clínica')

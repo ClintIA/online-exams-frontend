@@ -6,7 +6,7 @@ import { InsertPhoto, ArrowForwardIos, KeyboardArrowDown  } from '@mui/icons-mat
 interface ExameListProps {
   exames: Exame[];
   onSelect: (id: string) => void;
-  usuario: string; // Adicionando o nome do usuário como prop
+  usuario: string;
 }
 
 const ExameList: React.FC<ExameListProps> = ({ exames, onSelect, usuario }) => {

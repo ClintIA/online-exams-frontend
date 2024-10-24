@@ -10,8 +10,7 @@ import BookingConfirmation from "@/components/BookingConfirmation.tsx";
 const BookingSteps: React.FC = () => {
 
     const [etapaAtual, setEtapaAtual] = useState(0)
-    const [cpf, setCpf] = useState('')
-    const [pacienteCadastrado, setPacienteCadastrado] = useState(false)
+    const [pacienteCadastrado, setPacienteCadastrado] = useState<boolean>(false)
     const [dadosPaciente, setDadosPaciente] = useState({} as DadosPaciente)
     const etapas = [
         "Verificação de CPF",
@@ -24,9 +23,11 @@ const BookingSteps: React.FC = () => {
     }
 
     const handleCPFVerificado = (dados: DadosPaciente, cadastrado: boolean) => {
-        setCpf(dados.cpf)
+        setDadosPaciente(dados)
+        console.log(dados)
         setPacienteCadastrado(cadastrado)
-        avancarEtapa()
+        setEtapaAtual(prev => Math.min(prev + 2, etapas.length - 1))
+
     }
 
     const handleCadastroConcluido = (dados: DadosPaciente) => {
@@ -46,7 +47,7 @@ const BookingSteps: React.FC = () => {
                 return pacienteCadastrado ? (
                     <Booking dadosBooking={dadosPaciente} onAgendamentoConcluido={handleAgendamentoConcluido} />
                 ) : (
-                    <RegisterPatient dadosIniciais={{ cpf }} onCadastroConcluido={handleCadastroConcluido} />
+                    <RegisterPatient dadosIniciais={dadosPaciente} onCadastroConcluido={handleCadastroConcluido} />
                 )
             case 2:
                 return <Booking dadosBooking={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />
@@ -57,13 +58,13 @@ const BookingSteps: React.FC = () => {
         }
     }
     return (
-        <div className="w-full max-w-4xl mx-auto">
+        <div className="w-full max-w-6xl mx-auto">
             <CardHeader>
-                <CardTitle>Agendamento de Consulta</CardTitle>
+                <CardTitle className='text-3xl text-blue-800'>Agendamento de Consulta</CardTitle>
             </CardHeader>
             <CardContent>
                 <StepIndicator etapas={etapas} etapaAtual={etapaAtual}/>
-                <div className="mt-8">
+                <div className="mt-6">
                     {renderEtapaAtual()}
                 </div>
             </CardContent>

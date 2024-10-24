@@ -10,10 +10,10 @@ interface EtapaProps {
 
 function Etapa({ numero, titulo, ativa, completa }: EtapaProps) {
     return (
-        <li className={`flex items-center ${ativa ? 'text-primary' : 'text-gray-500'}`}>
+        <li className={`flex items-center ${ativa ? 'text-blue-800' : 'text-blue-500'}`}>
       <span className={`flex items-center justify-center w-8 h-8 border-2 rounded-full mr-2 
         ${ativa ? 'border-primary' : 'border-gray-300'}
-        ${completa ? 'bg-primary text-white' : 'bg-white'}`}>
+        ${completa ? 'bg-oxfordBlue text-skyBlue' : 'bg-white'}`}>
         {completa ? <Check className="w-5 h-5" /> : numero}
       </span>
             <span className="text-sm font-medium">{titulo}</span>

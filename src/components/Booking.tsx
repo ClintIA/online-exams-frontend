@@ -17,7 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 
 export interface DadosBooking {
-    patientId: number | null
+    patientId: number | undefined
     examId: number | null
     examDate: string
 }
@@ -30,18 +30,16 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
     const [erro, setErro] = useState<string | null>(null)
-    const [sucesso, setSucesso] = useState<boolean>(false)
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setDadosBooking(prev => ({ ...prev, [name]: value }))
     }
 
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
-        setSucesso(false)
-
         // Validação básica
         if (!dadosBooking.examDate ||
             !dadosBooking.patientId ||
@@ -49,18 +47,20 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
             setErro('Por favor, preencha todos os campos')
             return
         }
+
         const createDate = (date: string) => {
             const dateArray = date.split('-')
             return dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2]
         }
         try {
-            // Simulando uma chamada de API
-            const bookingDados = { ...dadosBooking, examDate: createDate(dadosBooking.examDate) }
+            if(!dados.dadosBooking?.id) {
+                setErro('ID do Paciente não encontrado')
+            }
+            const bookingDados = { ...dadosBooking, patientId: dados.dadosBooking?.id, examDate: createDate(dadosBooking.examDate) }
             const result = await registerPatientExam(bookingDados, 1)
 
             if(result?.status === 'success') {
 
-                setSucesso(true)
                 onAgendamentoConcluido()
             }
 
@@ -68,7 +68,7 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
             // Resetar formulário
             setDadosBooking({
                 examDate: '',
-                patientId: null,
+                patientId: undefined,
                 examId: null,
             })
         } catch (error) {
@@ -76,10 +76,8 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
             console.log(error)
         }
     }
-    if(sucesso) {
-        return <Alert></Alert>
-    }
-    const mockDoctors = [
+
+    const mockExam = [
         { id: '1', nome: 'Hemograma Completo', consultorio: 'Laboratório A', data: '13/02/2023', horario: '07:57', resultado: 'Normal', resumo: 'Resumo do exame Hemograma Completo' },
         { id: '2', nome: 'Glicose', consultorio: 'Laboratório B', data: '08/08/2017', horario: '09:55', resultado: 'Elevado', resumo: 'Resumo do exame Glicose' },
     ];
@@ -112,7 +110,7 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="phone" className="text-right">
-                                    Telephone
+                                    Contato
                                 </Label>
                                 <Input
                                     id="phone"
@@ -128,12 +126,12 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
                                     <Label htmlFor="doctor">Selecione o Exame</Label>
                                     <Select value={selectedExame} onValueChange={setSelectedExame}>
                                         <SelectTrigger className="col-span-3"  id="doctor">
-                                            <SelectValue placeholder="Select a doctor" />
+                                            <SelectValue placeholder="Selecione o Exame" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {mockDoctors.map((doctor) => (
-                                                <SelectItem key={doctor.id} value={doctor.id}>
-                                                    {doctor.nome}
+                                            {mockExam.map((exam) => (
+                                                <SelectItem key={exam.id} value={exam.id}>
+                                                    {exam.nome}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

@@ -10,7 +10,6 @@ const Home: React.FC = () => {
   const [usuario, setUsuario] = useState<string>('');
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Simulação de requisição à API
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
