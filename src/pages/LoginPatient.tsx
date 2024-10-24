@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import logoClintia from '../assets/logoClintia.png';
 import {Input} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@/hooks/auth.tsx";
 import ErrorModal from "@/error/ErrorModal.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {ITokenPayload} from "@/types/Auth.ts";
-import Cookies from "js-cookie";
+
 
 const LoginPatient: React.FC = () => {
     const [patientCpf, setPatientCpf] = useState("");
@@ -14,17 +13,7 @@ const LoginPatient: React.FC = () => {
     const auth = useAuth();
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
-    useEffect(() => {
-        const token = Cookies.get('token')
-        const user = Cookies.get('user')
-        if(user && token) {
-            const tokenPayload: ITokenPayload = JSON.parse(user)
-            if(!tokenPayload.isAdmin) {
-                navigate('/paciente/home');
-            }
-        }
 
-    }, [])
     const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         if (!patientCpf) {

@@ -9,6 +9,7 @@ export const AuthContext = createContext<IAuthContextType>({} as IAuthContextTyp
 const saveStorage =  (user: ITokenPayload, token: string) => {
     Cookies.set('token', token);
     Cookies.set('user', JSON.stringify(user));
+
 }
 
 const AuthProvider = ({ children }: Props) => {
@@ -32,6 +33,8 @@ const AuthProvider = ({ children }: Props) => {
                if (res?.data?.token) {
                    const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
                    saveStorage(decoded, res.data.token)
+                   setToken(token);
+                   setUser(decoded);
                }
            }
            return res
@@ -42,6 +45,8 @@ const AuthProvider = ({ children }: Props) => {
             if (res?.data?.token) {
                 const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
                 saveStorage(decoded, res.data.token)
+                setToken(token);
+                setUser(decoded);
             }
         }
         return res

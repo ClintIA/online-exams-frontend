@@ -3,7 +3,7 @@ import {ILoginAdmin} from "@/types/Auth.ts";
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 
 const apiAuth = axios.create({
-    baseURL: 'http://localhost:3000/auth',
+    baseURL: 'https://api-pre.clintia.com.br/auth',
 });
 
 export const loginAdmin = async (email: string, password: string): Promise<ILoginAdmin | undefined> => {

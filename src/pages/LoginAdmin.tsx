@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNavigate} from "react-router-dom";
 import logoClintia from '../assets/logoClintia.png';
 import {useAuth} from "../hooks/auth.tsx";
 import ErrorModal from "../error/ErrorModal.tsx";
-import { ITokenPayload} from "../types/Auth.ts";
 import { Button } from "@/components/ui/button"
 import {Input} from "@mui/material";
-import Cookies from 'js-cookie';
+
 
 const LoginAdmin: React.FC = () => {
 
@@ -17,17 +16,6 @@ const LoginAdmin: React.FC = () => {
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
-    useEffect(() => {
-        const token = Cookies.get('token')
-        const user = Cookies.get('user')
-        if(user && token) {
-            const tokenPayload: ITokenPayload = JSON.parse(user)
-            if(tokenPayload.isAdmin) {
-                navigate('/admin');
-            }
-        }
-
-    }, [navigate])
     const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         if (!email || !password) {

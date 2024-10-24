@@ -1,17 +1,21 @@
 import { AdminDashboard } from "@/pages/AdminDashboard.tsx";
-import { createBrowserRouter } from "react-router-dom";
+import {createBrowserRouter, Navigate} from "react-router-dom";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
 import Home from "../pages/Home.tsx";
 import LoginAdmin from "../pages/LoginAdmin.tsx";
 import LoginPatient from "../pages/LoginPatient.tsx";
-import CheckCPF from "@/components/CheckCPF.tsx";
 import AppLayout from "@/pages/AppLayout.tsx";
+import BookingSteps from "@/components/BookingSteps.tsx";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <AppLayout />
+        element: <Navigate to='/login/paciente'/>
+    },
+    {
+        path: "/admin",
+        element: <Navigate to='/login/admin'/>
     },
     {
         path: "/error-401",
@@ -36,6 +40,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/paciente",
+        element: <AppLayout />,
         children: [
             {
                 path:'home',
@@ -53,7 +58,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:'agendamento',
-                element:<CheckCPF />,
+                element:<BookingSteps />,
             },
         ]
     },

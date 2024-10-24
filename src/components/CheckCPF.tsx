@@ -12,37 +12,38 @@ import {
 } from "@/components/ui/card"
 import {AlertCircle} from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
+import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
-import Booking from "@/components/Booking.tsx";
 import {validarCPF} from "@/lib/utils.ts";
+import {ITokenPayload} from "@/types/Auth.ts";
+import {jwtDecode} from "jwt-decode";
 
+interface VerificacaoCPFProps {
+    onCPFVerificado: (dados: DadosPaciente, cadastrado: boolean) => void
+}
 
-const CheckCPF: React.FC = () => {
+const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoCPFProps) => {
     const [cpf, setCpf] = useState('')
     const [tenant, setTenant] = useState<number | undefined>()
     const [erro, setErro] = useState<string | null>(null)
-    const [pacienteEncontrado, setPacienteEncontrado] = useState(false)
-    const [patientEncontrado, setPatientEncontrado] = useState({})
-    const [mostrarCadastro, setMostrarCadastro] = useState(false)
+    const [dadosPaciente, setDadosPaciente] = useState({} as DadosPaciente)
     const auth = useAuth()
 
+            useEffect(() => {
+                if(auth?.token) {
+                    const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+                    setTenant(decoded.tenantId)
+                }
+            },[auth.token, auth.user])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCpf(e.target.value)
     }
-    useEffect(() => {
-        if(auth.user?.tenantId && auth.user) {
-            setTenant(auth.user.tenantId)
-        }
-        }, [auth.user]
-    )
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
-        setPacienteEncontrado(false)
-        setMostrarCadastro(false)
         const checkCPF = validarCPF(cpf)
 
         if (!cpf) {
@@ -51,17 +52,20 @@ const CheckCPF: React.FC = () => {
         }
         if (!checkCPF) {
             setErro('CPF Inválido')
+            return
         }
 
         try {
             if(tenant) {
                 const result = await getPatientByCpfAndTenant(cpf, tenant)
                 const data = result?.data.data
-                setPatientEncontrado(data)
-                setPacienteEncontrado(true)
-               if(!data) {
-                   setMostrarCadastro(true)
-               }
+                if(!data) {
+                    setDadosPaciente(data)
+                    onCPFVerificado({...dadosPaciente, cpf: cpf},false)
+                } else {
+                    onCPFVerificado(data,true)
+
+                }
             } else {
                 setErro('Por favor, realize o login para identificarmos a Clínica')
             }
@@ -69,12 +73,7 @@ const CheckCPF: React.FC = () => {
             setErro('Falha ao verificar o CPF. Por favor, tente novamente.' + error)
         }
     }
-    if (mostrarCadastro) {
-        return <RegisterPatient />
-    }
-    if(pacienteEncontrado && patientEncontrado) {
-        return <Booking {...patientEncontrado as DadosPaciente} />
-    }
+
 
     return (
         <div className="mt-10">

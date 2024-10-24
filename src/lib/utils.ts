@@ -30,3 +30,17 @@ export function validarCPF(cpf: string): boolean {
 
 
 }
+export const validarTelefone = (telefone: string) => {
+  const telefoneLimpo = telefone.replace(/\D/g, '')
+  return telefoneLimpo.length >= 10 && telefoneLimpo.length <= 11
+}
+export const validarEmail = (email: string) => {
+  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+  return re.test(email)
+}
+export const validarDataNascimento = (data: string) => {
+  const dataAtual = new Date()
+  const dataNascimento = new Date(data)
+  const idade = dataAtual.getFullYear() - dataNascimento.getFullYear()
+  return idade >= 0 && idade <= 120
+}

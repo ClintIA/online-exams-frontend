@@ -38,7 +38,7 @@ const AppLayout: React.FC = () => {
                 <HandleSideBar isAdmin={isAdmin}/>
             </div>
 
-            <div className="ml-4">
+            <div className="content flex-1 ml-2 md:ml-6">
                 <Outlet/>
             </div>
         </div>

@@ -2,7 +2,7 @@ import axios, {isAxiosError} from 'axios';
 import {DadosBooking} from "@/components/Booking.tsx";
 
 const apiPatientExam = axios.create({
-    baseURL: 'http://localhost:3000/patientExams',
+    baseURL: 'https://api-pre.clintia.com.br/patientExams',
 });
 
 export const registerPatientExam = async (dadosBooking: DadosBooking, tenantId: number) => {

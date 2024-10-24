@@ -13,16 +13,20 @@ import {
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx"
 import {registerPatientExam} from "@/services/patientExamService.tsx";
-import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 
 export interface DadosBooking {
     patientId: number | null
     examId: number | null
     examDate: string
 }
+interface BookingModalProps {
+    dadosBooking?: DadosPaciente
+    onAgendamentoConcluido?: () => void
+}
 
-const Booking: React.FC<DadosPaciente> = (dados) => {
+const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => {
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
     const [erro, setErro] = useState<string | null>(null)
@@ -55,7 +59,9 @@ const Booking: React.FC<DadosPaciente> = (dados) => {
             const result = await registerPatientExam(bookingDados, 1)
 
             if(result?.status === 'success') {
+
                 setSucesso(true)
+                onAgendamentoConcluido()
             }
 
 
@@ -98,7 +104,7 @@ const Booking: React.FC<DadosPaciente> = (dados) => {
                                 <Input
                                     id="full_name"
                                     name="full_name"
-                                    value={dados.full_name}
+                                    value={dados.dadosBooking?.full_name}
                                     onChange={handleInputChange}
                                     className="col-span-3"
                                     disabled={true}
@@ -112,7 +118,7 @@ const Booking: React.FC<DadosPaciente> = (dados) => {
                                     id="phone"
                                     name="phone"
                                     type="tel"
-                                    value={dados.phone}
+                                    value={dados.dadosBooking?.phone}
                                     onChange={handleInputChange}
                                     className="col-span-3"
                                     disabled={true}
@@ -141,7 +147,7 @@ const Booking: React.FC<DadosPaciente> = (dados) => {
                                     id="dob"
                                     name="dob"
                                     type="datetime-local"
-                                    value={dados.dob}
+                                    value={dadosBooking.examDate}
                                     onChange={handleInputChange}
                                     className="col-span-3"
                                 />

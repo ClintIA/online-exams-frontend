@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { Button } from "@/components/ui/button.tsx"
 import { Input } from "@/components/ui/input.tsx"
 import { Label } from "@/components/ui/label.tsx"
@@ -13,7 +13,10 @@ import {
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx"
 import {registerPatient} from "@/services/loginService.tsx";
-import Booking from "@/components/Booking.tsx";
+import {ITokenPayload} from "@/types/Auth.ts";
+import {jwtDecode} from "jwt-decode";
+import {useAuth} from "@/hooks/auth.tsx";
+import {validarDataNascimento, validarEmail, validarTelefone} from "@/lib/utils.ts";
 export interface DadosPaciente {
     id?: number | null
     full_name: string
@@ -25,8 +28,12 @@ export interface DadosPaciente {
     gender: string
     health_card_number: string
 }
+interface RegisterPatientProps {
+    dadosIniciais?: Partial<DadosPaciente>
+    onCadastroConcluido: (dados: DadosPaciente) => void
+}
 
-const RegisterPatient: React.FC = () => {
+const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido}: RegisterPatientProps) => {
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',
         email: '',
@@ -37,25 +44,34 @@ const RegisterPatient: React.FC = () => {
         gender: '',
         health_card_number: '',
     })
-
+    const [tenant, setTenant] = useState<number | undefined>(undefined)
     const [erro, setErro] = useState<string | null>(null)
-    const [sucesso, setSucesso] = useState<boolean>(false)
-
+    const auth = useAuth()
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setDadosPaciente(prev => ({ ...prev, [name]: value }))
     }
+    useEffect(() => {
+        if(auth?.token) {
+            const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+            setTenant(decoded.tenantId)
+        }
+    },[auth.token, auth.user])
+    useEffect(() => {
+        setDadosPaciente(prevDados => ({
+            ...prevDados,
+            ...dadosIniciais
+        }))
+    }, [dadosIniciais])
+
     const createDate = (date: string) => {
         const dateArray = date.split('-')
         return dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2]
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
-        console.log(dadosPaciente.dob)
         e.preventDefault()
         setErro(null)
-        setSucesso(false)
-
         // Validação básica
         if (!dadosPaciente.full_name ||
             !dadosPaciente.email ||
@@ -67,35 +83,48 @@ const RegisterPatient: React.FC = () => {
             setErro('Por favor, preencha todos os campos')
             return
         }
+         if (!validarEmail(dadosPaciente.email)) {
+            setErro('Email Inválido')
+             return
+        }
+         if (!validarTelefone(dadosPaciente.phone)) {
+            setErro('Telefone inválido')
+             return
+        }
+        if (!validarDataNascimento(dadosPaciente.dob)) {
+            setErro('Data de nascimento inválida')
+            return
+        }
         try {
-            // Simulando uma chamada de API
-            const pacienteDados = { ...dadosPaciente, dob: createDate(dadosPaciente.dob) }
-            const result = await registerPatient(pacienteDados, 1)
+            if(tenant) {
+                const pacienteDados = { ...dadosPaciente, dob: createDate(dadosPaciente.dob) }
+                const result = await registerPatient(pacienteDados, tenant)
+                console.log(result)
+                if(result?.data.status === 'success') {
+                    onCadastroConcluido(dadosPaciente)
+                } else {
+                    setErro('Falha ao cadastrar paciente. '+ result?.message)
+                    return
+                }
 
-            if(result.status === 'success') {
-                setSucesso(true)
+                // Resetar formulário
+                setDadosPaciente({
+                    full_name: '',
+                    email: '',
+                    phone: '',
+                    dob: '',
+                    cpf: '',
+                    address: '',
+                    gender: '',
+                    health_card_number: '',
+                })
             }
-
-
-            // Resetar formulário
-            setDadosPaciente({
-                full_name: '',
-                email: '',
-                phone: '',
-                dob: '',
-                cpf: '',
-                address: '',
-                gender: '',
-                health_card_number: '',
-            })
         } catch (error) {
             setErro('Falha ao cadastrar paciente. Por favor, tente novamente.')
             console.log(error)
         }
     }
-    if(sucesso) {
-        return <Booking {...dadosPaciente} />
-    }
+
    return (
        <div className="mt-10">
 
@@ -167,7 +196,7 @@ const RegisterPatient: React.FC = () => {
                                <Input
                                    id="cpf"
                                    name="cpf"
-                                   value={dadosPaciente.cpf}
+                                   value={dadosIniciais?.cpf}
                                    onChange={handleInputChange}
                                    className="col-span-3"
                                />
