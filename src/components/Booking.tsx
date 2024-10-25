@@ -120,16 +120,16 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
 
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle>Agendamento do Exame</CardTitle>
+                    <CardTitle className='text-xl text-blue-900'>Agendamento do Exame</CardTitle>
                     <CardDescription>
-                        Preencha os detalhes do paciente abaixo. Clique em salvar quando terminar.
+                        Preencha os detalhes do paciente abaixo. Clique em salvar para continuar.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit}>
                         <div className="grid gap-4">
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="full_name" className="text-right">
+                                <Label htmlFor="full_name" className="text-right text-blue-800">
                                     Nome
                                 </Label>
                                 <Input
@@ -142,7 +142,7 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="phone" className="text-right">
+                                <Label htmlFor="phone" className="text-right text-blue-800">
                                     Contato
                                 </Label>
                                 <Input
@@ -156,7 +156,7 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="tenant" className="text-right">
+                                <Label htmlFor="tenant" className="text-right text-blue-800">
                                     Clínica
                                 </Label>
                                 <Input
@@ -170,7 +170,7 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="doctor">Selecione o Exame</Label>
+                                <Label className="text-right text-blue-800" htmlFor="doctor">Selecione o Exame</Label>
                                 <Select value={selectedExame} onValueChange={setSelectedExame}>
                                     <SelectTrigger className="col-span-3" id="doctor">
                                         <SelectValue placeholder="Selecione o Exame"/>
@@ -185,7 +185,7 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
                                 </Select>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="dob" className="text-right">
+                                <Label htmlFor="dob" className="text-right text-blue-800">
                                     Dia do Exame
                                 </Label>
                                 <Input

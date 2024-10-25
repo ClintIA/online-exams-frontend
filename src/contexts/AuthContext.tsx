@@ -4,6 +4,7 @@ import {loginAdmin, loginPatient} from "../services/loginService.tsx";
 import {jwtDecode} from "jwt-decode";
 import Cookies from 'js-cookie';
 
+
 export const AuthContext = createContext<IAuthContextType>({} as IAuthContextType);
 
 const saveStorage =  (user: ITokenPayload, token: string) => {
@@ -13,20 +14,21 @@ const saveStorage =  (user: ITokenPayload, token: string) => {
 }
 
 const AuthProvider = ({ children }: Props) => {
-    const [token, setToken] = useState<string>();
+    const [token, setToken] = useState<string>('');
     const [user, setUser] = useState<ITokenPayload>();
-
     useEffect(() => {
-        const token = Cookies.get('token');
-        const user = Cookies.get('user');
-        if(token && user) {
-            Cookies.set('user', JSON.stringify(user));
-            Cookies.set('token', token);
-            setToken(token);
-            setUser(JSON.parse(user));
-        }
+        const checkToken = () => {
+            const tokenFromStorage = Cookies.get('token');
+            const user = Cookies.get('user');
+            if (tokenFromStorage && user) {
+                setToken(tokenFromStorage);
+                setUser(JSON.parse(user));
+                console.log('teste')
 
-    },[])
+            }
+        }
+        checkToken()
+    },[token])
     const adminLogin = async (email: string,password: string): Promise<ILoginAdmin | undefined> => {
            const res = await loginAdmin(email, password);
            if(res?.status === 'success') {
@@ -59,7 +61,7 @@ const AuthProvider = ({ children }: Props) => {
     }
 
     return (
-        <AuthContext.Provider value={{ token, user, adminLogin, patientLogin, logOut }}>
+        <AuthContext.Provider value={{ token, user, adminLogin, patientLogin, logOut, setToken, setUser }}>
             {children}
         </AuthContext.Provider>
     );

@@ -1,4 +1,4 @@
-import React,{ useState} from 'react'
+import React, {useState} from 'react'
 import { CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import CheckCPF from "@/components/CheckCPF.tsx";
 import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
@@ -8,7 +8,6 @@ import BookingConfirmation from "@/components/BookingConfirmation.tsx";
 
 
 const BookingSteps: React.FC = () => {
-
     const [etapaAtual, setEtapaAtual] = useState(0)
     const [pacienteCadastrado, setPacienteCadastrado] = useState<boolean>(false)
     const [dadosPaciente, setDadosPaciente] = useState({} as DadosPaciente)
@@ -18,16 +17,19 @@ const BookingSteps: React.FC = () => {
         "Agendamento de Consulta",
         "Confirmação"
     ]
+
     const avancarEtapa = () => {
         setEtapaAtual(prev => Math.min(prev + 1, etapas.length - 1))
     }
 
     const handleCPFVerificado = (dados: DadosPaciente, cadastrado: boolean) => {
         setDadosPaciente(dados)
-        console.log(dados)
         setPacienteCadastrado(cadastrado)
-        setEtapaAtual(prev => Math.min(prev + 2, etapas.length - 1))
-
+        if(cadastrado) {
+            setEtapaAtual(prev => Math.min(prev + 2, etapas.length - 1))
+        } else {
+            avancarEtapa()
+        }
     }
 
     const handleCadastroConcluido = (dados: DadosPaciente) => {

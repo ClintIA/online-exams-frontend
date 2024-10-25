@@ -13,6 +13,8 @@ export type IAuthContextType = {
     patientLogin: (cpf: string) => Promise<ILoginAdmin | undefined>;
     adminLogin: (email: string, password:string) => Promise<ILoginAdmin | undefined>;
     logOut: () => void;
+    setUser: (user: ITokenPayload) => void;
+    setToken: (token: string) => void;
 }
 export interface ITokenPayload {
     userId: number;
