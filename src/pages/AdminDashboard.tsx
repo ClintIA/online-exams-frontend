@@ -1,3 +1,4 @@
+import { AdminSidebar } from "@/components/AdminSidebar"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -7,6 +8,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import MenuIcon from '@mui/icons-material/Menu'
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BarChart3, CalendarIcon } from 'lucide-react'
@@ -16,6 +18,8 @@ import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YA
 
 export function AdminDashboard() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
+  const [menuOpen, setMenuOpen] = useState<boolean>(false)
+
   const [selectedFilter, setSelectedFilter] = useState('hoje')
   const [isCustomDateOpen, setIsCustomDateOpen] = useState(false)
 
@@ -106,6 +110,16 @@ export function AdminDashboard() {
 
   return (
     <div className="home flex flex-col md:flex-row">
+      {/* Botão de Menu para dispositivos móveis */}
+      <button className="md:hidden text-blue p-4" onClick={() => setMenuOpen(!menuOpen)}>
+        <MenuIcon />
+      </button>
+
+      {/* Sidebar visível em telas grandes e mobile quando menuOpen for true */}
+      <div className={`md:block ${menuOpen ? 'block' : 'hidden'} w-60`}>
+        <AdminSidebar />
+      </div>
+
       <div className="content flex-1 ml-0 md:ml-6">
         <div className="p-8">
           <h1 className="text-3xl font-bold mb-6">Dashboard de Exames</h1>
