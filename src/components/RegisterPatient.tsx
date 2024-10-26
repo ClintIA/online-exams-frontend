@@ -53,11 +53,14 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
         setDadosPaciente(prev => ({ ...prev, [name]: value }))
     }
     useEffect(() => {
-        if(auth?.token) {
-            const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-            setTenant(decoded.tenantId)
+        const getTenant = () => {
+            if(auth?.token) {
+                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+                setTenant(decoded.tenantId)
+            }
         }
-    },[auth.token, auth.user])
+        getTenant()
+    },[auth.token])
     useEffect(() => {
         setDadosPaciente(prevDados => ({
             ...prevDados,

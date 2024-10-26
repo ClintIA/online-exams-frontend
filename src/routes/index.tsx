@@ -50,7 +50,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element: <AppLayout />,
+        element:  <AppLayout />,
         children: [
             {
                 path:'home',

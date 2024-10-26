@@ -43,13 +43,21 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
     const [exames, setExames] = useState<Exams[]>([])
     const [erro, setErro] = useState<string | null>(null)
     const auth = useAuth()
+    const doctors =  [
+        { id: 1, name: "Carlos Moreira" },
+        { id: 1, name: "João Moreira" },
+        { id: 1, name: "Carlos Moreira" },
+    ]
 
     useEffect(() => {
-        if(auth?.token) {
-            const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-            setTenantID(decoded.tenantId)
+        const getTenant = () => {
+            if(auth?.token) {
+                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+                setTenantID(decoded.tenantId)
+            }
         }
-    },[auth.token, auth.user])
+        getTenant()
+    },[auth.token])
 
     useEffect( () => {
         const fetchExams = async () => {
@@ -157,17 +165,20 @@ const Booking: React.FC<BookingModalProps> = (dados,onAgendamentoConcluido ) => 
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="tenant" className="text-right text-blue-800">
-                                    Clínica
+                                    Selecione o médico
                                 </Label>
-                                <Input
-                                    id="tenant"
-                                    name="tenant"
-                                    type="text"
-                                    value={dados.dadosBooking?.tenants ? dados.dadosBooking?.tenants[0].name : 'Adicione essa clínica ao cadastro do paciente'}
-                                    onChange={handleInputChange}
-                                    className="col-span-3"
-                                    disabled={true}
-                                />
+                                <Select value={selectedExame} onValueChange={setSelectedExame}>
+                                    <SelectTrigger className="col-span-3" id="doctor">
+                                        <SelectValue placeholder="Selecione o Médico"/>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {doctors.map((doctor) => (
+                                            <SelectItem key={doctor.id} value={doctor.id.toString()}>
+                                                {doctor.name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label className="text-right text-blue-800" htmlFor="doctor">Selecione o Exame</Label>

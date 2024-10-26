@@ -13,12 +13,15 @@ const AppLayout: React.FC = () => {
     const [menuOpen, setMenuOpen] = useState<boolean>(false); // Estado para abrir/fechar o menu lateral em mobile
     const navigate = useNavigate();
     const auth = useAuth();
-    useEffect(() => {
 
-        if(auth?.token) {
-            const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-            setIsAdmin(decoded.isAdmin)
+    useEffect(() => {
+        const getAccess = () => {
+            if(auth?.token) {
+                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+                setIsAdmin(decoded.isAdmin)
+            }
         }
+        getAccess()
     },[auth, navigate])
     function HandleSideBar({ isAdmin }: { isAdmin: boolean | undefined }) {
         if(isAdmin) {

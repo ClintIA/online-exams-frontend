@@ -11,7 +11,7 @@ export function AdminSidebar() {
 
   const handleLogout = async () => {
     auth.logOut()
-    navigate('/login/paciente')
+    navigate('/admin')
   }
 
   return (
@@ -26,42 +26,42 @@ export function AdminSidebar() {
               <SidebarMenu>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#inicio">
+                    <a href="/admin/home">
                       <Home className="inline-block mr-2" /> Início
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#exames">
+                    <a href="#">
                       <FileText className="inline-block mr-2" /> Exames
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#agendamentos">
+                    <a href="/admin/agendamento">
                       <Calendar className="inline-block mr-2" /> Agendamentos
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#financeiro">
+                    <a href="#">
                       <DollarSign className="inline-block mr-2" /> Financeiro
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#pacientes">
+                    <a href="#">
                       <Users className="inline-block mr-2" /> Pacientes
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#exames-clinica">
+                    <a href="#">
                       <FilePlus className="inline-block mr-2" /> Exames da clínica
                     </a>
                   </SidebarMenuButton>

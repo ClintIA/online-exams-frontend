@@ -38,13 +38,15 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
         health_card_number: '',
     })
     const auth = useAuth()
-
-            useEffect(() => {
-                if(auth?.token) {
-                    const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                    setTenant(decoded.tenantId)
-                }
-            },[auth.token, auth.user])
+    useEffect(() => {
+        const getTenant = () => {
+            if(auth?.token) {
+                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+                setTenant(decoded.tenantId)
+            }
+        }
+        getTenant()
+    },[auth.token])
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCpf(e.target.value)
@@ -68,7 +70,6 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
                 const result = await getPatientByCpfAndTenant(cpf, tenant)
                 const data = result?.data.data
                 if(!data) {
-
                     onCPFVerificado({...dados, cpf: cpf}, false)
                 } else {
                     setDados(data)
