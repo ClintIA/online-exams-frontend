@@ -18,7 +18,6 @@ export function AdminSidebar() {
       <SidebarProvider>
         <Sidebar className="bg-oxfordBlue text-white">
           <SidebarHeader>
-            {/* Substitua pelo seu logo */}
             <img src={logoClintia} alt="Clintia" className="w-full h-auto" />
           </SidebarHeader>
           <SidebarContent>
