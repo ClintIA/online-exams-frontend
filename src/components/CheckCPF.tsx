@@ -68,6 +68,10 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
         try {
             if(tenant) {
                 const result = await getPatientByCpfAndTenant(cpf, tenant)
+                if(result?.status === 'error') {
+                    setErro(result.message)
+                    return
+                }
                 const data = result?.data.data
                 if(!data) {
                     onCPFVerificado({...dados, cpf: cpf}, false)

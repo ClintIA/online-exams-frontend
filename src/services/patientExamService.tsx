@@ -6,7 +6,7 @@ import apiClient from "@/lib/interceptor.ts";
 export const registerPatientExam = async (dadosBooking: DadosBooking, tenantId: number) => {
 
     try {
-        return await apiClient.post('patientExams/registerPatientExam', dadosBooking,{
+        return await apiClient.post('patientExams', dadosBooking,{
             headers: {
                 'x-tenant-id': tenantId
             }

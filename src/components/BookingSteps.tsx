@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import { CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import CheckCPF from "@/components/CheckCPF.tsx";
 import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
-import Booking from "@/components/Booking.tsx";
+import Booking, {Exams} from "@/components/Booking.tsx";
 import StepIndicator from "@/components/StepIndicator.tsx";
 import BookingConfirmation from "@/components/BookingConfirmation.tsx";
 
@@ -11,6 +11,8 @@ const BookingSteps: React.FC = () => {
     const [etapaAtual, setEtapaAtual] = useState(0)
     const [pacienteCadastrado, setPacienteCadastrado] = useState<boolean>(false)
     const [dadosPaciente, setDadosPaciente] = useState({} as DadosPaciente)
+    const [exame, setExame] = useState<Exams>()
+    const [examDate, setExamDate] = useState('')
     const etapas = [
         "Verificação de CPF",
         "Cadastro de Paciente",
@@ -38,7 +40,10 @@ const BookingSteps: React.FC = () => {
         avancarEtapa()
     }
 
-    const handleAgendamentoConcluido = () => {
+    const handleAgendamentoConcluido = (exam: Exams, dados: DadosPaciente, date: string) => {
+        setDadosPaciente(dados)
+        setExame(exam)
+        setExamDate(date)
         avancarEtapa()
     }
     const renderEtapaAtual = () => {
@@ -47,14 +52,16 @@ const BookingSteps: React.FC = () => {
                 return <CheckCPF onCPFVerificado={handleCPFVerificado} />
             case 1:
                 return pacienteCadastrado ? (
-                    <Booking dadosBooking={dadosPaciente} onAgendamentoConcluido={handleAgendamentoConcluido} />
+                    <Booking dadosPaciente={dadosPaciente} onAgendamentoConcluido={handleAgendamentoConcluido} />
                 ) : (
                     <RegisterPatient dadosIniciais={dadosPaciente} onCadastroConcluido={handleCadastroConcluido} />
                 )
             case 2:
-                return <Booking dadosBooking={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />
+                return <Booking dadosPaciente={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />
             case 3:
-                return <BookingConfirmation />
+                return <BookingConfirmation exame={exame}
+                                            dadosPaciente={dadosPaciente}
+                                            examDate={examDate} />
             default:
                 return null
         }
