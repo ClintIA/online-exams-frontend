@@ -20,10 +20,11 @@ export const loginAdmin = async (email: string, password: string): Promise<ILogi
 
 };
 
-export const loginPatient = async (patientCpf: string): Promise<ILoginAdmin | undefined> => {
+export const loginPatient = async (patientCpf: string, password: string): Promise<ILoginAdmin | undefined> => {
     try {
         const data = {
             cpf: patientCpf,
+            password: password
         }
         const response = await apiClient.post('auth/login/patient', data);
         return response.data;

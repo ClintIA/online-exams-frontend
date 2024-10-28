@@ -39,8 +39,8 @@ const AuthProvider = ({ children }: Props) => {
            }
            return res
     };
-    const patientLogin = async (cpf: string): Promise<ILoginAdmin | undefined> => {
-        const res = await loginPatient(cpf);
+    const patientLogin = async (cpf: string, password: string): Promise<ILoginAdmin | undefined> => {
+        const res = await loginPatient(cpf,password);
         if(res?.status === 'success') {
             if (res?.data?.token) {
                 const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;

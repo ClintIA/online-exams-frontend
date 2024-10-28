@@ -9,7 +9,7 @@ export interface ILoginAdmin {
 }
 export type IAuthContextType = {
     token?: string;
-    patientLogin: (cpf: string) => Promise<ILoginAdmin | undefined>;
+    patientLogin: (cpf: string, password: string) => Promise<ILoginAdmin | undefined>;
     adminLogin: (email: string, password:string) => Promise<ILoginAdmin | undefined>;
     logOut: () => void;
     isAuthenticated: boolean;

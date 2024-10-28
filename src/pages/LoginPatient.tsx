@@ -9,6 +9,7 @@ import {Button} from "@/components/ui/button.tsx";
 
 const LoginPatient: React.FC = () => {
     const [patientCpf, setPatientCpf] = useState("");
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const auth = useAuth();
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
@@ -21,16 +22,20 @@ const LoginPatient: React.FC = () => {
             setIsErrorModalOpen(true)
         }
         if (patientCpf) {
-            await auth.patientLogin(patientCpf)
-                .then((result) => {
-                    if(result?.status == "error") {
-                        setErrorMessage(result.message)
-                        setIsErrorModalOpen(true)
-                    }
-                    if(result?.status == "success") {
-                        navigate('/paciente/home')
-                    }
-                })
+            const result = await auth.patientLogin(patientCpf, password)
+            if(!result) {
+                setErrorMessage('Erro ao Realizar login')
+                setIsErrorModalOpen(true)
+                return
+            }
+            if(result?.status === "error") {
+                setErrorMessage(result.message)
+                setIsErrorModalOpen(true)
+                return
+            }
+            if(result?.status === "success" && result?.data !== null) {
+                return  navigate('/paciente/home')
+            }
         }
     }
 
@@ -66,6 +71,12 @@ const LoginPatient: React.FC = () => {
                                                            className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
                                                            type='text' value={patientCpf}
                                                            onChange={(e) => setPatientCpf(e.target.value)}/>
+                                                </div>
+                                                <div className="mb-4">
+                                                    <Input placeholder="Digite sua senha"
+                                                           className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
+                                                           type='password' value={password}
+                                                           onChange={(e) => setPassword(e.target.value)}/>
                                                 </div>
                                             </div>
                                             {/* Submit Button */}

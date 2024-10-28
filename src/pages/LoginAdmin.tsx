@@ -21,15 +21,22 @@ const LoginAdmin: React.FC = () => {
         if (!email || !password) {
             setErrorMessage('Preencha seu email e senha')
             setIsErrorModalOpen(true)
+            return
         }
         if (email && password) {
-
             const result = await auth.adminLogin(email, password)
-                if(result?.status == "error") {
+            if(!result) {
+                setErrorMessage('Erro ao Realizar login')
+                setIsErrorModalOpen(true)
+                return
+            }
+                if(result?.status === "error") {
                     setErrorMessage(result.message)
                     setIsErrorModalOpen(true)
-                } else {
-                    navigate('/admin/home')
+                    return
+                }
+                if(result?.status === "success" && result?.data !== null) {
+                    return  navigate('/admin/home')
                 }
         }
     }
