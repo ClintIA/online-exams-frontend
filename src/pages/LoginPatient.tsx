@@ -1,30 +1,20 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import logoClintia from '../assets/logoClintia.png';
 import {Input} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@/hooks/auth.tsx";
 import ErrorModal from "@/error/ErrorModal.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {ITokenPayload} from "@/types/Auth.ts";
-import Cookies from "js-cookie";
+
 
 const LoginPatient: React.FC = () => {
     const [patientCpf, setPatientCpf] = useState("");
+    const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const auth = useAuth();
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
-    useEffect(() => {
-        const token = Cookies.get('token')
-        const user = Cookies.get('user')
-        if(user && token) {
-            const tokenPayload: ITokenPayload = JSON.parse(user)
-            if(!tokenPayload.isAdmin) {
-                navigate('/paciente/home');
-            }
-        }
 
-    }, [])
     const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         if (!patientCpf) {
@@ -32,16 +22,20 @@ const LoginPatient: React.FC = () => {
             setIsErrorModalOpen(true)
         }
         if (patientCpf) {
-            await auth.patientLogin(patientCpf)
-                .then((result) => {
-                    if(result?.status == "error") {
-                        setErrorMessage(result.message)
-                        setIsErrorModalOpen(true)
-                    }
-                    if(result?.status == "success") {
-                        navigate('/paciente/home')
-                    }
-                })
+            const result = await auth.patientLogin(patientCpf, password)
+            if(!result) {
+                setErrorMessage('Erro ao Realizar login')
+                setIsErrorModalOpen(true)
+                return
+            }
+            if(result?.status === "error") {
+                setErrorMessage(result.message)
+                setIsErrorModalOpen(true)
+                return
+            }
+            if(result?.status === "success" && result?.data !== null) {
+                return  navigate('/paciente/home')
+            }
         }
     }
 
@@ -77,6 +71,12 @@ const LoginPatient: React.FC = () => {
                                                            className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
                                                            type='text' value={patientCpf}
                                                            onChange={(e) => setPatientCpf(e.target.value)}/>
+                                                </div>
+                                                <div className="mb-4">
+                                                    <Input placeholder="Digite sua senha"
+                                                           className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
+                                                           type='password' value={password}
+                                                           onChange={(e) => setPassword(e.target.value)}/>
                                                 </div>
                                             </div>
                                             {/* Submit Button */}

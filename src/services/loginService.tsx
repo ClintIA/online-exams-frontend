@@ -1,9 +1,7 @@
-import axios, {isAxiosError} from 'axios';
+import {isAxiosError} from 'axios';
 import {ILoginAdmin} from "@/types/Auth.ts";
-
-const apiClient = axios.create({
-    baseURL: 'https://online-exams-backend.vercel.app/auth',
-});
+import {DadosPaciente} from "@/components/RegisterPatient.tsx";
+import apiClient from "@/lib/interceptor.ts";
 
 export const loginAdmin = async (email: string, password: string): Promise<ILoginAdmin | undefined> => {
      try {
@@ -11,7 +9,7 @@ export const loginAdmin = async (email: string, password: string): Promise<ILogi
                  email: email,
                  password: password,
              }
-             const response = await apiClient.post('/login/admin', data);
+             const response = await apiClient.post('auth/login/admin', data);
              return response.data;
          } catch (error) {
          if(isAxiosError(error)) {
@@ -22,13 +20,29 @@ export const loginAdmin = async (email: string, password: string): Promise<ILogi
 
 };
 
-export const loginPatient = async (patientCpf: string): Promise<ILoginAdmin | undefined> => {
+export const loginPatient = async (patientCpf: string, password: string): Promise<ILoginAdmin | undefined> => {
     try {
         const data = {
             cpf: patientCpf,
+            password: password
         }
-        const response = await apiClient.post('/login/patient', data);
+        const response = await apiClient.post('auth/login/patient', data);
         return response.data;
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+};
+
+export const registerPatient = async (patientData: DadosPaciente, tenantId: number) => {
+
+    try {
+        return await apiClient.post('auth/register/patient', patientData,{
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
     } catch (error) {
         if(isAxiosError(error)) {
             return error.response?.data

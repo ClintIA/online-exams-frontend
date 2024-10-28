@@ -1,12 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import React, { useState } from 'react';
+import { useNavigate} from "react-router-dom";
 import logoClintia from '../assets/logoClintia.png';
 import {useAuth} from "../hooks/auth.tsx";
 import ErrorModal from "../error/ErrorModal.tsx";
-import { ITokenPayload} from "../types/Auth.ts";
 import { Button } from "@/components/ui/button"
 import {Input} from "@mui/material";
-import Cookies from 'js-cookie';
+
 
 const LoginAdmin: React.FC = () => {
 
@@ -17,35 +16,28 @@ const LoginAdmin: React.FC = () => {
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
-    useEffect(() => {
-        const token = Cookies.get('token')
-        const user = Cookies.get('user')
-        if(user && token) {
-            const tokenPayload: ITokenPayload = JSON.parse(user)
-            if(tokenPayload.isAdmin) {
-                navigate('/admin');
-            }
-        }
-
-    }, [])
     const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
         if (!email || !password) {
             setErrorMessage('Preencha seu email e senha')
             setIsErrorModalOpen(true)
+            return
         }
         if (email && password) {
-
-            await auth.adminLogin(email, password)
-                .then((result) => {
-                    if(result?.status == "error") {
-                        setErrorMessage(result.message)
-                        setIsErrorModalOpen(true)
-                    }
-                    if(result?.status == "success") {
-                        navigate('/admin')
-                    }
-                })
+            const result = await auth.adminLogin(email, password)
+            if(!result) {
+                setErrorMessage('Erro ao Realizar login')
+                setIsErrorModalOpen(true)
+                return
+            }
+                if(result?.status === "error") {
+                    setErrorMessage(result.message)
+                    setIsErrorModalOpen(true)
+                    return
+                }
+                if(result?.status === "success" && result?.data !== null) {
+                    return  navigate('/admin/home')
+                }
         }
     }
     return (
@@ -80,14 +72,14 @@ const LoginAdmin: React.FC = () => {
                                                 {/* Username Input */}
                                                 <div className="flex flex-col relative">
                                                     <div className="mb-4">
-                                                        <Input placeholder="Email"
+                                                        <Input autoComplete="true"  placeholder="Email"
                                                                className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
                                                                type='text' value={email}
                                                                onChange={(e) => setEmail(e.target?.value)}/>
 
                                                     </div>
                                                     <div className='mb-4'>
-                                                        <Input placeholder="Senha"
+                                                        <Input autoComplete="true" placeholder="Senha"
                                                                className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
                                                                type='password' value={password}
                                                                onChange={(e) => setPassword(e.target.value)}/>

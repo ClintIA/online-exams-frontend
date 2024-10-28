@@ -31,7 +31,7 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ isOpen, onClose, title = "Error
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="bg-white sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-destructive">
             <AlertCircle className="h-6 w-6" />

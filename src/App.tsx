@@ -1,13 +1,16 @@
 import React from 'react';
-import Home from './pages/Home';
 import './App.css';
+import {RouterProvider} from "react-router-dom";
+import {router} from "@/routes";
+import AuthProvider from "@/contexts/AuthContext.tsx";
 
-const Root: React.FC = () => {
-  return (
-    <div className="App">
-            <Home />
-    </div>
-  );
+const App: React.FC = () => {
+
+    return (
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
+        )
 };
 
-export default Root;
+export default App;
