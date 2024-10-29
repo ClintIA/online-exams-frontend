@@ -2,20 +2,20 @@ import React from 'react'
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
-import {Exams} from "@/components/Booking.tsx";
+import {DadosBooking, Exams} from "@/components/Booking.tsx";
 import {CalendarDays, Clock, FileText, MapPin, User} from "lucide-react";
-import {useNavigate} from "react-router-dom";
 
 export interface BookingConfirmationProps {
     exame?: Exams,
     dadosPaciente?: DadosPaciente,
-    examDate?: string,
+    dadosBooking?: DadosBooking,
+    onNewBooking: () => void
 }
-const BookingConfirmation: React.FC<BookingConfirmationProps> = ({exame, dadosPaciente, examDate}: BookingConfirmationProps) => {
+const BookingConfirmation: React.FC<BookingConfirmationProps> = ({exame, dadosPaciente, dadosBooking, onNewBooking}: BookingConfirmationProps) => {
 
-    const navigate = useNavigate();
+
     const newBooking = () => {
-        return navigate(`/admin/agendamento`)
+        onNewBooking();
     }
     const createDate = (date: string) => {
         const dateArray = date.split('-')
@@ -42,17 +42,17 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({exame, dadosPa
                         <div className="flex items-center">
                             <User className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Médico:</span>
-                            <span className="ml-2">Não Selecionado</span>
+                            <span className="ml-2">{dadosBooking?.doctor?.fullName}</span>
                         </div>
                         <div className="flex items-center">
                             <CalendarDays className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Data:</span>
-                            <span className="ml-2">{examDate?.split('T') ? createDate(examDate?.split('T')[0]) : examDate?.split('T')[0]}</span>
+                            <span className="ml-2">{dadosBooking?.examDate?.split('T') ? createDate(dadosBooking?.examDate?.split('T')[0]) : dadosBooking?.examDate?.split('T')[0]}</span>
                         </div>
                         <div className="flex items-center">
                             <Clock className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Hora:</span>
-                            <span className="ml-2">{examDate?.split('T')[1]}</span>
+                            <span className="ml-2">{dadosBooking?.examDate?.split('T')[1]}</span>
                         </div>
                         <div className="flex items-center">
                             <MapPin className="mr-2 h-4 w-4 opacity-70"/>
@@ -68,8 +68,8 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({exame, dadosPa
                 </CardContent>
                 <CardFooter>
                     <div className="flex flex-row gap-2">
-                        <Button onClick={newBooking} className="bg-skyBlue text-white">
-                            Enviar por SMS
+                        <Button disabled={true} className="bg-skyBlue text-white">
+                            Enviar por Whatsapp
                         </Button>
                         <Button onClick={newBooking} className="bg-skyBlue text-white">
                             Fazer outro agendamento

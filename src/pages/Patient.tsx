@@ -17,6 +17,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover"
+import Loading from "@/components/Loading.tsx";
 
 const Patient: React.FC = () => {
 
@@ -26,6 +27,7 @@ const Patient: React.FC = () => {
     const [filtroCPF, setFiltroCPF] = useState('')
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const [loading, setLoading] = useState<boolean>(true);
     const auth = useAuth()
 
     useEffect(() => {
@@ -39,12 +41,14 @@ const Patient: React.FC = () => {
     },[auth.token])
     useEffect(() => {
        const fetchPatients = async () => {
+           setLoading(true);
            try {
-
-
                if(tenant) {
                    const result = await listPatientsByTenant(tenant)
-                   console.log(result)
+                   if(result?.data.data.length === 0) {
+                       setErrorMessage('Não foram encontrados pacientes')
+                   }
+                   setLoading(false);
                    setPacientes(result?.data.data)
                }
            } catch(error) {
@@ -53,7 +57,9 @@ const Patient: React.FC = () => {
        }
        fetchPatients().then()
     }, [filtroNome, filtroCPF, tenant])
-
+    if (loading) {
+        return <Loading />
+    }
     return (
         <div className="w-full max-w-6xl">
             <h1 className="text-2xl font-bold mb-6 text-blue-800">Listagem de Pacientes</h1>

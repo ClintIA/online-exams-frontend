@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import ExameList from '../components/ExameList';
 import ExameDetail from '../components/ExameDetail';
 import { Exame } from '../types/Exame';
+import Loading from "@/components/Loading.tsx";
 
 const Home: React.FC = () => {
 
@@ -36,7 +37,7 @@ const Home: React.FC = () => {
   };
 
   if (loading) {
-    return <div className="text-center text-xl uppercase">Carregando</div>;
+    return <Loading />
   }
 
   return (
