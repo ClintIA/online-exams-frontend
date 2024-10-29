@@ -1,10 +1,11 @@
 import React, {useState} from 'react'
-import { CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import CheckCPF from "@/components/CheckCPF.tsx";
 import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import Booking, {Exams} from "@/components/Booking.tsx";
 import StepIndicator from "@/components/StepIndicator.tsx";
 import BookingConfirmation from "@/components/BookingConfirmation.tsx";
+import {Card} from "@mui/material";
 
 
 const BookingSteps: React.FC = () => {
@@ -67,16 +68,16 @@ const BookingSteps: React.FC = () => {
         }
     }
     return (
-        <div className="w-full max-w-6xl mx-auto">
-            <CardHeader>
-                <CardTitle className='text-3xl text-blue-800'>Agendamento de Consulta</CardTitle>
-            </CardHeader>
+        <div className="w-full max-w-6xl">
+            <h1 className="text-2xl font-bold mb-6 text-blue-800">Agendamento de Consulta</h1>
+            <Card className="p-10">
             <CardContent>
                 <StepIndicator etapas={etapas} etapaAtual={etapaAtual}/>
                 <div className="mt-6">
                     {renderEtapaAtual()}
                 </div>
             </CardContent>
+            </Card>
         </div>
     )
 }

@@ -17,3 +17,16 @@ export const getPatientByCpfAndTenant = async (cpf: string, tenantId: number) =>
         }
     }
 }
+export const listPatientsByTenant = async (tenantId: number) => {
+    try {
+        return await apiClient.get('/patient', {
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+}

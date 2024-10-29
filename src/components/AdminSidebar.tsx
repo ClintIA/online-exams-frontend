@@ -1,11 +1,12 @@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/auth.tsx";
-import { Calendar, DollarSign, FilePlus, FileText, Home, LogOut, User, Users } from "lucide-react";
+import { Calendar, FilePlus, FileText, Home, LogOut, User, Users } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import logoClintia from '../assets/logoClintia.png';
+import React from "react";
 
-export function AdminSidebar() {
+const AdminSidebar: React.FC = () => {
   const auth = useAuth();
   const navigate = useNavigate();
 
@@ -47,14 +48,7 @@ export function AdminSidebar() {
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#">
-                      <DollarSign className="inline-block mr-2" /> Financeiro
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-                <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
-                    <a href="#">
+                    <a href="/admin/pacientes">
                       <Users className="inline-block mr-2" /> Pacientes
                     </a>
                   </SidebarMenuButton>
@@ -92,3 +86,4 @@ export function AdminSidebar() {
       </SidebarProvider>
   )
 }
+export default AdminSidebar;

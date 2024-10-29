@@ -1,4 +1,4 @@
-import { AdminDashboard } from "@/pages/AdminDashboard.tsx";
+import AdminDashboard from "@/pages/AdminDashboard.tsx";
 import {createBrowserRouter, Navigate} from "react-router-dom";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
@@ -7,6 +7,7 @@ import LoginAdmin from "../pages/LoginAdmin.tsx";
 import LoginPatient from "../pages/LoginPatient.tsx";
 import AppLayout from "@/pages/AppLayout.tsx";
 import BookingSteps from "@/components/BookingSteps.tsx";
+import Patient from "@/pages/Patient.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
             {
                 path:'agendamento',
                 element:<BookingSteps />,
+            },
+            {
+                path:'pacientes',
+                element:<Patient />,
             },
         ]
     },

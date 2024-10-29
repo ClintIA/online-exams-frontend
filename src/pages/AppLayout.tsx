@@ -1,7 +1,7 @@
 import {Outlet, useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import Sidebar from "@/components/Sidebar.tsx";
-import { AdminSidebar } from "@/components/AdminSidebar.tsx";
+import AdminSidebar  from "@/components/AdminSidebar.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {jwtDecode} from "jwt-decode";
 import {ITokenPayload} from "@/types/Auth.ts";
@@ -22,7 +22,7 @@ const AppLayout: React.FC = () => {
             }
         }
         getAccess()
-    },[auth, navigate])
+    },[auth, isAdmin, navigate])
     function HandleSideBar({ isAdmin }: { isAdmin: boolean | undefined }) {
         if(isAdmin) {
             return <AdminSidebar />
@@ -43,7 +43,7 @@ const AppLayout: React.FC = () => {
                 <HandleSideBar isAdmin={isAdmin}/>
             </div>
 
-            <div className="content flex-1 ml-2 md:ml-6">
+            <div className="content p-8 flex-1 ml-2 md:ml-6">
                 <Outlet/>
             </div>
         </div>

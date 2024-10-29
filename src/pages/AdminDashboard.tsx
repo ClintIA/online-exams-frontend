@@ -10,16 +10,35 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BarChart3, CalendarIcon } from 'lucide-react'
-import { useState } from 'react'
+import React, {useEffect, useState} from 'react'
 import { DateRange } from 'react-day-picker'
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {ITokenPayload} from "@/types/Auth.ts";
+import {jwtDecode} from "jwt-decode";
+import {useAuth} from "@/hooks/auth.tsx";
+import {useNavigate} from "react-router-dom";
 
-export function AdminDashboard() {
+const AdminDashboard: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
-
   const [selectedFilter, setSelectedFilter] = useState('hoje')
   const [isCustomDateOpen, setIsCustomDateOpen] = useState(false)
+  const auth = useAuth()
+  const navigate = useNavigate()
 
+  useEffect(() => {
+    const getTenant = () => {
+      if(auth?.token) {
+        const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+        if(!decoded.isAdmin) {
+          navigate('/error-401')
+        }
+      }
+      if(!auth.token) {
+        navigate('/login/admin')
+      }
+    }
+    getTenant()
+  },[auth.token, navigate])
   const filterOptions = [
     {
       name: 'hoje',
@@ -39,7 +58,7 @@ export function AdminDashboard() {
     },
     {
       name: 'personalizado',
-      disabled: true
+      disabled: false
     },
   ]
 
@@ -262,3 +281,5 @@ export function AdminDashboard() {
       </div>
   )
 }
+
+export default AdminDashboard;
