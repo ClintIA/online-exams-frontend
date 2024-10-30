@@ -21,6 +21,14 @@ const AuthProvider = ({ children }: Props) => {
             const user = Cookies.get('user');
             if (tokenFromStorage && user) {
                 setToken(tokenFromStorage);
+                const decoded: ITokenPayload = jwtDecode(tokenFromStorage);
+                const timeNow = new Date();
+                const timeExp = new Date(decoded.exp)
+                if(!(timeNow > timeExp)) {
+                    Cookies.remove('token');
+                    Cookies.remove('user');
+
+                }
             }
         }
         checkToken()

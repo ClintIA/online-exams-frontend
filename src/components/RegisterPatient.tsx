@@ -31,7 +31,7 @@ export interface DadosPaciente {
 }
 interface RegisterPatientProps {
     dadosIniciais?: Partial<DadosPaciente>
-    onCadastroConcluido: (dados: DadosPaciente) => void
+    onCadastroConcluido?: (dados: DadosPaciente) => void
 }
 
 const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido}: RegisterPatientProps) => {
@@ -52,6 +52,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
         const { name, value } = e.target
         setDadosPaciente(prev => ({ ...prev, [name]: value }))
     }
+
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
@@ -104,8 +105,10 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                 const pacienteDados = { ...dadosPaciente, dob: createDate(dadosPaciente.dob) }
                 const result = await registerPatient(pacienteDados, tenant)
                 console.log(result)
-                if(result?.data.status === 'success') {
-                    onCadastroConcluido(dadosPaciente)
+                if(result?.status === 'success') {
+                    if (onCadastroConcluido) {
+                        onCadastroConcluido(dadosPaciente)
+                    }
                 } else {
                     setErro('Falha ao cadastrar paciente. '+ result?.message)
                     return
@@ -124,7 +127,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                 })
             }
         } catch (error) {
-            setErro('Falha ao cadastrar paciente. Por favor, tente novamente.')
+            setErro('Falha ao cadastrar paciente')
             console.log(error)
         }
     }
