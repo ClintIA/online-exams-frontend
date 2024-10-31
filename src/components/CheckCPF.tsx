@@ -64,17 +64,17 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
             setErro('CPF Inválido')
             return
         }
-
+        const numericCPF = cpf.replace(/\D/g, '')
         try {
             if(tenant) {
-                const result = await getPatientByCpfAndTenant(cpf, tenant)
+                const result = await getPatientByCpfAndTenant(numericCPF, tenant)
                 if(result?.status === 'error') {
                     setErro(result.message)
                     return
                 }
                 const data = result?.data.data
                 if(!data) {
-                    onCPFVerificado({...dados, cpf: cpf}, false)
+                    onCPFVerificado({...dados, cpf: numericCPF }, false)
                 } else {
                     setDados(data)
                     onCPFVerificado(data, true)
