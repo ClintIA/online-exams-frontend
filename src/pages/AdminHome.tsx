@@ -63,14 +63,12 @@ export default function AdminHome() {
     const getTenant = () => {
       if (auth?.token) {
         const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-        console.log('decoded', decoded)
         setTenantID(decoded.tenantId)
         setUserID(decoded.userId)
       }
     }
     getTenant()
   }, [auth.token])
-  console.log('userId', userId)
   
   useEffect(() => {
     const fetchDoctors = async (page: number) => {
@@ -100,7 +98,6 @@ export default function AdminHome() {
             endDate: today,
           })
           if (result?.data?.status === "success") {
-            console.log('result?.data', result?.data)
             const examsList = result?.data?.data?.exames[0]?.patientExams as IPatientExam[]
             setExams(examsList || [])
           }
@@ -159,7 +156,6 @@ export default function AdminHome() {
     try {
       if (tenantId) {
         const result = await deleteNoticeCard(tenantId, id)
-        console.log('result', result)
         if (result?.data?.status === "success") {
           const updatedNotices = await listNoticeCards(tenantId, {})
           setNotices(updatedNotices.data.data || [])
