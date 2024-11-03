@@ -60,7 +60,7 @@ export function AdminSidebar() {
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#">
+                    <a href="/admin/exames">
                       <FilePlus className="inline-block mr-2" /> Exames da clínica
                     </a>
                   </SidebarMenuButton>

@@ -1,4 +1,5 @@
 import BookingSteps from "@/components/BookingSteps.tsx";
+import { AdminExams } from "@/pages/AdminExams.tsx";
 import AdminHome from "@/pages/AdminHome.tsx";
 import AppLayout from "@/pages/AppLayout.tsx";
 import LoginAdmin from "@/pages/LoginAdmin.tsx";
@@ -59,6 +60,10 @@ export const router = createBrowserRouter([
             {
                 path:'agendamento',
                 element:<BookingSteps />,
+            },
+            {
+                path:'exames',
+                element:<AdminExams />,
             },
         ]
     },
