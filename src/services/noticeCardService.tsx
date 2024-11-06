@@ -15,7 +15,7 @@ interface NoticeCardData {
 export const createNoticeCard = async (dadosBooking: NoticeCardData, tenantId: number) => {
 
     try {
-        return await apiClient.post('noticecards', dadosBooking, {
+        return await apiClient.post('admin/noticecard', dadosBooking, {
             headers: {
                 'x-tenant-id': tenantId
             }
@@ -29,7 +29,7 @@ export const createNoticeCard = async (dadosBooking: NoticeCardData, tenantId: n
 
 export const listNoticeCards = async (tenantId: number, filters: ListNoticeCardsFilters)=> {
     try {
-        return await apiClient.get('noticecards', {
+        return await apiClient.get('admin/noticecard', {
             headers: {
                 'x-tenant-id': tenantId
             },
@@ -44,7 +44,7 @@ export const listNoticeCards = async (tenantId: number, filters: ListNoticeCards
 
 export const deleteNoticeCard = async (tenantId: number, noticeCardId: number) => {
     try {
-        return await apiClient.delete(`noticecards/${noticeCardId}`, {
+        return await apiClient.delete(`admin/noticecard/${noticeCardId}`, {
             headers: {
                 'x-tenant-id': tenantId
             }

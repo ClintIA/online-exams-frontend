@@ -41,7 +41,7 @@ export const registerPatient = async (patientData: DadosPaciente, tenantId: numb
         data =  {...patientData, cpf: patientData.cpf.replace(/\D/g, '')};
     }
     try {
-        return await apiClient.post('auth/register/patient', data,{
+        return await apiClient.post('admin/register/patient', data,{
             headers: {
                 'x-tenant-id': tenantId
             }

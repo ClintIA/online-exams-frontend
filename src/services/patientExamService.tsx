@@ -13,7 +13,7 @@ interface ListPatientExamsFilters {
 export const registerPatientExam = async (dadosBooking: DadosBooking, tenantId: number) => {
 
     try {
-        return await apiClient.post('patientExams', dadosBooking, {
+        return await apiClient.post('admin/patientExams', dadosBooking, {
             headers: {
                 'x-tenant-id': tenantId
             }
@@ -27,7 +27,7 @@ export const registerPatientExam = async (dadosBooking: DadosBooking, tenantId: 
 
 export const listPatientExams = async (tenantId: number, filters: ListPatientExamsFilters)=> {
     try {
-        return await apiClient.get('patientExams', {
+        return await apiClient.get('admin/patientExams', {
             headers: {
                 'x-tenant-id': tenantId
             },
@@ -42,7 +42,7 @@ export const listPatientExams = async (tenantId: number, filters: ListPatientExa
 
 export const updatePatientExam = async (tenantId: number, examId: number, data: { status: string, link: string }) => {
     try {
-        return await apiClient.put(`patientExams/${examId}`, data, {
+        return await apiClient.put(`admin/patientExams/${examId}`, data, {
             headers: {
                 'x-tenant-id': tenantId
             }

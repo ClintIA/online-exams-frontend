@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const apiClient = axios.create({
-    baseURL: 'https://api.clintia.com.br',
+    baseURL: 'http://localhost:3000/api/v1',
 });
 
 // Interceptor de requisição

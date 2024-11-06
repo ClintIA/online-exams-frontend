@@ -25,6 +25,7 @@ const LoginAdmin: React.FC = () => {
         }
         if (email && password) {
             const result = await auth.adminLogin(email, password)
+            console.log(result)
             if(!result) {
                 setErrorMessage('Erro ao Realizar login')
                 setIsErrorModalOpen(true)
