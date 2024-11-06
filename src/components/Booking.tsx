@@ -87,7 +87,6 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
-        // Validação básica
         if(!dadosPaciente?.id) {
             setErro('ID do Paciente não encontrado')
         }
@@ -114,7 +113,6 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
                 if(result?.data.status === "success" && selectedExam && dadosPaciente) {
                     onAgendamentoConcluido(selectedExam, dadosPaciente, dadosBooking.examDate)
                 }
-                // Resetar formulário
                 setDadosBooking({
                     examDate: '',
                     patientId: undefined,

@@ -78,8 +78,6 @@ export function AdminDashboard() {
       }
     }
   }
-
-  // Dados simulados
   const examData = {
     agendado: 15,
     pendente: 8,

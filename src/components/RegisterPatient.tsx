@@ -76,7 +76,6 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
-        // Validação básica
         if (!dadosPaciente.full_name ||
             !dadosPaciente.email ||
             !dadosPaciente.phone ||
@@ -110,8 +109,6 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                     setErro('Falha ao cadastrar paciente. '+ result?.message)
                     return
                 }
-
-                // Resetar formulário
                 setDadosPaciente({
                     full_name: '',
                     email: '',

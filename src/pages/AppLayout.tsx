@@ -10,7 +10,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 
 const AppLayout: React.FC = () => {
     const [isAdmin, setIsAdmin ] = useState<boolean | undefined>(false);
-    const [menuOpen, setMenuOpen] = useState<boolean>(false); // Estado para abrir/fechar o menu lateral em mobile
+    const [menuOpen, setMenuOpen] = useState<boolean>(false);
     const navigate = useNavigate();
     const auth = useAuth();
 
