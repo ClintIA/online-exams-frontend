@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from 'react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Cards from "@/components/Card.tsx";
 import {listPatientsByTenant} from "@/services/patientService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
@@ -11,15 +11,10 @@ import {jwtDecode} from "jwt-decode";
 import ErrorModal from "@/error/ErrorModal.tsx";
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {Calendar, MoreHorizontal, Pencil, Trash2} from "lucide-react";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover"
 import Loading from "@/components/Loading.tsx";
 import ModalEditPatient from "@/components/ModalEditPatient.tsx";
 import ModalNewPatient from "@/components/ModalNewPatient.tsx";
+import DataTable from "@/components/DataTable.tsx";
 
 const Patient: React.FC = () => {
 
@@ -78,11 +73,9 @@ const Patient: React.FC = () => {
 
     const handleCloseEditModal = () =>  {
         setOpenModalEdit(false)
-        fetchPatients().then()
     }
     const handleCloseNewModal = () =>  {
         setOpenModalNewPatient(false)
-        fetchPatients().then()
     }
     if (loading) {
         return <Loading />
@@ -92,7 +85,7 @@ const Patient: React.FC = () => {
             <div className="w-full max-w-6xl">
                 <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Listagem de Pacientes</h1>
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
-                    <Cards name='Total de Pacientes' content='10'/>
+                    <Cards name='Total de Pacientes' content={pacientes?.length}/>
                 </div>
 
                 <div className="flex flex-col md:flex-row gap-3 mb-5">
@@ -126,47 +119,14 @@ const Patient: React.FC = () => {
                                 <TableRow>
                                     <TableHead className="text-oxfordBlue">Nome</TableHead>
                                     <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                    <TableHead className="text-oxfordBlue">Clínica</TableHead>
                                     <TableHead className="text-oxfordBlue">Contato</TableHead>
+                                    <TableHead className="text-oxfordBlue">Data de Nascimento</TableHead>
                                     <TableHead className="text-oxfordBlue">Cartão do Plano</TableHead>
+                                    <TableHead className="text-oxfordBlue">Canal de Captação</TableHead>
+                                    <TableHead className="text-oxfordBlue">Ação</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <TableBody>
-                                {pacientes?.map((paciente) => (
-                                    <TableRow key={paciente.id}>
-                                        <TableCell
-                                            className="text-oxfordBlue font-bold">{paciente.full_name}</TableCell>
-                                        <TableCell className="text-blue-900">{paciente.cpf}</TableCell>
-                                        <TableCell className="text-blue-900">{paciente.phone}</TableCell>
-                                        <TableCell
-                                            className="text-blue-900">{new Date(paciente.dob ? paciente.dob : 'Erro ao gerar data').toLocaleDateString()}</TableCell>
-                                        <TableCell className="text-blue-900">{paciente.health_card_number}</TableCell>
-                                        <TableCell className="text-blue-900">
-                                            <Popover>
-                                                <PopoverTrigger asChild>
-                                                    <MoreHorizontal className="h-6 w-6"/>
-                                                </PopoverTrigger>
-                                                <PopoverContent className="w-32">
-                                                    <div className="p-1 flex flex-col gap-0.5">
-                                                        <Button onClick={() => openModal(paciente)} className="w-full bg-oxfordBlue text-white">
-                                                            <Pencil className="mr-1 h-4 w-4"/>
-                                                            <span className="text-sm">Editar</span>
-                                                        </Button>
-                                                        <Button className="w-full bg-oxfordBlue text-white">
-                                                            <Trash2 className="mr-1 h-4 w-4"/>
-                                                            <span className="text-sm">Excluir</span>
-                                                        </Button>
-                                                        <Button className="w-full bg-oxfordBlue text-white">
-                                                            <Calendar className="h-4 w-4"/>
-                                                            <span className="text-sm">Agendar</span>
-                                                        </Button>
-                                                    </div>
-                                                </PopoverContent>
-                                            </Popover>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
+                            <DataTable openModal={openModal} dataTable={pacientes}></DataTable>
                         </Table>
                     </CardContent>
                 </Card>

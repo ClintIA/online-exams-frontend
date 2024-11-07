@@ -2,6 +2,10 @@ import {isAxiosError} from 'axios';
 import apiClient from "@/lib/interceptor.ts";
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 
+interface PatientFilters {
+    patientCpf?: string
+    patientName?: string
+}
 export const getPatientByCpfAndTenant = async (cpf: string, tenantId: number) => {
     const data = {
         cpf: cpf,
@@ -18,12 +22,16 @@ export const getPatientByCpfAndTenant = async (cpf: string, tenantId: number) =>
         }
     }
 }
-export const listPatientsByTenant = async (tenantId: number) => {
+export const listPatientsByTenant = async (tenantId: number, filters?: PatientFilters) => {
+    filters = {
+        patientName: "João"
+    }
     try {
         return await apiClient.get('admin/patients', {
             headers: {
                 'x-tenant-id': tenantId
-            }
+            },
+            params: filters
         })
 
     } catch (error) {
