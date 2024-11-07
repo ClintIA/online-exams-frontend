@@ -19,7 +19,6 @@ const AdminSidebar: React.FC = () => {
       <SidebarProvider>
         <Sidebar className="bg-oxfordBlue text-white">
           <SidebarHeader>
-            {/* Substitua pelo seu logo */}
             <img src={logoClintia} alt="Clintia" className="w-full h-auto" />
           </SidebarHeader>
           <SidebarContent>
@@ -55,7 +54,7 @@ const AdminSidebar: React.FC = () => {
                 </SidebarMenuItem>
                 <SidebarMenuItem>
                   <SidebarMenuButton asChild>
-                    <a href="#">
+                    <a href="/admin/exames">
                       <FilePlus className="inline-block mr-2" /> Exames da clínica
                     </a>
                   </SidebarMenuButton>

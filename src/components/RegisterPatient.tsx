@@ -17,6 +17,9 @@ import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {validarDataNascimento, validarEmail, validarTelefone} from "@/lib/utils.ts";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
+import {canaisOptions} from "@/lib/canalOptions.ts";
+
 export interface DadosPaciente {
     id?: number | undefined
     full_name: string | undefined
@@ -25,6 +28,7 @@ export interface DadosPaciente {
     dob: string | undefined
     cpf?: string | undefined
     address: string | undefined
+    canal?: string | undefined
     gender: string | undefined
     health_card_number: string | undefined
     tenants?: any[]
@@ -32,22 +36,29 @@ export interface DadosPaciente {
 interface RegisterPatientProps {
     dadosIniciais?: Partial<DadosPaciente>
     onCadastroConcluido?: (dados: DadosPaciente) => void
+    onClose: () => void
+    isUpdate?: (pacienteDados: DadosPaciente, tenant: number) => void
+    isNewPatient?: (pacienteDados: DadosPaciente, tenant: number) => void
 }
 
-const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido}: RegisterPatientProps) => {
+const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido, onClose, isUpdate, isNewPatient}: RegisterPatientProps) => {
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',
         email: '',
         phone: '',
         dob: '',
         cpf: '',
+        canal:'',
         address:'',
         gender: '',
         health_card_number: '',
     })
+
     const [tenant, setTenant] = useState<number | undefined>(undefined)
     const [erro, setErro] = useState<string | null>(null)
+    const [selectedCanal, setSelectedCanal] = useState<string | undefined>('')
     const auth = useAuth()
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setDadosPaciente(prev => ({ ...prev, [name]: value }))
@@ -63,6 +74,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
         getTenant()
     },[auth.token])
     useEffect(() => {
+        setSelectedCanal(dadosIniciais?.canal)
         setDadosPaciente(prevDados => ({
             ...prevDados,
             ...dadosIniciais
@@ -77,12 +89,13 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
-        // Validação básica
+        dadosPaciente.canal = selectedCanal;
         if (!dadosPaciente.full_name ||
             !dadosPaciente.email ||
             !dadosPaciente.phone ||
             !dadosPaciente.dob ||
             !dadosPaciente.address ||
+            !dadosPaciente.canal ||
             !dadosPaciente.gender ||
             !dadosPaciente.health_card_number) {
             setErro('Por favor, preencha todos os campos')
@@ -100,12 +113,23 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
             setErro('Data de nascimento inválida')
             return
         }
+
         try {
             if(tenant) {
                 const pacienteDados = { ...dadosPaciente, dob: createDate(dadosPaciente.dob) }
+                if(isUpdate) {
+                    isUpdate(pacienteDados, tenant)
+                    onClose()
+                    return
+                }
+                if(isNewPatient) {
+                    isNewPatient(pacienteDados, tenant)
+                    onClose()
+                    return
+                }
                 const result = await registerPatient(pacienteDados, tenant)
-                console.log(result)
-                if(result?.status === 'success') {
+
+                if(result?.data.status === 'success') {
                     if (onCadastroConcluido) {
                         onCadastroConcluido(dadosPaciente)
                     }
@@ -113,13 +137,12 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                     setErro('Falha ao cadastrar paciente. '+ result?.message)
                     return
                 }
-
-                // Resetar formulário
                 setDadosPaciente({
                     full_name: '',
                     email: '',
                     phone: '',
                     dob: '',
+                    canal: '',
                     cpf: '',
                     address: '',
                     gender: '',
@@ -137,16 +160,17 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
 
            <Card className="w-full max-w-2xl mx-auto">
                <CardHeader>
-                   <CardTitle>Cadastro de Paciente</CardTitle>
+                   <CardTitle className='text-blue-900 text-xl'>Cadastro de Paciente</CardTitle>
                    <CardDescription>
                        Preencha os detalhes do paciente abaixo. Clique em salvar quando terminar.
                    </CardDescription>
                </CardHeader>
                <CardContent>
                    <form onSubmit={handleSubmit}>
+
                        <div className="grid gap-4">
                            <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="full_name" className="text-right">
+                               <Label htmlFor="full_name" className="text-right text-blue-800">
                                    Nome
                                </Label>
                                <Input
@@ -158,7 +182,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                />
                            </div>
                            <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="email" className="text-right">
+                               <Label htmlFor="email" className="text-right text-blue-800">
                                    Email
                                </Label>
                                <Input
@@ -171,7 +195,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                />
                            </div>
                            <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="phone" className="text-right">
+                               <Label htmlFor="phone" className="text-right text-blue-800">
                                    Telefone
                                </Label>
                                <Input
@@ -184,7 +208,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                />
                            </div>
                            <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="dob" className="text-right">
+                               <Label htmlFor="dob" className="text-right text-blue-800">
                                    Data de Nascimento
                                </Label>
                                <Input
@@ -197,7 +221,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                />
                            </div>
                            <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="cpf" className="text-right">
+                               <Label htmlFor="cpf" className="text-right text-blue-800">
                                    CPF
                                </Label>
                                <Input
@@ -209,7 +233,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                />
                            </div>
                            <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="address" className="text-right">
+                               <Label htmlFor="address" className="text-right text-blue-800">
                                    Endereço
                                </Label>
                                <Input
@@ -221,7 +245,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                />
                            </div>
                            <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="gender" className="text-right">
+                               <Label htmlFor="gender" className="text-right text-blue-800">
                                    Genero
                                </Label>
                                <Input
@@ -233,7 +257,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                />
                            </div>
                            <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="health_card_number" className="text-right">
+                               <Label htmlFor="health_card_number" className="text-right text-blue-800">
                                    Numero do Plano de Saúde
                                </Label>
                                <Input
@@ -244,9 +268,32 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                    className="col-span-3"
                                />
                            </div>
+                           <div className="grid grid-cols-4 items-center gap-4">
+                               <Label className="text-right text-blue-800" htmlFor="examId">Selecione o Exame</Label>
+                               <Select value={selectedCanal} onValueChange={setSelectedCanal}>
+                                   <SelectTrigger className="col-span-3" id="canal">
+                                       <SelectValue placeholder="Selecione o Canal de Captação"/>
+                                   </SelectTrigger>
+                                   <SelectContent>
+                                       {canaisOptions.map((canal) => (
+                                           <SelectItem key={canal.id} value={canal.id}>
+                                               {canal.name}
+                                           </SelectItem>
+                                       ))}
+                                   </SelectContent>
+                               </Select>
+                           </div>
                        </div>
                        <div className="flex justify-end mt-6">
-                           <Button className="bg-skyBlue text-white" type="submit">Salvar Paciente</Button>
+                           {isNewPatient && (
+                               <Button className="bg-oxfordBlue text-white" type="submit">Salvar Paciente</Button>
+                           )}
+                           {isUpdate && (
+                               <Button className="bg-oxfordBlue text-white" type="submit">Atualizar Paciente</Button>
+                           )}
+                           {onCadastroConcluido && (
+                               <Button className="bg-oxfordBlue text-white" type="submit">Salvar Paciente</Button>
+                           )}
                        </div>
                    </form>
                </CardContent>
@@ -260,7 +307,6 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                    )}
                </CardFooter>
            </Card>
-
        </div>
 
    )

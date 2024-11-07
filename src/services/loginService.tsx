@@ -36,9 +36,12 @@ export const loginPatient = async (patientCpf: string, password: string): Promis
 };
 
 export const registerPatient = async (patientData: DadosPaciente, tenantId: number) => {
-
+    let data;
+    if(patientData.cpf) {
+        data =  {...patientData, cpf: patientData.cpf.replace(/\D/g, '')};
+    }
     try {
-        return await apiClient.post('auth/register/patient', patientData,{
+        return await apiClient.post('admin/register/patient', data,{
             headers: {
                 'x-tenant-id': tenantId
             }

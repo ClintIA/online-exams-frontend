@@ -1,19 +1,21 @@
-import { DadosBooking } from "@/components/Booking.tsx";
 import apiClient from "@/lib/interceptor.ts";
 import { isAxiosError } from 'axios';
 
-interface ListPatientExamsFilters {
+interface ListNoticeCardsFilters {
     startDate?: string
     endDate?: string
-    patientCpf?: string
-    status?: string
-    patientName?: string
 }
 
-export const registerPatientExam = async (dadosBooking: DadosBooking, tenantId: number) => {
+interface NoticeCardData {
+    message: string
+    createdBy: number
+    date: string
+}
+
+export const createNoticeCard = async (dadosBooking: NoticeCardData, tenantId: number) => {
 
     try {
-        return await apiClient.post('admin/patientExams', dadosBooking, {
+        return await apiClient.post('admin/noticecard', dadosBooking, {
             headers: {
                 'x-tenant-id': tenantId
             }
@@ -25,9 +27,9 @@ export const registerPatientExam = async (dadosBooking: DadosBooking, tenantId: 
     }
 }
 
-export const listPatientExams = async (tenantId: number, filters: ListPatientExamsFilters)=> {
+export const listNoticeCards = async (tenantId: number, filters: ListNoticeCardsFilters)=> {
     try {
-        return await apiClient.get('admin/patientExams', {
+        return await apiClient.get('admin/noticecard', {
             headers: {
                 'x-tenant-id': tenantId
             },
@@ -40,9 +42,9 @@ export const listPatientExams = async (tenantId: number, filters: ListPatientExa
     }
 }
 
-export const updatePatientExam = async (tenantId: number, examId: number, data: { status: string, link: string }) => {
+export const deleteNoticeCard = async (tenantId: number, noticeCardId: number) => {
     try {
-        return await apiClient.put(`admin/patientExams/${examId}`, data, {
+        return await apiClient.delete(`admin/noticecard/${noticeCardId}`, {
             headers: {
                 'x-tenant-id': tenantId
             }

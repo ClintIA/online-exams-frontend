@@ -4,23 +4,21 @@ import { Button } from "@/components/ui/button.tsx"
 import {
     Dialog,
     DialogContent,
-    DialogDescription, DialogFooter,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog.tsx"
 import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
-import {DialogClose} from "@radix-ui/react-dialog";
-import {updatePatient} from "@/services/patientService.tsx";
+import {DialogClose, DialogDescription} from "@radix-ui/react-dialog";
+import {registerPatient} from "@/services/loginService.tsx";
 
 interface ModalRegisterProps {
     isOpen: boolean;
     onClose: () => void;
     title?: string;
-    dadosPaciente?: DadosPaciente
 }
 
-const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Editar Paciente",dadosPaciente }: ModalRegisterProps) => {
-
+const ModalNewPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Adicionar Paciente" }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
 
     useEffect(() => {
@@ -38,30 +36,29 @@ const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title
             setOpen(true)
         }
     }
-    const submitUpdatePatient = async (pacienteDados: DadosPaciente, tenant: number) => {
-        try {
-            return await updatePatient(pacienteDados, tenant);
-        } catch (error) {
-            console.log(error)
-        }
 
+    const submitNewPatient = async (patientData: DadosPaciente, tenant: number) => {
+            try {
+               return await registerPatient(patientData, tenant)
+            } catch (error) {
+                console.log(error)
+            }
     }
 
     return (
         <Dialog open={open} modal={true} onOpenChange={(handleOpenChange)}>
-            <DialogContent onCloseAutoFocus={handleClose} className="bg-white max-w-3xl">
+            <DialogContent content='teste' onCloseAutoFocus={handleClose} className="bg-white max-w-3xl">
                 <DialogHeader>
                     <DialogTitle className="flex items-center gap-2">
                         <Users className="h-6 w-6"/>
                         {title}
                     </DialogTitle>
                 </DialogHeader>
-                <RegisterPatient onClose={handleClose} dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
-                <DialogDescription>
-                </DialogDescription>
+                <RegisterPatient onClose={handleClose} isNewPatient={submitNewPatient}/>
+                <DialogDescription className="text-base"></DialogDescription>
                 <DialogFooter className="flex items-center gap-2">
                     <DialogClose className="flex items-center gap-2" asChild>
-                        <Button type="button" className="flex mx-auto w-52 bg-oxfordBlue text-white">
+                        <Button type="button" className="flex mx-auto justify-center w-52 bg-oxfordBlue text-white">
                             Close
                         </Button>
                     </DialogClose>
@@ -71,4 +68,4 @@ const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title
     )
 }
 
-export default ModalEditPatient;
+export default ModalNewPatient;
