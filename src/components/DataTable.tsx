@@ -8,10 +8,11 @@ import {canaisOptions} from "@/lib/canalOptions.ts";
 interface TableProps {
     dataTable?: any[]
     openModal: (data: any) => void
+    isDelete: (id: number) => void
 
 }
 
-const DataTable: React.FC<TableProps> = ({dataTable, openModal}: TableProps) => {
+const DataTable: React.FC<TableProps> = ({dataTable, openModal,isDelete}: TableProps) => {
 
     const formatDate = (date: string) => {
         const spliData = new Date(date).toLocaleDateString().split("/");
@@ -50,7 +51,7 @@ const DataTable: React.FC<TableProps> = ({dataTable, openModal}: TableProps) => 
                                                 <Pencil className="mr-1 h-4 w-4"/>
                                                 <span className="text-sm">Editar</span>
                                             </Button>
-                                            <Button className="w-full bg-oxfordBlue text-white">
+                                            <Button onClick={() => isDelete(parseInt(paciente.id))} className="w-full bg-oxfordBlue text-white">
                                                 <Trash2 className="mr-1 h-4 w-4"/>
                                                 <span className="text-sm">Excluir</span>
                                             </Button>

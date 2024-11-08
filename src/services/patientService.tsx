@@ -2,7 +2,7 @@ import {isAxiosError} from 'axios';
 import apiClient from "@/lib/interceptor.ts";
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 
-interface PatientFilters {
+export interface PatientFilters {
     patientCpf?: string
     patientName?: string
 }
@@ -23,9 +23,7 @@ export const getPatientByCpfAndTenant = async (cpf: string, tenantId: number) =>
     }
 }
 export const listPatientsByTenant = async (tenantId: number, filters?: PatientFilters) => {
-    filters = {
-        patientName: "João"
-    }
+
     try {
         return await apiClient.get('admin/patients', {
             headers: {
@@ -49,6 +47,19 @@ export const updatePatient = async (patientData: DadosPaciente, tenantId: number
             }
         })
     } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+}
+export const deletePatient = async (patientId: number, tenantId: number) => {
+    try {
+        return await apiClient.delete(`admin/patient/${patientId}`,{
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
+    }  catch (error) {
         if(isAxiosError(error)) {
             return error.response?.data
         }

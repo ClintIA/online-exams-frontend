@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import Cards from "@/components/Card.tsx";
-import {listPatientsByTenant} from "@/services/patientService.tsx";
+import {deletePatient, listPatientsByTenant, PatientFilters} from "@/services/patientService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
@@ -19,9 +19,9 @@ import DataTable from "@/components/DataTable.tsx";
 const Patient: React.FC = () => {
 
     const [tenant, setTenant] = useState<number | undefined>()
-    const [pacientes, setPacientes] = useState<DadosPaciente[]>()
-    const [filtroNome, setFiltroNome] = useState('')
-    const [filtroCPF, setFiltroCPF] = useState('')
+    const [pacientes, setPacientes] = useState<DadosPaciente[]>([])
+    const [filtroName, setFiltroName] = useState<string>()
+    const [filtroCPF, setFiltroCPF] = useState<string>()
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [loading, setLoading] = useState<boolean>(true);
@@ -30,9 +30,6 @@ const Patient: React.FC = () => {
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
     const auth = useAuth()
 
-    const newPatient = () => {
-        setOpenModalNewPatient(true)
-    }
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
@@ -42,18 +39,47 @@ const Patient: React.FC = () => {
         }
         getTenant()
     },[auth.token])
+    useEffect( () => {
+    const fetchFilters =  async () => {
+        if (tenant) {
+            if (filtroCPF || filtroName) {
+                const filters: PatientFilters = {
+                    patientCpf: filtroCPF,
+                    patientName: filtroName
+                }
+                try {
+                    const result = await listPatientsByTenant(tenant, filters)
+                    if (result?.data.data.length !== 0) {
+                        setLoading(false);
+                        setPacientes(result?.data.data)
+                    } else {
+                        setLoading(false);
+                        setPacientes([])
+                    }
+                } catch (error) {
+                    console.log(error)
+                }
+            } else {
+                fetchPatients().then()
+            }
+        }
+    }
+    fetchFilters().then()
+
+    }, [filtroCPF, filtroName, tenant]);
     const fetchPatients = useCallback(async () => {
-        setLoading(true);
+        setLoading(true)
         try {
             if(tenant) {
                 const result = await listPatientsByTenant(tenant)
-                if(result?.data.data.length === 0) {
+                if(result?.data.data.length !== 0) {
                     setLoading(false);
-                    setErrorMessage('Não foram encontrados pacientes')
-                    setIsErrorModalOpen(false)
+                    setPacientes(result?.data.data)
+                } else {
+                    setLoading(false);
+                    setPacientes([])
                 }
-                setLoading(false);
-                setPacientes(result?.data.data)
+
             }
         } catch(error) {
             setLoading(false);
@@ -64,7 +90,19 @@ const Patient: React.FC = () => {
     }, [tenant])
     useEffect(() => {
        fetchPatients().then()
-    }, [filtroNome, filtroCPF, tenant, fetchPatients])
+    }, [fetchPatients])
+
+    const handleDeletePatient = async (id: number) => {
+        try {
+            if (tenant) {
+                await deletePatient(id,tenant)
+                fetchPatients().then()
+            }
+
+        } catch(error) {
+            console.error(error)
+        }
+    }
 
     const openModal = (paciente: DadosPaciente) => {
         setDadosPaciente(paciente)
@@ -80,6 +118,7 @@ const Patient: React.FC = () => {
     if (loading) {
         return <Loading />
     }
+
     return (
         <>
             <div className="w-full max-w-6xl">
@@ -95,8 +134,8 @@ const Patient: React.FC = () => {
                             className="w-72"
                             id="filtroNome"
                             placeholder="Filtrar por nome"
-                            value={filtroNome}
-                            onChange={(e) => setFiltroNome(e.target.value)}/>
+                            value={filtroName}
+                            onChange={(e) => setFiltroName(e.target.value)}/>
                     </div>
                     <div className='p-2'>
                         <Label htmlFor="filtroCPF" className="text-oxfordBlue">CPF</Label>
@@ -108,7 +147,7 @@ const Patient: React.FC = () => {
                             onChange={(e) => setFiltroCPF(e.target.value)}/>
                     </div>
                     <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={newPatient} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
+                        <Button onClick={() => setOpenModalNewPatient(true)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
                     </div>
                 </div>
 
@@ -126,7 +165,7 @@ const Patient: React.FC = () => {
                                     <TableHead className="text-oxfordBlue">Ação</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <DataTable openModal={openModal} dataTable={pacientes}></DataTable>
+                            <DataTable openModal={openModal} isDelete={handleDeletePatient} dataTable={pacientes}></DataTable>
                         </Table>
                     </CardContent>
                 </Card>
