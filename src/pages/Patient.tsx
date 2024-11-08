@@ -79,9 +79,10 @@ const Patient: React.FC = () => {
                     console.log(error)
                 }
             }
+        } else {
+            fetchPatients().then()
         }
     }
-
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
