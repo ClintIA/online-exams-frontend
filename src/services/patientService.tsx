@@ -11,10 +11,11 @@ export const getPatientByCpfAndTenant = async (cpf: string, tenantId: number) =>
         cpf: cpf,
     }
     try {
-       return await apiClient.post('patient/cpf', data,{
+       return await apiClient.get('patient/cpf',{
            headers: {
-               'x-tenant-id': tenantId
-           }
+               'x-patient-id': tenantId
+           },
+           params: data
        })
     } catch (error) {
         if(isAxiosError(error)) {

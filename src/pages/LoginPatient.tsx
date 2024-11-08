@@ -3,8 +3,8 @@ import logoClintia from '../assets/logoClintia.png';
 import {Input} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@/hooks/auth.tsx";
-import ErrorModal from "@/error/ErrorModal.tsx";
 import {Button} from "@/components/ui/button.tsx";
+import GeneralModal from "@/components/GeneralModal.tsx";
 
 
 const LoginPatient: React.FC = () => {
@@ -88,7 +88,9 @@ const LoginPatient: React.FC = () => {
                                                 >
                                                     Acessar
                                                 </Button>
-                                                    <ErrorModal
+                                                    <GeneralModal
+                                                        action={'Close'}
+                                                        error={true}
                                                         isOpen={isErrorModalOpen}
                                                         onClose={() => setIsErrorModalOpen(false)}
                                                         message={errorMessage}/>

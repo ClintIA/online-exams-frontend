@@ -24,7 +24,6 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({exame, dadosPa
 
      return (
         <div className="mt-10">
-
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
                     <CardTitle className='text-xl text-blue-900'>Agendamento concluído</CardTitle>
@@ -42,7 +41,7 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({exame, dadosPa
                         <div className="flex items-center">
                             <User className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Médico:</span>
-                            <span className="ml-2">{dadosBooking?.doctor?.fullName}</span>
+                            <span className="ml-2">{dadosBooking?.doctor? dadosBooking?.doctor?.fullName : 'Medico não informado'}</span>
                         </div>
                         <div className="flex items-center">
                             <CalendarDays className="mr-2 h-4 w-4 opacity-70"/>

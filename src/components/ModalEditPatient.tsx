@@ -17,9 +17,10 @@ interface ModalRegisterProps {
     onClose: () => void;
     title?: string;
     dadosPaciente?: DadosPaciente
+    modalEditPatient: (message: string) => void
 }
 
-const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Editar Paciente",dadosPaciente }: ModalRegisterProps) => {
+const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Editar Paciente",dadosPaciente,modalEditPatient }: ModalRegisterProps) => {
 
     const [open, setOpen] = useState(isOpen)
 
@@ -40,7 +41,11 @@ const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title
     }
     const submitUpdatePatient = async (pacienteDados: DadosPaciente, tenant: number) => {
         try {
-            return await updatePatient(pacienteDados, tenant);
+            if (modalEditPatient) {
+                const result = await updatePatient(pacienteDados, tenant);
+                modalEditPatient('Paciente cadastrado com sucesso')
+                return result
+            }
         } catch (error) {
             console.log(error)
         }

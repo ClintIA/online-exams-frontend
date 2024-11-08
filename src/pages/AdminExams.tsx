@@ -13,6 +13,7 @@ import { toast } from 'react-toastify'
 interface IPatientExam {
   id: number
   link: string | null
+  patient: string
   createdAt: string
   examDate: string
   uploadedAt: string | null
@@ -151,7 +152,7 @@ const AdminExams: React.FC = () =>  {
         <TableBody>
           {exams.map((exam) => (
             <TableRow key={exam.id}>
-              <TableCell>Nome do paciente</TableCell>
+              <TableCell>{exam.patient}</TableCell>
               <TableCell>{exam.exam.exam_name}</TableCell>
               <TableCell>{new Date(exam.createdAt).toLocaleDateString()}</TableCell>
               <TableCell>{new Date(exam.examDate).toLocaleDateString()}</TableCell>

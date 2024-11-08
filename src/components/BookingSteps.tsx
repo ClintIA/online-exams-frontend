@@ -58,12 +58,12 @@ const BookingSteps: React.FC = () => {
                 return <CheckCPF onCPFVerificado={handleCPFVerificado} />
             case 1:
                 return pacienteCadastrado ? (
-                    <Booking dadosPaciente={dadosPaciente} onAgendamentoConcluido={handleAgendamentoConcluido} />
+                    <Booking onClose={() => {}} dadosPaciente={dadosPaciente} onAgendamentoConcluido={handleAgendamentoConcluido} />
                 ) : (
                     <RegisterPatient onClose={() => {}} dadosIniciais={dadosPaciente} onCadastroConcluido={handleCadastroConcluido} />
                 )
             case 2:
-                return <Booking dadosPaciente={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />
+                return <Booking onClose={() => {}} dadosPaciente={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />
             case 3:
                 return <BookingConfirmation exame={exame}
                                             dadosPaciente={dadosPaciente}

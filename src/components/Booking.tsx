@@ -32,7 +32,9 @@ export interface DadosBooking {
 }
 interface BookingModalProps {
     dadosPaciente?: DadosPaciente
-    onAgendamentoConcluido: (exam: Exams, dados: DadosPaciente, dadosBooking: DadosBooking) => void
+    onAgendamentoConcluido?: (exam: Exams, dados: DadosPaciente, dadosBooking: DadosBooking) => void
+    isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<any>
+    onClose: () => void
 }
 export interface Exams {
     id: number
@@ -46,7 +48,7 @@ export interface Doctor {
     exams: any[]
 }
 
-const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcluido}: BookingModalProps ) => {
+const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcluido, isNewBooking}: BookingModalProps ) => {
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
@@ -152,7 +154,6 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
         dadosBooking.doctorId = parseInt(selectedDoctor)
 
         if (!dadosBooking.examDate ||
-            !dadosBooking.doctorId ||
             !dadosBooking.examId) {
             setErro('Por favor, preencha todos os campos')
             return
@@ -167,8 +168,19 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
         try {
             if(tenantId) {
                 const bookingDados = { ...dadosBooking, examDate: createDate(dadosBooking.examDate), doctor: doctorSelected }
+                console.log(bookingDados)
+                if(isNewBooking) {
+                    try {
+                        const result = await isNewBooking(bookingDados, tenantId)
+                        console.log(result)
+
+                    } catch (error) {
+                        console.error(error)
+                    }
+
+                }
                 const result = await registerPatientExam(bookingDados, tenantId)
-                if(result?.data.status === "success" && selectedExam && dadosPaciente) {
+                if(result?.data.status === "success" && selectedExam && dadosPaciente && onAgendamentoConcluido) {
                     onAgendamentoConcluido(selectedExam, dadosPaciente, bookingDados)
                 }
                 setDadosBooking({

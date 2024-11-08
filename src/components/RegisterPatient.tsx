@@ -33,15 +33,21 @@ export interface DadosPaciente {
     health_card_number: string | undefined
     tenants?: any[]
 }
+export interface ReturnMessage {
+    status?: "success" | "error";
+    message?: string;
+    data?: any;
+}
 interface RegisterPatientProps {
     dadosIniciais?: Partial<DadosPaciente>
     onCadastroConcluido?: (dados: DadosPaciente) => void
     onClose: () => void
-    isUpdate?: (pacienteDados: DadosPaciente, tenant: number) => void
-    isNewPatient?: (pacienteDados: DadosPaciente, tenant: number) => void
+    isUpdate?: (pacienteDados: DadosPaciente, tenant: number) => Promise<any>
+    isNewPatient?: (pacienteDados: DadosPaciente, tenant: number) => Promise<any>
 }
 
 const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido, onClose, isUpdate, isNewPatient}: RegisterPatientProps) => {
+
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',
         email: '',
@@ -118,14 +124,36 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
             if(tenant) {
                 const pacienteDados = { ...dadosPaciente, dob: createDate(dadosPaciente.dob) }
                 if(isUpdate) {
-                    isUpdate(pacienteDados, tenant)
-                    onClose()
+                    try {
+                        const result = await isUpdate(pacienteDados, tenant)
+                        if(result.status === "success") {
+                            return
+                        }
+                        if(result.status === "error") {
+                            setErro('Falha ao cadastrar paciente. '+ result.message)
+                            return
+                        }
+                    } catch(error) {
+                        setErro('Falha ao cadastrar paciente. '+ error)
+                        console.log(error)
+                    }
                     return
                 }
                 if(isNewPatient) {
-                    isNewPatient(pacienteDados, tenant)
-                    onClose()
-                    return
+                    try {
+                        const result = await isNewPatient(pacienteDados, tenant)
+                        if(result.status == 201) {
+                            onClose()
+                            return
+                        }
+                        if(result.status === 'error') {
+                            setErro('Não foi possível cadastrar paciente: '+ result.message)
+                            return
+                        }
+                    } catch(error) {
+                        setErro('Falha ao cadastrar paciente. '+ error)
+                        console.log(error)
+                    }
                 }
                 const result = await registerPatient(pacienteDados, tenant)
 
@@ -156,159 +184,152 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
     }
 
    return (
-       <div className="mt-10">
+           <div className="mt-10">
 
-           <Card className="w-full max-w-2xl mx-auto">
-               <CardHeader>
-                   <CardTitle className='text-blue-900 text-xl'>Cadastro de Paciente</CardTitle>
-                   <CardDescription>
-                       Preencha os detalhes do paciente abaixo. Clique em salvar quando terminar.
-                   </CardDescription>
-               </CardHeader>
-               <CardContent>
-                   <form onSubmit={handleSubmit}>
+               <Card className="w-full max-w-2xl mx-auto">
+                   <CardHeader>
+                       <CardTitle className='text-blue-900 text-xl'>Cadastro de Paciente</CardTitle>
+                       <CardDescription>
+                           Preencha os detalhes do paciente abaixo. Clique em salvar quando terminar.
+                       </CardDescription>
+                   </CardHeader>
+                   <CardContent>
+                       <form onSubmit={handleSubmit}>
 
-                       <div className="grid gap-4">
-                           <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="full_name" className="text-right text-blue-800">
-                                   Nome
-                               </Label>
-                               <Input
-                                   id="full_name"
-                                   name="full_name"
-                                   value={dadosPaciente.full_name}
-                                   onChange={handleInputChange}
-                                   className="col-span-3"
-                               />
+                           <div className="grid gap-4">
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="full_name" className="text-right text-blue-800">
+                                       Nome
+                                   </Label>
+                                   <Input
+                                       id="full_name"
+                                       name="full_name"
+                                       value={dadosPaciente.full_name}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                               </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="email" className="text-right text-blue-800">
+                                       Email
+                                   </Label>
+                                   <Input
+                                       id="email"
+                                       name="email"
+                                       type="email"
+                                       value={dadosPaciente.email}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                               </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="phone" className="text-right text-blue-800">
+                                       Telefone
+                                   </Label>
+                                   <Input
+                                       id="phone"
+                                       name="phone"
+                                       type="tel"
+                                       value={dadosPaciente.phone}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                               </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="dob" className="text-right text-blue-800">
+                                       Data de Nascimento
+                                   </Label>
+                                   <Input
+                                       id="dob"
+                                       name="dob"
+                                       type="date"
+                                       value={dadosPaciente.dob}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                               </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="cpf" className="text-right text-blue-800">
+                                       CPF
+                                   </Label>
+                                   <Input
+                                       id="cpf"
+                                       name="cpf"
+                                       value={dadosIniciais?.cpf}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                               </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="address" className="text-right text-blue-800">
+                                       Endereço
+                                   </Label>
+                                   <Input
+                                       id="address"
+                                       name="address"
+                                       value={dadosPaciente.address}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                               </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="gender" className="text-right text-blue-800">
+                                       Genero
+                                   </Label>
+                                   <Input
+                                       id="gender"
+                                       name="gender"
+                                       value={dadosPaciente.gender}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                               </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="health_card_number" className="text-right text-blue-800">
+                                       Numero do Plano de Saúde
+                                   </Label>
+                                   <Input
+                                       id="health_card_number"
+                                       name="health_card_number"
+                                       value={dadosPaciente.health_card_number}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                               </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label className="text-right text-blue-800" htmlFor="examId">Selecione o
+                                       Exame</Label>
+                                   <Select value={selectedCanal} onValueChange={setSelectedCanal}>
+                                       <SelectTrigger className="col-span-3" id="canal">
+                                           <SelectValue placeholder="Selecione o Canal de Captação"/>
+                                       </SelectTrigger>
+                                       <SelectContent>
+                                           {canaisOptions.map((canal) => (
+                                               <SelectItem key={canal.id} value={canal.id}>
+                                                   {canal.name}
+                                               </SelectItem>
+                                           ))}
+                                       </SelectContent>
+                                   </Select>
+                               </div>
                            </div>
-                           <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="email" className="text-right text-blue-800">
-                                   Email
-                               </Label>
-                               <Input
-                                   id="email"
-                                   name="email"
-                                   type="email"
-                                   value={dadosPaciente.email}
-                                   onChange={handleInputChange}
-                                   className="col-span-3"
-                               />
+                           <div className="flex justify-end mt-6">
+                               {isNewPatient && (
+                                   <Button className="bg-oxfordBlue text-white" type="submit">Salvar Paciente</Button>
+                               )}
+                               {isUpdate && (
+                                   <Button className="bg-oxfordBlue text-white" type="submit">Atualizar
+                                       Paciente</Button>
+                               )}
+                               {onCadastroConcluido && (
+                                   <Button className="bg-oxfordBlue text-white" type="submit">Salvar Paciente</Button>
+                               )}
                            </div>
-                           <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="phone" className="text-right text-blue-800">
-                                   Telefone
-                               </Label>
-                               <Input
-                                   id="phone"
-                                   name="phone"
-                                   type="tel"
-                                   value={dadosPaciente.phone}
-                                   onChange={handleInputChange}
-                                   className="col-span-3"
-                               />
-                           </div>
-                           <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="dob" className="text-right text-blue-800">
-                                   Data de Nascimento
-                               </Label>
-                               <Input
-                                   id="dob"
-                                   name="dob"
-                                   type="date"
-                                   value={dadosPaciente.dob}
-                                   onChange={handleInputChange}
-                                   className="col-span-3"
-                               />
-                           </div>
-                           <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="cpf" className="text-right text-blue-800">
-                                   CPF
-                               </Label>
-                               <Input
-                                   id="cpf"
-                                   name="cpf"
-                                   value={dadosIniciais?.cpf}
-                                   onChange={handleInputChange}
-                                   className="col-span-3"
-                               />
-                           </div>
-                           <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="address" className="text-right text-blue-800">
-                                   Endereço
-                               </Label>
-                               <Input
-                                   id="address"
-                                   name="address"
-                                   value={dadosPaciente.address}
-                                   onChange={handleInputChange}
-                                   className="col-span-3"
-                               />
-                           </div>
-                           <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="gender" className="text-right text-blue-800">
-                                   Genero
-                               </Label>
-                               <Input
-                                   id="gender"
-                                   name="gender"
-                                   value={dadosPaciente.gender}
-                                   onChange={handleInputChange}
-                                   className="col-span-3"
-                               />
-                           </div>
-                           <div className="grid grid-cols-4 items-center gap-4">
-                               <Label htmlFor="health_card_number" className="text-right text-blue-800">
-                                   Numero do Plano de Saúde
-                               </Label>
-                               <Input
-                                   id="health_card_number"
-                                   name="health_card_number"
-                                   value={dadosPaciente.health_card_number}
-                                   onChange={handleInputChange}
-                                   className="col-span-3"
-                               />
-                           </div>
-                           <div className="grid grid-cols-4 items-center gap-4">
-                               <Label className="text-right text-blue-800" htmlFor="examId">Selecione o Exame</Label>
-                               <Select value={selectedCanal} onValueChange={setSelectedCanal}>
-                                   <SelectTrigger className="col-span-3" id="canal">
-                                       <SelectValue placeholder="Selecione o Canal de Captação"/>
-                                   </SelectTrigger>
-                                   <SelectContent>
-                                       {canaisOptions.map((canal) => (
-                                           <SelectItem key={canal.id} value={canal.id}>
-                                               {canal.name}
-                                           </SelectItem>
-                                       ))}
-                                   </SelectContent>
-                               </Select>
-                           </div>
-                       </div>
-                       <div className="flex justify-end mt-6">
-                           {isNewPatient && (
-                               <Button className="bg-oxfordBlue text-white" type="submit">Salvar Paciente</Button>
-                           )}
-                           {isUpdate && (
-                               <Button className="bg-oxfordBlue text-white" type="submit">Atualizar Paciente</Button>
-                           )}
-                           {onCadastroConcluido && (
-                               <Button className="bg-oxfordBlue text-white" type="submit">Salvar Paciente</Button>
-                           )}
-                       </div>
-                   </form>
-               </CardContent>
-               <CardFooter>
-                   {erro && (
-                       <Alert variant="destructive">
-                           <AlertCircle className="h-4 w-4"/>
-                           <AlertTitle>Erro</AlertTitle>
-                           <AlertDescription>{erro}</AlertDescription>
-                       </Alert>
-                   )}
-               </CardFooter>
-           </Card>
-       </div>
-
+                       </form>
+                   </CardContent>
+                   <CardFooter>
+                       {erro && (
+                           <Alert variant="destructive">
+                               <AlertCircle className="h-4 w-4"/>
+                               <AlertTitle>Erro</AlertTitle>
+                               <AlertDescription>{erro}</AlertDescription>
+                           </Alert>
+                       )}
+                   </CardFooter>
+               </Card>
+           </div>
    )
 }
 

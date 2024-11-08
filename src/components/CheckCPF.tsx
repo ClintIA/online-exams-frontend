@@ -42,7 +42,7 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
         const getTenant = () => {
             if(auth?.token) {
                 const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenant(decoded.tenantId)
+                setTenant(decoded.userId)
             }
         }
         getTenant()
@@ -68,15 +68,13 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
         try {
             if(tenant) {
                 const result = await getPatientByCpfAndTenant(numericCPF, tenant)
-                if(result?.status === 'error') {
-                    setErro(result.message)
-                    return
-                }
                 const data = result?.data.data
                 if(!data) {
                     onCPFVerificado({...dados, cpf: numericCPF }, false)
+
                 } else {
                     setDados(data)
+
                     onCPFVerificado(data, true)
                 }
             } else {
