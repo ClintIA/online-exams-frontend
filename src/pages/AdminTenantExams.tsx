@@ -25,12 +25,11 @@ export interface Doctor {
     id: number;
     fullName: string
 }
-const AdminConfigExam: React.FC = () => {
+const AdminTenantExams: React.FC = () => {
     const [exames, setExames] = useState<Exams[]>([])
     const [filterName, setFilterName] = useState<string>()
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [filterDoctor, setFilterDoctor] = useState<string>()
-    const [openModalNewExam, setOpenModalNewExam] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false);
     const auth = useAuth()
 
@@ -115,9 +114,7 @@ const AdminConfigExam: React.FC = () => {
                                 <TableHead className="text-oxfordBlue">Ação</TableHead>
                             </TableRow>
                         </TableHeader>
-                        <DataTable openModalEdit={() => {
-                        }} deleteData={() => {
-                        }} dataTable={exames} renderRow={renderRow}></DataTable>
+                        <DataTable openModalEdit={() => {}} deleteData={() => {}} dataTable={exames} renderRow={renderRow}></DataTable>
                     </Table>
                 </CardContent>
             </Card>
@@ -126,4 +123,4 @@ const AdminConfigExam: React.FC = () => {
     )
 }
 
-export default AdminConfigExam;
+export default AdminTenantExams;

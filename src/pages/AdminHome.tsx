@@ -12,6 +12,7 @@ import { ptBR } from "date-fns/locale"
 import { jwtDecode } from "jwt-decode"
 import { ChevronLeft, ChevronRight, Plus, Search, X } from "lucide-react"
 import { useEffect, useState } from "react"
+import CardDoctor from "@/components/CardDoctor.tsx";
 
 interface IDoctor {
   id: number
@@ -215,14 +216,10 @@ export default function AdminHome() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {Array.isArray(doctors) ? (
                     doctors.map((doctor) => (
-                      <div key={doctor.id} className="flex items-center space-x-4">
-                        <div>
-                          <p className="font-medium">{doctor.fullName}</p>
-                        </div>
-                      </div>
+                      <CardDoctor nome={doctor.fullName} crm={doctor.CRM} contato={doctor.phone} />
                     ))
                   ) : (
                     <p>Não há corpo clínico cadastrado</p>

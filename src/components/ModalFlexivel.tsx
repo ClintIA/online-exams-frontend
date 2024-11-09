@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect, ReactNode} from 'react'
 import {Users} from 'lucide-react'
 import { Button } from "@/components/ui/button.tsx"
 import {
@@ -8,19 +8,17 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog.tsx"
-import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import {DialogClose} from "@radix-ui/react-dialog";
-import {updatePatient} from "@/services/patientService.tsx";
 
-interface ModalRegisterProps {
+interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     title?: string;
-    dadosPaciente?: DadosPaciente
-    modalEditPatient: (message: string) => void
+    children: ReactNode
+
 }
 
-const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Editar Paciente",dadosPaciente,modalEditPatient }: ModalRegisterProps) => {
+const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Editar Paciente",children  }: ModalProps) => {
 
     const [open, setOpen] = useState(isOpen)
 
@@ -39,18 +37,6 @@ const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title
             setOpen(true)
         }
     }
-    const submitUpdatePatient = async (pacienteDados: DadosPaciente, tenant: number) => {
-        try {
-            if (modalEditPatient) {
-                const result = await updatePatient(pacienteDados, tenant);
-                modalEditPatient('Paciente cadastrado com sucesso')
-                return result
-            }
-        } catch (error) {
-            console.log(error)
-        }
-
-    }
 
     return (
         <Dialog open={open} modal={true} onOpenChange={(handleOpenChange)}>
@@ -61,7 +47,7 @@ const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title
                         {title}
                     </DialogTitle>
                 </DialogHeader>
-                <RegisterPatient onClose={handleClose} dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
+                {children}
                 <DialogDescription>
                 </DialogDescription>
                 <DialogFooter className="flex items-center gap-2">
@@ -76,4 +62,4 @@ const ModalEditPatient: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title
     )
 }
 
-export default ModalEditPatient;
+export default ModalFlexivel;

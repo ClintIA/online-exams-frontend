@@ -1,4 +1,3 @@
-import  AdminDashboard from "@/pages/AdminDashboard.tsx";
 import {createBrowserRouter, Navigate} from "react-router-dom";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
@@ -7,9 +6,10 @@ import LoginAdmin from "../pages/LoginAdmin.tsx";
 import LoginPatient from "../pages/LoginPatient.tsx";
 import AppLayout from "@/pages/AppLayout.tsx";
 import BookingSteps from "@/components/BookingSteps.tsx";
-import Patient from "@/pages/Patient.tsx";
+import AdminPatient from "@/pages/AdminPatient.tsx";
 import AdminExams from "@/pages/AdminExams.tsx";
-import AdminConfigExam from "@/pages/AdminConfigExam.tsx";
+import AdminTenantExams from "@/pages/AdminTenantExams.tsx";
+import AdminHome from "@/pages/AdminHome.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -57,7 +57,7 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:<AdminDashboard />,
+                element:<AdminHome />,
             },
             {
                 path:'agendamento',
@@ -65,7 +65,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:'pacientes',
-                element:<Patient />,
+                element:<AdminPatient />,
             },
             {
                 path:'exames',
@@ -73,7 +73,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:'config-exams',
-                element:<AdminConfigExam />,
+                element:<AdminTenantExams />,
             },
         ]
     },

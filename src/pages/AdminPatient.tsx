@@ -11,15 +11,13 @@ import {jwtDecode} from "jwt-decode";
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import Loading from "@/components/Loading.tsx";
-import ModalEditPatient from "@/components/ModalEditPatient.tsx";
-import ModalNewPatient from "@/components/ModalNewPatient.tsx";
+import ModalRender from "@/components/ModalRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/GeneralModal.tsx";
-import ModalBookingPatient from "@/components/ModalBookingPatient.tsx";
 import {TableCell} from "@mui/material";
 import {canaisOptions} from "@/lib/canalOptions.ts";
 
-const Patient: React.FC = () => {
+const AdminPatient: React.FC = () => {
 
     const [title,setTitle] = useState("");
     const [action,setAction] = useState("");
@@ -36,7 +34,7 @@ const Patient: React.FC = () => {
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
     const [deleteId, setDeleteId] = useState<number>()
     const [openModalBookingPatient,setOpenModalBookingPatient] = useState<boolean>(false)
-
+    const [type,setType] = useState<'booking' | 'newPatient' | 'editPatient'>('newPatient')
     const auth = useAuth()
 
     const fetchPatients = useCallback(async () => {
@@ -157,14 +155,12 @@ const Patient: React.FC = () => {
         setIsGeneralModalOpen(true)
     }
 
-    const openModal = (paciente: DadosPaciente) => {
+    const openFlexiveModal = (modalType: 'booking' | 'newPatient' | 'editPatient', paciente?: DadosPaciente) => {
+        setType(modalType)
         setDadosPaciente(paciente)
-        setOpenModalEdit(true)
+        setOpenModalNewPatient(true)
     }
-    const openBookingModal = (dadosBooking: DadosPaciente) => {
-        setDadosPaciente(dadosBooking)
-        setOpenModalBookingPatient(true)
-    }
+
     const handleClose = () => {
         if(openModalEdit) {
             setOpenModalEdit(false)
@@ -210,7 +206,7 @@ const Patient: React.FC = () => {
                             onChange={(e) => setFiltroCPF(e.target.value)}/>
                     </div>
                     <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={() => setOpenModalNewPatient(true)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
+                        <Button onClick={() => openFlexiveModal('newPatient')} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
                     </div>
                 </div>
 
@@ -228,27 +224,20 @@ const Patient: React.FC = () => {
                                     <TableHead className="text-oxfordBlue">Ação</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <DataTable renderRow={renderRow} openModalEdit={openModal} openModalBooking={openBookingModal} deleteData={handleConfirmationDelete} dataTable={pacientes}></DataTable>
+                            <DataTable renderRow={renderRow} openModalBooking={true} openModalEdit={openFlexiveModal}  deleteData={handleConfirmationDelete} dataTable={pacientes}></DataTable>
                         </Table>
                     </CardContent>
                 </Card>
             </div>
-            {openModalEdit && <ModalEditPatient
-                isOpen={openModalEdit}
-                onClose={handleClose}
-                modalEditPatient={handleModalMessage}
-                dadosPaciente={dadosPaciente}/>}
-            {openModalNewPatient && <ModalNewPatient
+
+            {openModalNewPatient && <ModalRender
                 modalNewPatient={handleModalMessage}
                 isOpen={openModalNewPatient}
                 onClose={handleClose}
-                />}
-            {openModalBookingPatient && <ModalBookingPatient
-                modalBookingPatient={handleModalMessage}
-                isOpen={openModalBookingPatient}
+                type={type}
                 dadosPaciente={dadosPaciente}
-                onClose={handleClose}
             />}
+
             <GeneralModal
                 title={title}
                 action={action}
@@ -260,4 +249,4 @@ const Patient: React.FC = () => {
         </>
     )
 }
-export default Patient;
+export default AdminPatient;
