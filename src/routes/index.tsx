@@ -9,6 +9,7 @@ import AppLayout from "@/pages/AppLayout.tsx";
 import BookingSteps from "@/components/BookingSteps.tsx";
 import Patient from "@/pages/Patient.tsx";
 import AdminExams from "@/pages/AdminExams.tsx";
+import AdminConfigExam from "@/pages/AdminConfigExam.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -69,6 +70,10 @@ export const router = createBrowserRouter([
             {
                 path:'exames',
                 element:<AdminExams />,
+            },
+            {
+                path:'config-exams',
+                element:<AdminConfigExam />,
             },
         ]
     },

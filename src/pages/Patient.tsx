@@ -16,6 +16,8 @@ import ModalNewPatient from "@/components/ModalNewPatient.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/GeneralModal.tsx";
 import ModalBookingPatient from "@/components/ModalBookingPatient.tsx";
+import {TableCell} from "@mui/material";
+import {canaisOptions} from "@/lib/canalOptions.ts";
 
 const Patient: React.FC = () => {
 
@@ -109,6 +111,33 @@ const Patient: React.FC = () => {
         setIsGeneralModalOpen(true)
 
     }
+    const formatDate = (date?: string) => {
+        if(date) {
+            const spliData = new Date(date).toLocaleDateString().split("/");
+            return spliData[1] + "/" + spliData[0] + "/" + spliData[2]
+        }
+    }
+    const findCanal = (canal?: string) => {
+        if(canal) {
+            let patientCanal;
+            canaisOptions.find((option) => {
+                if(option.id == canal) {
+                    patientCanal = option.name;
+                }
+            })
+            return patientCanal
+        }
+    }
+    const renderRow = (paciente: DadosPaciente) => (
+        <>
+            <TableCell className="text-oxfordBlue font-bold">{paciente.full_name}</TableCell>
+            <TableCell className="text-blue-900">{paciente.cpf}</TableCell>
+            <TableCell className="text-blue-900">{paciente.phone}</TableCell>
+            <TableCell className="text-blue-900">{formatDate(paciente?.dob)}</TableCell>
+            <TableCell className="text-blue-900">{paciente.health_card_number}</TableCell>
+            <TableCell className="text-blue-900 capitalize">{findCanal(paciente.canal)}</TableCell>
+        </>
+    );
     const handleDeletePatient = async () => {
         try {
             if (tenant && deleteId) {
@@ -199,7 +228,7 @@ const Patient: React.FC = () => {
                                     <TableHead className="text-oxfordBlue">Ação</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <DataTable openModal={openModal} openModalBooking={openBookingModal} isDelete={handleConfirmationDelete} dataTable={pacientes}></DataTable>
+                            <DataTable renderRow={renderRow} openModalEdit={openModal} openModalBooking={openBookingModal} deleteData={handleConfirmationDelete} dataTable={pacientes}></DataTable>
                         </Table>
                     </CardContent>
                 </Card>

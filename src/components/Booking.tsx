@@ -36,13 +36,13 @@ interface BookingModalProps {
     isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<any>
     onClose: () => void
 }
-export interface Exams {
+interface Exams {
     id: number
     exam_name: string
     price: string
     createdAt: Date
 }
-export interface Doctor {
+interface Doctor {
     id: number
     fullName: string
     exams: any[]

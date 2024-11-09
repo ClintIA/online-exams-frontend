@@ -72,7 +72,7 @@ const AdminSidebar: React.FC = () => {
                     <CollapsibleContent className="pl-4">
                       <SidebarMenuItem>
                         <SidebarMenuButton>
-                          <a href="/admin/exames">
+                          <a href="/admin/config-exams">
                             <Microscope className="w-5 h-5 inline-block mr-1" /> Exames
                           </a>
                         </SidebarMenuButton>
