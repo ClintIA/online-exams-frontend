@@ -14,7 +14,7 @@ import { ChevronLeft, ChevronRight, Plus, Search, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import CardDoctor from "@/components/CardDoctor.tsx";
 
-interface IDoctor {
+export interface IDoctor {
   id: number
   fullName: string
   email: string

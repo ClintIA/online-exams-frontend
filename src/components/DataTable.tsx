@@ -3,10 +3,11 @@ import { TableBody, TableCell, TableRow } from "@/components/ui/table.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
 import { Calendar, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
+import {Type} from "@/components/ModalPatientRender.tsx";
 
 interface TableProps<T> {
     dataTable?: T[];
-    openModalEdit: (type: 'booking' | 'newPatient' | 'editPatient', data: T) => void;
+    openModalEdit: (type: Type, data: T) => void;
     deleteData: (id: number) => void;
     openModalBooking?: boolean;
     renderRow: (data: T) => React.ReactNode;
@@ -26,12 +27,12 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
                             </PopoverTrigger>
                             <PopoverContent className="w-32">
                                 <div className="p-1 flex flex-col gap-0.5">
-                                    <Button onClick={() => openModalEdit('editPatient', data)} className="w-full bg-oxfordBlue text-white">
+                                    <Button onClick={() => openModalEdit(Type.editPatinet, data)} className="w-full bg-oxfordBlue text-white">
                                         <Pencil className="mr-1 h-4 w-4" />
                                         <span className="text-sm">Editar</span>
                                     </Button>
                                     {openModalBooking && (
-                                        <Button onClick={() => openModalEdit('booking',data)} className="w-full bg-oxfordBlue text-white">
+                                        <Button onClick={() => openModalEdit(Type.booking,data)} className="w-full bg-oxfordBlue text-white">
                                             <Calendar className="h-4 w-4" />
                                             <span className="text-sm">Agendar</span>
                                         </Button>

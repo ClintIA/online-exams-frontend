@@ -1,11 +1,17 @@
 import React, { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button.tsx"
 import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import {registerPatient} from "@/services/loginService.tsx";
 import Booking, {DadosBooking} from "@/components/Booking.tsx";
 import ModalFlexivel from "@/components/ModalFlexivel.tsx";
 import {registerPatientExam} from "@/services/patientExamService.tsx";
 import {updatePatient} from "@/services/patientService.tsx";
+export enum Type {
+    booking = 'booking',
+    newPatient=  'newPatient',
+    editPatinet =  'editPatient',
+    newExam = 'newExam',
+    editExam ='editExam'
+}
 
 interface ModalRegisterProps {
     isOpen: boolean;
@@ -13,18 +19,19 @@ interface ModalRegisterProps {
     title?: string;
     modalNewPatient?: (message: string) => void;
     dadosPaciente?: DadosPaciente
-    type: 'booking' | 'newPatient' | 'editPatient'
+    type: Type
 
 }
 
-const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Adicionar Paciente",modalNewPatient,dadosPaciente, type }: ModalRegisterProps) => {
+
+const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Paciente",modalNewPatient,dadosPaciente, type }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
-    const [modalContent,setModalContent] = useState<'booking' | 'newPatient' | 'editPatient'>('newPatient')
+    const [modalContent,setModalContent] = useState<Type>(Type.newPatient)
     useEffect(() => {
         openModal(type)
     }, [type])
 
-    const openModal = (type: 'booking' | 'newPatient' | 'editPatient') => {
+    const openModal = (type: Type) => {
         setModalContent(type)
         setOpen(true)
     }
@@ -56,6 +63,17 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "A
             console.log(error)
         }
     }
+    const submitNewPatient = async (patientData: DadosPaciente, tenantId: number) => {
+        try {
+            if (modalNewPatient) {
+                const result = await registerPatient(patientData, tenantId)
+                modalNewPatient('Paciente cadastrado com sucesso')
+                return result
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
     const renderModalContent = () => {
         switch (modalContent) {
             case 'booking':
@@ -68,19 +86,6 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "A
 
         }
     }
-
-    const submitNewPatient = async (patientData: DadosPaciente, tenantId: number) => {
-            try {
-                if (modalNewPatient) {
-                   const result = await registerPatient(patientData, tenantId)
-                    modalNewPatient('Paciente cadastrado com sucesso')
-                    return result
-                }
-            } catch (error) {
-                console.log(error)
-            }
-    }
-
     return (
             <ModalFlexivel
                 isOpen={open}
@@ -90,5 +95,4 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "A
             </ModalFlexivel>
     )
 }
-
-export default ModalRender;
+export default ModalPatientRender;

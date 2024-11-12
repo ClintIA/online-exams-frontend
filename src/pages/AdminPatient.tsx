@@ -11,7 +11,7 @@ import {jwtDecode} from "jwt-decode";
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import Loading from "@/components/Loading.tsx";
-import ModalRender from "@/components/ModalRender.tsx";
+import ModalPatientRender, {Type} from "@/components/ModalPatientRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
@@ -25,6 +25,7 @@ const AdminPatient: React.FC = () => {
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const [tenant, setTenant] = useState<number | undefined>()
+    const [deleteId, setDeleteId] = useState<number>()
     const [pacientes, setPacientes] = useState<DadosPaciente[]>([])
     const [filtroName, setFiltroName] = useState<string>()
     const [filtroCPF, setFiltroCPF] = useState<string>()
@@ -32,9 +33,7 @@ const AdminPatient: React.FC = () => {
     const [openModalEdit, setOpenModalEdit] = useState<boolean>(false)
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({} as DadosPaciente)
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
-    const [deleteId, setDeleteId] = useState<number>()
-    const [openModalBookingPatient,setOpenModalBookingPatient] = useState<boolean>(false)
-    const [type,setType] = useState<'booking' | 'newPatient' | 'editPatient'>('newPatient')
+    const [type,setType] = useState<Type>(Type.newPatient)
     const auth = useAuth()
 
     const fetchPatients = useCallback(async () => {
@@ -149,27 +148,24 @@ const AdminPatient: React.FC = () => {
     }
     const handleModalMessage = (message: string) => {
         setGeneralMessage(message)
-        setTitle('Confirmação de Cadastro')
+        setTitle('Confirmação')
         setAction('Fechar')
         setIsError(false)
         setIsGeneralModalOpen(true)
     }
 
-    const openFlexiveModal = (modalType: 'booking' | 'newPatient' | 'editPatient', paciente?: DadosPaciente) => {
+    const openFlexiveModal = (modalType: Type, paciente?: DadosPaciente) => {
+        if(paciente) {
+            setDadosPaciente(paciente)
+        }
+
         setType(modalType)
-        setDadosPaciente(paciente)
         setOpenModalNewPatient(true)
     }
 
     const handleClose = () => {
         if(openModalEdit) {
             setOpenModalEdit(false)
-        }
-        if(openModalBookingPatient) {
-            setOpenModalBookingPatient(false)
-        }
-        if(openModalNewPatient) {
-            setOpenModalNewPatient(false)
         }
         fetchPatients().then()
     }
@@ -206,7 +202,7 @@ const AdminPatient: React.FC = () => {
                             onChange={(e) => setFiltroCPF(e.target.value)}/>
                     </div>
                     <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={() => openFlexiveModal('newPatient')} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
+                        <Button onClick={() => openFlexiveModal(Type.newPatient)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
                     </div>
                 </div>
 
@@ -230,7 +226,7 @@ const AdminPatient: React.FC = () => {
                 </Card>
             </div>
 
-            {openModalNewPatient && <ModalRender
+            {openModalNewPatient && <ModalPatientRender
                 modalNewPatient={handleModalMessage}
                 isOpen={openModalNewPatient}
                 onClose={handleClose}
