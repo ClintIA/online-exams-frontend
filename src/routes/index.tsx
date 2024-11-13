@@ -3,15 +3,13 @@ import {createBrowserRouter, Navigate} from "react-router-dom";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
 import {Exames} from "../pages/patient/Exames.tsx";
-import {LoginPatient} from "../pages/patient/LoginPatient.tsx";
 import { DadosCadastrais } from '../pages/patient/DadosCadastrais'
-import Home from "../pages/Home.tsx";
 import LoginAdmin from "../pages/LoginAdmin.tsx";
-import LoginPatient from "../pages/LoginPatient.tsx";
 import AppLayout from "@/pages/AppLayout.tsx";
 import BookingSteps from "@/components/BookingSteps.tsx";
 import Patient from "@/pages/Patient.tsx";
 import AdminExams from "@/pages/AdminExams.tsx";
+import LoginPatient from "@/pages/patient/LoginPatient.tsx";
 
 export const router = createBrowserRouter([
     {
