@@ -90,7 +90,6 @@ const ModalRegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, is
     }
     const handleSelectedDoctors = (doctors: string[]) => {
         setSelectedDoctors(doctors)
-        console.log(doctors)
     }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()

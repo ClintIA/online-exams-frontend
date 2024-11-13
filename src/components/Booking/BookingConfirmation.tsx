@@ -23,7 +23,6 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({exame, dadosPa
         const dateArray = date.split('-')
         return dateArray[2] + "/" + dateArray[1] + "/" + dateArray[0]
     }
-    console.log(dadosBooking)
      return (
         <div className="mt-10">
             <Card className="w-full max-w-2xl mx-auto">

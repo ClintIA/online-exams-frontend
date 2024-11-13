@@ -168,11 +168,9 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
         try {
             if(tenantId) {
                 const bookingDados = { ...dadosBooking, examDate: createDate(dadosBooking.examDate), doctor: doctorSelected }
-                console.log(bookingDados)
                 if(isNewBooking) {
                     try {
-                        const result = await isNewBooking(bookingDados, tenantId)
-                        console.log(result)
+                        await isNewBooking(bookingDados, tenantId)
 
                     } catch (error) {
                         console.error(error)

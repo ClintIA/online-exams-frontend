@@ -70,10 +70,6 @@ export function Exames() {
   const [exames, setExames] = useState<MappedExam[]>([]);
   const [filteredExames, setFilteredExames] = useState<MappedExam[]>([]);
   const { userId } = useAuth();
-  
-
-  console.log(userId)
-
 
   useEffect(() => {
   
@@ -81,11 +77,7 @@ export function Exames() {
       try {
         const response = await getPatientExams(Number(userId));
 
-        console.log(response)
-        console.log(response.data)
-
         if (!response.data || !response.data.exams || response.data.exams.length === 0) {
-          console.log("Sem exames cadastrados");
           setExames([]);
           setFilteredExames([]);
           return;
