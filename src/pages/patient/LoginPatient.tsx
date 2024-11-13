@@ -5,6 +5,7 @@ import {useNavigate} from "react-router-dom";
 import {useAuth} from "@/hooks/auth.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
+import {useCpf} from "@/hooks/useCpf.tsx";
 
 
 const LoginPatient: React.FC = () => {
@@ -12,6 +13,7 @@ const LoginPatient: React.FC = () => {
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const auth = useAuth();
+    const { setCpf } = useCpf();
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
@@ -34,7 +36,8 @@ const LoginPatient: React.FC = () => {
                 return
             }
             if(result?.status === "success" && result?.data !== null) {
-                return  navigate('/paciente/home')
+                setCpf(patientCpf); // Armazena o CPF no contexto
+                return  navigate('/paciente/home');
             }
         }
     }

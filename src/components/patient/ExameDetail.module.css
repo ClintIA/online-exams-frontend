@@ -1,0 +1,15 @@
+.content {
+  line-height: 1.6;
+  color: var(--gray-300);
+  margin-top: 1.5rem;
+}
+.content p {
+  margin-top: 0.5rem;
+  color: var(--gray-400);
+}
+
+.content h3{
+  font-weight: bold;
+  margin-top: 1rem;
+  color: var(--gray-700);
+}

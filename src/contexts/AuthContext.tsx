@@ -14,7 +14,10 @@ const saveStorage =  (user: ITokenPayload, token: string) => {
 }
 
 const AuthProvider = ({ children }: Props) => {
+    const [ isAuthenticated, setAuthenticated ] = useState<boolean>(false)
     const [token, setToken] = useState<string>('');
+    const [userId, setUserId] = useState<number>();
+
     useEffect(() => {
         const checkToken = () => {
             const tokenFromStorage = Cookies.get('token');
@@ -22,6 +25,8 @@ const AuthProvider = ({ children }: Props) => {
             if (tokenFromStorage && user) {
                 setToken(tokenFromStorage);
                 const decoded: ITokenPayload = jwtDecode(tokenFromStorage);
+                setAuthenticated(decoded.isAdmin);
+                setUserId(decoded.userId);
                 const timeNow = new Date();
                 const timeExp = new Date(decoded.exp)
                 if(!(timeNow > timeExp)) {
@@ -51,6 +56,7 @@ const AuthProvider = ({ children }: Props) => {
                 const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
                 saveStorage(decoded, res.data.token)
                 setToken(res.data.token);
+                setUserId(decoded.userId);
             }
         }
         return res
@@ -62,7 +68,7 @@ const AuthProvider = ({ children }: Props) => {
     }
 
     return (
-        <AuthContext.Provider value={{ token, adminLogin, patientLogin, logOut }}>
+        <AuthContext.Provider value={{ isAuthenticated, token, adminLogin, patientLogin, logOut, userId }}>
             {children}
         </AuthContext.Provider>
     );

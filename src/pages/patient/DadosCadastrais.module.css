@@ -1,0 +1,33 @@
+.wrapper {
+  max-width: 80rem; /* Aumenta a largura máxima da wrapper */
+  margin: 2rem auto;
+  padding: 0 2rem; /* Aumenta o padding lateral */
+  display: grid;
+  grid-template-columns: 1fr; /* Remove a coluna fixa para permitir que o conteúdo ocupe toda a largura */
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 87.5%;
+  }
+  .wrapper {
+    grid-template-columns: 1fr;
+  }
+}
+
+.title {
+  color: var(--blue-700);
+  margin-bottom: 2rem; /* Aumenta o espaço abaixo do título */
+  font-size: 2.5rem; /* Ajusta o tamanho da fonte do título para destacá-lo */
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.8rem; /* Reduz o tamanho do título para telas menores */
+    text-align: left; /* Centraliza o título em telas menores */
+    margin-top: 4rem;
+  }
+}
+

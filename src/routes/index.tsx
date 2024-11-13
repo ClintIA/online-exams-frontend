@@ -1,15 +1,16 @@
 import {createBrowserRouter, Navigate} from "react-router-dom";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
-import Home from "../pages/Home.tsx";
+import {Exames} from "../pages/patient/Exames.tsx";
+import { DadosCadastrais } from '../pages/patient/DadosCadastrais'
 import LoginAdmin from "../pages/LoginAdmin.tsx";
-import LoginPatient from "../pages/LoginPatient.tsx";
 import AppLayout from "@/pages/AppLayout.tsx";
-import AdminPatient from "@/pages/AdminPatient.tsx";
 import AdminExams from "@/pages/AdminExams.tsx";
-import AdminTenantExams from "@/pages/AdminTenantExams.tsx";
-import AdminHome from "@/pages/AdminHome.tsx";
+import LoginPatient from "@/pages/patient/LoginPatient.tsx";
+import AdminPatient from "@/pages/AdminPatient.tsx";
 import NewBooking from "@/components/Booking/NewBooking.tsx";
+import AdminHome from "@/pages/AdminHome.tsx";
+import AdminTenantExams from "@/pages/AdminTenantExams.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -47,7 +48,11 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:<Home />,
+                element:<Exames />,
+            },
+            {
+                path:'dadoscadastrais',
+                element:<DadosCadastrais />,
             },
         ]
     },
