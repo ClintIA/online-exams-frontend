@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import ModalRegisterPatient, {DadosPaciente} from "@/components/AdminPatient/ModalRegisterPatient.tsx";
+import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {registerPatient} from "@/services/loginService.tsx";
 import Booking, {DadosBooking} from "@/components/Booking/Booking.tsx";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
@@ -85,9 +85,9 @@ const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, tit
             case 'booking':
                 return (<Booking onClose={handleClose} dadosPaciente={dadosPaciente} isNewBooking={submitBookintExam} />)
             case 'newPatient':
-                return(<ModalRegisterPatient isNewPatient={submitNewPatient}/>)
+                return(<RegisterPatient isNewPatient={submitNewPatient}/>)
             case 'editPatient':
-                return(<ModalRegisterPatient dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
+                return(<RegisterPatient dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
                 )
 
         }

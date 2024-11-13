@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { CardContent } from "@/components/ui/card.tsx"
 import CheckCPF from "@/components/Booking/CheckCPF.tsx";
-import ModalRegisterPatient, {DadosPaciente} from "@/components/AdminPatient/ModalRegisterPatient.tsx";
+import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import Booking, {DadosBooking, Exams} from "@/components/Booking/Booking.tsx";
 import StepIndicator from "@/components/Booking/StepIndicator.tsx";
 import BookingConfirmation from "@/components/Booking/BookingConfirmation.tsx";
@@ -60,7 +60,7 @@ const BookingSteps: React.FC = () => {
                 return pacienteCadastrado ? (
                     <Booking onClose={() => {}} dadosPaciente={dadosPaciente} onAgendamentoConcluido={handleAgendamentoConcluido} />
                 ) : (
-                    <ModalRegisterPatient onClose={() => {}} dadosIniciais={dadosPaciente} onCadastroConcluido={handleCadastroConcluido} />
+                    <RegisterPatient dadosIniciais={dadosPaciente} onCadastroConcluido={handleCadastroConcluido} />
                 )
             case 2:
                 return <Booking onClose={() => {}} dadosPaciente={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />

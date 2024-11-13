@@ -56,7 +56,7 @@ const AdminSidebar: React.FC = () => {
                 </SidebarMenuItem>
                 <SidebarMenuItem className="ml-1.5">
                   <SidebarMenuButton>
-                    <a href="/admin/agendamento">
+                    <a href="/admin/exames">
                       <Calendar size={32} className="w-5 h-5 inline-block mr-1" /> Portal de Exames Online
                     </a>
                   </SidebarMenuButton>

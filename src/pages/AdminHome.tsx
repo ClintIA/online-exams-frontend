@@ -13,6 +13,7 @@ import { jwtDecode } from "jwt-decode"
 import { ChevronLeft, ChevronRight, Plus, Search, X } from "lucide-react"
 import { useEffect, useState } from "react"
 import CardDoctor from "@/components/AdminHome/CardDoctor.tsx";
+import {createDate} from "@/lib/utils.ts";
 
 export interface IDoctor {
   id: number
@@ -22,7 +23,7 @@ export interface IDoctor {
   phone: string
 }
 
-interface IPatientExam {
+export interface IPatientExam {
   id: number
   link: string | null
   createdAt: string
@@ -32,6 +33,15 @@ interface IPatientExam {
   exam: {
     id: number
     exam_name: string
+  },
+  "patient": {
+    id: number
+    full_name: string
+  }
+  "doctor": {
+    id: number
+    fullName: string
+    CRM: string
   }
 }
 
@@ -93,13 +103,15 @@ export default function AdminHome() {
     const fetchPatientExams = async () => {
       try {
         if (tenantId) {
-          const today = new Date().toISOString()
+          const today = new Date().toLocaleDateString()
           const result = await listPatientExams(tenantId, {
-            startDate: today,
-            endDate: today,
+            startDate: createDate(today),
+            endDate: createDate(today),
+            status: 'Scheduled'
           })
           if (result?.data?.status === "success") {
-            const examsList = result?.data?.data?.exames[0]?.patientExams as IPatientExam[]
+
+            const examsList = result?.data?.data?.exams as IPatientExam[]
             setExams(examsList || [])
           }
         }
@@ -296,7 +308,7 @@ export default function AdminHome() {
                   exams.map((exam) => (
                     <div key={exam.id} className="flex justify-between items-center p-3 bg-muted rounded-lg">
                       <div>
-                        <p className="font-medium">Está faltando</p>
+                        <p className="font-medium">{exam.patient.full_name}</p>
                         <p className="text-sm text-muted-foreground">{exam.exam.exam_name}</p>
                       </div>
                       <span className="text-sm font-medium">{formatDate(exam.examDate, 'HH:mm')}</span>

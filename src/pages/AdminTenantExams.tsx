@@ -6,7 +6,7 @@ import {Button} from "@/components/ui/button.tsx";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
 import DataTable from "@/components/DataTable.tsx";
-import {listTenantExam} from "@/services/tenantExam.tsx";
+import {deleteExam, listTenantExam} from "@/services/tenantExam.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
@@ -21,7 +21,7 @@ export interface Exams {
     exam_name: string
     price: string
     doctorPrice?: string
-    doctors?: Doctor[]
+    doctors: Doctor[]
     createdAt?: Date
 }
 export interface Doctor {
@@ -81,7 +81,12 @@ const AdminTenantExams: React.FC = () => {
     const renderRow = (exame: Exams) => (
         <>
             <TableCell className="text-oxfordBlue font-bold">{exame.exam_name}</TableCell>
-            <TableCell className="text-blue-900">{exame.doctors? exame.doctors.map((doctor) => (<p>Dr(a). {doctor.fullName}</p>)) : 'Não possuí medico cadastrado'}</TableCell>
+            <TableCell className="text-blue-900">{ exame.doctors.length > 0 ?
+                exame.doctors.map((doctor) => (<p>Dr(a). {doctor.fullName}</p>))
+                :
+                (<p>Não possuí médico cadastrado</p>)
+            }
+            </TableCell>
             <TableCell className="text-blue-900">{exame.price}</TableCell>
             <TableCell className="text-blue-900 capitalize">{exame.doctorPrice}</TableCell>
         </>
@@ -102,7 +107,7 @@ const AdminTenantExams: React.FC = () => {
         setIsGeneralModalOpen(true)
     }
     const handleConfirmationDelete = (id: number) => {
-        setGeneralMessage("Deseja deletar o paciente selecionado?")
+        setGeneralMessage("Deseja deletar o exame selecionado?")
         setTitle('Confirmação de Exclusão')
         setAction('Excluir')
         setDeleteId(id)
@@ -112,6 +117,16 @@ const AdminTenantExams: React.FC = () => {
     const deletePatient = async () => {
         try {
             if (tenantId && deleteId) {
+                await deleteExam(deleteId,tenantId).then(
+                    (result) => {
+                        if(result.message && result.message.includes('FK_')){
+                            handleModalMessage('Não é possível deletar o exame que está relacionado com um médico')
+                            return
+                        } else {
+                            return fetchExams().then()
+                        }
+                    }
+                )
                 setIsGeneralModalOpen(false)
             }
 

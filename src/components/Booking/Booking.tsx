@@ -14,7 +14,7 @@ import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx"
 import {registerPatientExam} from "@/services/patientExamService.tsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx"
-import {DadosPaciente} from "@/components/AdminPatient/ModalRegisterPatient.tsx";
+import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {listDoctorByExam, listTenantExam} from "@/services/tenantExam.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
@@ -34,9 +34,9 @@ interface BookingModalProps {
     dadosPaciente?: DadosPaciente
     onAgendamentoConcluido?: (exam: Exams, dados: DadosPaciente, dadosBooking: DadosBooking) => void
     isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<any>
-    onClose: () => void
+    onClose?: () => void
 }
-interface Exams {
+export interface Exams {
     id: number
     exam_name: string
     price: string

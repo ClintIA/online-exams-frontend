@@ -5,11 +5,11 @@ import Home from "../pages/Home.tsx";
 import LoginAdmin from "../pages/LoginAdmin.tsx";
 import LoginPatient from "../pages/LoginPatient.tsx";
 import AppLayout from "@/pages/AppLayout.tsx";
-import BookingSteps from "@/components/Booking/BookingSteps.tsx";
 import AdminPatient from "@/pages/AdminPatient.tsx";
 import AdminExams from "@/pages/AdminExams.tsx";
 import AdminTenantExams from "@/pages/AdminTenantExams.tsx";
 import AdminHome from "@/pages/AdminHome.tsx";
+import NewBooking from "@/components/Booking/NewBooking.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -61,7 +61,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:'agendamento',
-                element:<BookingSteps />,
+                element:<NewBooking />,
             },
             {
                 path:'pacientes',

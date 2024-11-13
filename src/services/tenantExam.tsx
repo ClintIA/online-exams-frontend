@@ -58,6 +58,19 @@ export const updateExam = async (examName: IExam,tenantId:  number) => {
         if(isAxiosError(error)) {
             return error.response?.data
         }
+    }
+}
 
+export const deleteExam = async (clinicExamId: number, tenantId:  number) => {
+    try {
+        return await apiClient.delete(`admin/tenantexam/${clinicExamId}`, {
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
+    } catch(error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
     }
 }

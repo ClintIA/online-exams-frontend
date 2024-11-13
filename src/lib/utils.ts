@@ -44,3 +44,7 @@ export const validarDataNascimento = (data: string) => {
   const idade = dataAtual.getFullYear() - dataNascimento.getFullYear()
   return idade >= 0 && idade <= 120
 }
+export const createDate = (date: string) => {
+  const dateArray = date.split('/')
+  return dateArray[2] + "-" + dateArray[0] + "-" + dateArray[1]
+}

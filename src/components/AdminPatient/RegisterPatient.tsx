@@ -41,7 +41,7 @@ interface RegisterPatientProps {
     isNewPatient?: (pacienteDados: DadosPaciente, tenant: number) => Promise<any>
 }
 
-const ModalRegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido, isUpdate, isNewPatient}: RegisterPatientProps) => {
+const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido, isUpdate, isNewPatient}: RegisterPatientProps) => {
 
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',
@@ -306,4 +306,4 @@ const ModalRegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, on
            </div>
    )
 }
-export default ModalRegisterPatient;
+export default RegisterPatient;
