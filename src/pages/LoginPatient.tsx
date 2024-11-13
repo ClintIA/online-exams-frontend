@@ -4,7 +4,7 @@ import {Input} from "@mui/material";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@/hooks/auth.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import GeneralModal from "@/components/GeneralModal.tsx";
+import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 
 
 const LoginPatient: React.FC = () => {

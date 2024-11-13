@@ -1,4 +1,4 @@
-import { DadosBooking } from "@/components/Booking.tsx";
+import { DadosBooking } from "@/components/Booking/Booking.tsx";
 import apiClient from "@/lib/interceptor.ts";
 import { isAxiosError } from 'axios';
 

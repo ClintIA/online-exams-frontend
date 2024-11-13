@@ -1,5 +1,5 @@
 import React from 'react';
-import { Exame } from '../types/Exame';
+import { Exame } from '../../types/Exame.ts';
 import { Button } from '@mui/material'; 
 
 interface ExameDetailProps {

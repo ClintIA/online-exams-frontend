@@ -10,7 +10,7 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import {listDoctors} from "@/services/doctorsSerivce.tsx";
-import {IExam} from "@/components/ModalExamRender.tsx";
+import {IExam} from "@/components/ModalHandle/ModalExamRender.tsx";
 import {Exams} from "@/pages/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 

@@ -1,6 +1,6 @@
 import {isAxiosError} from 'axios';
 import apiClient from "@/lib/interceptor.ts";
-import {IExam} from "@/components/ModalExamRender.tsx";
+import {IExam} from "@/components/ModalHandle/ModalExamRender.tsx";
 
 export const listTenantExam = async (tenantId:  number)=> {
     try {

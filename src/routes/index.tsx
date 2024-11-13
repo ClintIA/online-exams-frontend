@@ -5,7 +5,7 @@ import Home from "../pages/Home.tsx";
 import LoginAdmin from "../pages/LoginAdmin.tsx";
 import LoginPatient from "../pages/LoginPatient.tsx";
 import AppLayout from "@/pages/AppLayout.tsx";
-import BookingSteps from "@/components/BookingSteps.tsx";
+import BookingSteps from "@/components/Booking/BookingSteps.tsx";
 import AdminPatient from "@/pages/AdminPatient.tsx";
 import AdminExams from "@/pages/AdminExams.tsx";
 import AdminTenantExams from "@/pages/AdminTenantExams.tsx";

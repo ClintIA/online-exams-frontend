@@ -12,7 +12,7 @@ import { ptBR } from "date-fns/locale"
 import { jwtDecode } from "jwt-decode"
 import { ChevronLeft, ChevronRight, Plus, Search, X } from "lucide-react"
 import { useEffect, useState } from "react"
-import CardDoctor from "@/components/CardDoctor.tsx";
+import CardDoctor from "@/components/AdminHome/CardDoctor.tsx";
 
 export interface IDoctor {
   id: number

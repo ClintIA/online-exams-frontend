@@ -8,12 +8,12 @@ import {deletePatient, listPatientsByTenant, PatientFilters} from "@/services/pa
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
-import {DadosPaciente} from "@/components/RegisterPatient.tsx";
+import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import Loading from "@/components/Loading.tsx";
-import ModalPatientRender, {Type} from "@/components/ModalPatientRender.tsx";
+import ModalPatientRender, {Type} from "@/components/ModalHandle/ModalPatientRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
-import GeneralModal from "@/components/GeneralModal.tsx";
+import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
 import {canaisOptions} from "@/lib/canalOptions.ts";
 

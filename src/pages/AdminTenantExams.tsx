@@ -12,9 +12,9 @@ import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import Loading from "@/components/Loading.tsx";
 import {TableCell} from "@mui/material";
-import {Type} from "@/components/ModalPatientRender.tsx";
-import ModalExamRender from "@/components/ModalExamRender.tsx";
-import GeneralModal from "@/components/GeneralModal.tsx";
+import {Type} from "@/components/ModalHandle/ModalPatientRender.tsx";
+import ModalExamRender from "@/components/ModalHandle/ModalExamRender.tsx";
+import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 
 export interface Exams {
     id?: number

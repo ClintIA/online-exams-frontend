@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import {Input} from "@mui/material";
 import {jwtDecode} from "jwt-decode";
 import {ITokenPayload} from "@/types/Auth.ts";
-import GeneralModal from "@/components/GeneralModal.tsx";
+import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 
 
 const LoginAdmin: React.FC = () => {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import ExameList from '../components/ExameList';
-import ExameDetail from '../components/ExameDetail';
+import ExameList from '../components/AdminExam/ExameList.tsx';
+import ExameDetail from '../components/AdminExam/ExameDetail.tsx';
 import { Exame } from '../types/Exame';
 import Loading from "@/components/Loading.tsx";
 

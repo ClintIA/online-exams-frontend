@@ -3,7 +3,7 @@ import { TableBody, TableCell, TableRow } from "@/components/ui/table.tsx";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
 import { Calendar, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button.tsx";
-import {Type} from "@/components/ModalPatientRender.tsx";
+import {Type} from "@/components/ModalHandle/ModalPatientRender.tsx";
 
 interface TableProps<T> {
     dataTable?: any[];

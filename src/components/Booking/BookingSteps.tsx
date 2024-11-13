@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
-import { CardContent } from "@/components/ui/card"
-import CheckCPF from "@/components/CheckCPF.tsx";
-import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
-import Booking, {DadosBooking, Exams} from "@/components/Booking.tsx";
-import StepIndicator from "@/components/StepIndicator.tsx";
-import BookingConfirmation from "@/components/BookingConfirmation.tsx";
+import { CardContent } from "@/components/ui/card.tsx"
+import CheckCPF from "@/components/Booking/CheckCPF.tsx";
+import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
+import Booking, {DadosBooking, Exams} from "@/components/Booking/Booking.tsx";
+import StepIndicator from "@/components/Booking/StepIndicator.tsx";
+import BookingConfirmation from "@/components/Booking/BookingConfirmation.tsx";
 import {Card} from "@mui/material";
 
 const BookingSteps: React.FC = () => {

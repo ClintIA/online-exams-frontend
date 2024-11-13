@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
+import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {registerPatient} from "@/services/loginService.tsx";
-import Booking, {DadosBooking} from "@/components/Booking.tsx";
-import ModalFlexivel from "@/components/ModalFlexivel.tsx";
+import Booking, {DadosBooking} from "@/components/Booking/Booking.tsx";
+import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
 import {registerPatientExam} from "@/services/patientExamService.tsx";
 import {updatePatient} from "@/services/patientService.tsx";
 export enum Type {
