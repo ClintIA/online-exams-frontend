@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
-import RegisterExam from "@/components/AdminTenantExam/RegisterExam.tsx";
+import ModalRegisterExam from "@/components/AdminTenantExam/ModalRegisterExam.tsx";
 import { Exams} from "@/pages/AdminTenantExams.tsx";
-import {Type} from "@/components/ModalHandle/ModalPatientRender.tsx";
+import {Type} from "@/components/AdminPatient/ModalPatientRender.tsx";
 import {createExam, updateExam} from "@/services/tenantExam.tsx";
 
 interface ModalProps {
@@ -64,7 +64,7 @@ const ModalExamRender: React.FC<ModalProps> = ({isOpen,onClose,title,modalNewExa
                         modalNewExam('Exame atualizado com sucesso')
                         onClose()
                     } else {
-                        throw new Error('Não foi possível atualizar exame')
+                        throw new Error('Não foi possível atualizar exame' + result.message)
                     }
                 }
             ).catch(error => console.log(error))
@@ -73,9 +73,9 @@ const ModalExamRender: React.FC<ModalProps> = ({isOpen,onClose,title,modalNewExa
     const renderModalContent = () => {
         switch (modalContent) {
             case 'editExam':
-                return (<RegisterExam title="Editar Exame" isUpdate={submitUpdateExam} dadosIniciais={dadosExam} onClose={handleClose}  />)
+                return (<ModalRegisterExam title="Editar Exame" isUpdate={submitUpdateExam} dadosIniciais={dadosExam} onClose={handleClose}  />)
             case 'newExam':
-                return(<RegisterExam title="Cadastrar Exame" isNewExam={submitNewExam} onClose={handleClose}/>)
+                return(<ModalRegisterExam title="Cadastrar Exame" isNewExam={submitNewExam} onClose={handleClose}/>)
 
         }
     }

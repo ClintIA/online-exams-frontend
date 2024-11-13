@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
+import ModalRegisterPatient, {DadosPaciente} from "@/components/AdminPatient/ModalRegisterPatient.tsx";
 import {registerPatient} from "@/services/loginService.tsx";
 import Booking, {DadosBooking} from "@/components/Booking/Booking.tsx";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
@@ -53,35 +53,41 @@ const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, tit
         }
     }
     const submitUpdatePatient = async (dadosPaciente: DadosPaciente, tenantId: number) => {
-        try {
-            if (modalNewPatient) {
-                const result = await updatePatient(dadosPaciente, tenantId)
-                modalNewPatient('Paciente cadastrado com sucesso')
-                return result
-            }
-        } catch (error) {
-            console.log(error)
+        if (modalNewPatient) {
+            await updatePatient(dadosPaciente, tenantId)
+                .then(result => {
+                    if (result.data.status === "success") {
+                        modalNewPatient('Paciente Atualizado com sucesso')
+                        onClose()
+                    } else {
+                        throw new Error('Não foi possível atualizar exame' + result.message)
+                    }
+                }).catch(error => {console.log(error)})
         }
     }
     const submitNewPatient = async (patientData: DadosPaciente, tenantId: number) => {
-        try {
             if (modalNewPatient) {
-                const result = await registerPatient(patientData, tenantId)
-                modalNewPatient('Paciente cadastrado com sucesso')
-                return result
+                await registerPatient(patientData, tenantId)
+                    .then(
+                        (result) => {
+                            if (result.status === 201) {
+                                modalNewPatient('Paciente cadastrado com sucesso')
+                                onClose()
+                            } else {
+                                throw new Error('Não foi possível cadastrar exame' + result.message)
+                            }
+                        }
+                    ).catch(error => console.log(error))
             }
-        } catch (error) {
-            console.log(error)
-        }
     }
     const renderModalContent = () => {
         switch (modalContent) {
             case 'booking':
                 return (<Booking onClose={handleClose} dadosPaciente={dadosPaciente} isNewBooking={submitBookintExam} />)
             case 'newPatient':
-                return(<RegisterPatient onClose={handleClose} isNewPatient={submitNewPatient}/>)
+                return(<ModalRegisterPatient onClose={handleClose} isNewPatient={submitNewPatient}/>)
             case 'editPatient':
-                return(<RegisterPatient onClose={handleClose} dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
+                return(<ModalRegisterPatient onClose={handleClose} dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
                 )
 
         }

@@ -8,14 +8,14 @@ import {deletePatient, listPatientsByTenant, PatientFilters} from "@/services/pa
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
-import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
+import {DadosPaciente} from "@/components/AdminPatient/ModalRegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import Loading from "@/components/Loading.tsx";
-import ModalPatientRender, {Type} from "@/components/ModalHandle/ModalPatientRender.tsx";
+import ModalPatientRender, {Type} from "@/components/AdminPatient/ModalPatientRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
-import {canaisOptions} from "@/lib/canalOptions.ts";
+import { findCanalOptions} from "@/lib/canalOptions.ts";
 
 const AdminPatient: React.FC = () => {
 
@@ -27,8 +27,8 @@ const AdminPatient: React.FC = () => {
     const [tenant, setTenant] = useState<number | undefined>()
     const [deleteId, setDeleteId] = useState<number>()
     const [pacientes, setPacientes] = useState<DadosPaciente[]>([])
-    const [filtroName, setFiltroName] = useState<string>()
-    const [filtroCPF, setFiltroCPF] = useState<string>()
+    const [filtroName, setFiltroName] = useState<string>('')
+    const [filtroCPF, setFiltroCPF] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(true);
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({} as DadosPaciente)
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
@@ -59,28 +59,7 @@ const AdminPatient: React.FC = () => {
 
         }
     }, [tenant])
-    const fetchFilters =  async () => {
-        if (tenant) {
-            if (filtroCPF || filtroName) {
-                const filters: PatientFilters = {
-                    patientCpf: filtroCPF,
-                    patientName: filtroName
-                }
-                try {
-                    const result = await listPatientsByTenant(tenant, filters)
-                    if (result?.data.data.length !== 0) {
-                        setPacientes(result?.data.data)
-                    } else {
-                        setPacientes([])
-                    }
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-        } else {
-            fetchPatients().then()
-        }
-    }
+
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
@@ -92,10 +71,31 @@ const AdminPatient: React.FC = () => {
     },[auth.token])
 
     useEffect( () => {
+        const fetchFilters =  async () => {
+            if (tenant) {
+                if (filtroCPF.length > 0 || filtroName.length > 0) {
+                    const filters: PatientFilters = {
+                        patientCpf: filtroCPF,
+                        patientName: filtroName
+                    }
+                    try {
+                        const result = await listPatientsByTenant(tenant, filters)
+                        if (result?.data.data.length !== 0) {
+                            setPacientes(result?.data.data)
+                        } else {
+                            setPacientes([])
+                        }
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }
+        }
     fetchFilters().then()
-    }, [fetchFilters, fetchPatients, filtroCPF, filtroName, tenant]);
+    }, [fetchPatients, filtroCPF, filtroName, tenant]);
 
     useEffect(() => {
+
        fetchPatients().then()
     }, [fetchPatients])
 
@@ -113,17 +113,7 @@ const AdminPatient: React.FC = () => {
             return spliData[1] + "/" + spliData[0] + "/" + spliData[2]
         }
     }
-    const findCanal = (canal?: string) => {
-        if(canal) {
-            let patientCanal;
-            canaisOptions.find((option) => {
-                if(option.id == canal) {
-                    patientCanal = option.name;
-                }
-            })
-            return patientCanal
-        }
-    }
+
     const renderRow = (paciente: DadosPaciente) => (
         <>
             <TableCell className="text-oxfordBlue font-bold">{paciente.full_name}</TableCell>
@@ -131,14 +121,23 @@ const AdminPatient: React.FC = () => {
             <TableCell className="text-blue-900">{paciente.phone}</TableCell>
             <TableCell className="text-blue-900">{formatDate(paciente?.dob)}</TableCell>
             <TableCell className="text-blue-900">{paciente.health_card_number}</TableCell>
-            <TableCell className="text-blue-900 capitalize">{findCanal(paciente.canal)}</TableCell>
+            <TableCell className="text-blue-900 capitalize">{findCanalOptions(paciente.canal)}</TableCell>
         </>
     );
     const handleDeletePatient = async () => {
         try {
             if (tenant && deleteId) {
                 setIsGeneralModalOpen(false)
-               return await deletePatient(deleteId,tenant)
+                await deletePatient(deleteId.toString(),tenant).then(
+                    (result) => {
+                        if(result.message && result.message.includes('FK_')){
+                            handleModalMessage('Não é possível deletar um paciente com agendamento ou exame realizado')
+                            return
+                        } else {
+                            return result
+                        }
+                    }
+                )
             }
 
         } catch(error) {
@@ -163,7 +162,7 @@ const AdminPatient: React.FC = () => {
     }
 
     const handleClose = () => {
-        setOpenModalNewPatient(false)
+        setIsGeneralModalOpen(false)
         fetchPatients().then()
     }
 
@@ -226,7 +225,7 @@ const AdminPatient: React.FC = () => {
             {openModalNewPatient && <ModalPatientRender
                 modalNewPatient={handleModalMessage}
                 isOpen={openModalNewPatient}
-                onClose={handleClose}
+                onClose={() => setOpenModalNewPatient(false)}
                 type={type}
                 dadosPaciente={dadosPaciente}
             />}

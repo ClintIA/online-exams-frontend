@@ -107,12 +107,10 @@ const AdminSidebar: React.FC = () => {
                     onOpenChange={setIsOpenRelatorios}
                     className="w-full" >
                   <CollapsibleTrigger>
-                    <SidebarMenuItem>
                     <SidebarMenuButton variant="default">
                       <Activity className="w-5 h-5 inline-block mr-1" /> Relátorios
                       {isOpenRelatorios ? <ChevronDown className="w-5 h-5 inline-block mr-1" /> : <ChevronRight className="w-5 h-5 inline-block mr-1" />}
                     </SidebarMenuButton>
-                    </SidebarMenuItem>
                   </CollapsibleTrigger>
                   <CollapsibleContent className="pl-4">
                     <SidebarMenuItem>
@@ -138,11 +136,9 @@ const AdminSidebar: React.FC = () => {
             <div className="flex justify-between items-center">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuItem>
-                    <SidebarMenuButton>
+                  <button>
                     <User className="w-8 h-8" />
-                  </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent side="top">
                   <DropdownMenuItem>
@@ -150,11 +146,9 @@ const AdminSidebar: React.FC = () => {
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <SidebarMenuItem>
-              <SidebarMenuButton onClick={handleLogout}>
+              <button onClick={handleLogout}>
                 <LogOut className="w-8 h-8" />
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+              </button>
             </div>
           </SidebarFooter>
         </Sidebar>

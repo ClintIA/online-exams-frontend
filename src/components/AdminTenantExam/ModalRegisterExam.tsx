@@ -10,7 +10,7 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import {listDoctors} from "@/services/doctorsSerivce.tsx";
-import {IExam} from "@/components/ModalHandle/ModalExamRender.tsx";
+import {IExam} from "@/components/AdminTenantExam/ModalExamRender.tsx";
 import {Exams} from "@/pages/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 
@@ -21,7 +21,7 @@ interface RegisterExamProps {
     isUpdate?: (examData: IExam, tenant: number) => Promise<any>
     isNewExam?: (examData: IExam, tenant: number) => Promise<any>
 }
-const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose,title, isUpdate, isNewExam}) => {
+const ModalRegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose,title, isUpdate, isNewExam}) => {
 
     const [examData, setExamData] = useState<IExam>({
         exam_name: '',
@@ -117,10 +117,10 @@ const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose,title
                         onClose()
                     }
                 }). catch((error) => console.log(error))
+            return
         }
         if(isNewExam && tenantId) {
             await isNewExam(newExam, tenantId).then((result) => {
-                console.log(result)
                     if(!result) {
                         setErro("Não foi possível cadastrar o exame")
                         return
@@ -133,7 +133,7 @@ const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose,title
                         onClose()
                     }
                 }). catch((error) => console.log(error))
-
+            return
         }
     }
 
@@ -219,4 +219,4 @@ const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose,title
         </div>
     )
 }
-export default RegisterExam;
+export default ModalRegisterExam;

@@ -1,6 +1,6 @@
 import {isAxiosError} from 'axios';
 import {ILoginAdmin} from "@/types/Auth.ts";
-import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
+import {DadosPaciente} from "@/components/AdminPatient/ModalRegisterPatient.tsx";
 import apiClient from "@/lib/interceptor.ts";
 
 export const loginAdmin = async (email: string, password: string): Promise<ILoginAdmin | undefined> => {

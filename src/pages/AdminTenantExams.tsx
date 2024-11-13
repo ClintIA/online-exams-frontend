@@ -12,8 +12,8 @@ import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import Loading from "@/components/Loading.tsx";
 import {TableCell} from "@mui/material";
-import {Type} from "@/components/ModalHandle/ModalPatientRender.tsx";
-import ModalExamRender from "@/components/ModalHandle/ModalExamRender.tsx";
+import {Type} from "@/components/AdminPatient/ModalPatientRender.tsx";
+import ModalExamRender from "@/components/AdminTenantExam/ModalExamRender.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 
 export interface Exams {
@@ -120,9 +120,6 @@ const AdminTenantExams: React.FC = () => {
         }
     }
     const handleClose = () => {
-        if(openModalNewExam) {
-            setOpenModalNewExam(false)
-        }
         setIsGeneralModalOpen(false)
         fetchExams().then()
     }
@@ -183,7 +180,7 @@ const AdminTenantExams: React.FC = () => {
                 <ModalExamRender
                     modalNewExam={handleModalMessage}
                     isOpen={openModalNewExam}
-                    onClose={handleClose}
+                    onClose={() => setOpenModalNewExam(false)}
                     type={type}
                     dadosExam={exame}/>
             )

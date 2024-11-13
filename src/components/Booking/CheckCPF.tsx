@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card.tsx"
 import {AlertCircle} from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx"
-import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
+import {DadosPaciente} from "@/components/AdminPatient/ModalRegisterPatient.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
 import {validarCPF} from "@/lib/utils.ts";

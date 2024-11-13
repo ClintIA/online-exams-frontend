@@ -44,3 +44,15 @@ export const canaisOptions = [
         id: 'plano'
     }
 ]
+
+export const findCanalOptions = (canal?: string) => {
+    if(canal) {
+        let patientCanal;
+        canaisOptions.find((option) => {
+            if(option.id == canal) {
+                patientCanal = option.name;
+            }
+        })
+        return patientCanal
+    }
+}

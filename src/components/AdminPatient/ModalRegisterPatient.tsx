@@ -18,7 +18,7 @@ import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {validarDataNascimento, validarEmail, validarTelefone} from "@/lib/utils.ts";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {canaisOptions} from "@/lib/canalOptions.ts";
+import {canaisOptions, findCanalOptions} from "@/lib/canalOptions.ts";
 
 export interface DadosPaciente {
     id?: number | undefined
@@ -33,11 +33,7 @@ export interface DadosPaciente {
     health_card_number: string | undefined
     tenants?: any[]
 }
-export interface ReturnMessage {
-    status?: "success" | "error";
-    message?: string;
-    data?: any;
-}
+
 interface RegisterPatientProps {
     dadosIniciais?: Partial<DadosPaciente>
     onCadastroConcluido?: (dados: DadosPaciente) => void
@@ -46,7 +42,7 @@ interface RegisterPatientProps {
     isNewPatient?: (pacienteDados: DadosPaciente, tenant: number) => Promise<any>
 }
 
-const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido, onClose, isUpdate, isNewPatient}: RegisterPatientProps) => {
+const ModalRegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido, onClose, isUpdate, isNewPatient}: RegisterPatientProps) => {
 
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',
@@ -80,11 +76,13 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
         getTenant()
     },[auth.token])
     useEffect(() => {
-        setSelectedCanal(dadosIniciais?.canal)
-        setDadosPaciente(prevDados => ({
-            ...prevDados,
-            ...dadosIniciais
-        }))
+        if(dadosIniciais) {
+            setSelectedCanal(dadosIniciais?.canal)
+            setDadosPaciente(prevDados => ({
+                ...prevDados,
+                ...dadosIniciais
+            }))
+        }
     }, [dadosIniciais])
 
     const createDate = (date: string) => {
@@ -124,39 +122,16 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
             if(tenant) {
                 const pacienteDados = { ...dadosPaciente, dob: createDate(dadosPaciente.dob) }
                 if(isUpdate) {
-                    try {
-                        const result = await isUpdate(pacienteDados, tenant)
-                        if(result.status === "success") {
-                            return
-                        }
-                        if(result.status === "error") {
-                            setErro('Falha ao cadastrar paciente. '+ result.message)
-                            return
-                        }
-                    } catch(error) {
-                        setErro('Falha ao cadastrar paciente. '+ error)
-                        console.log(error)
-                    }
+                    await isUpdate(pacienteDados, tenant)
+                        .catch((error) => console.log(error))
                     return
                 }
                 if(isNewPatient) {
-                    try {
-                        const result = await isNewPatient(pacienteDados, tenant)
-                        if(result.status == 201) {
-                            onClose()
-                            return
-                        }
-                        if(result.status === 'error') {
-                            setErro('Não foi possível cadastrar paciente: '+ result.message)
-                            return
-                        }
-                    } catch(error) {
-                        setErro('Falha ao cadastrar paciente. '+ error)
-                        console.log(error)
-                    }
+                    await isNewPatient(pacienteDados, tenant)
+                         .catch((error) => console.log(error))
+                    return
                 }
                 const result = await registerPatient(pacienteDados, tenant)
-
                 if(result?.data.status === 'success') {
                     if (onCadastroConcluido) {
                         onCadastroConcluido(dadosPaciente)
@@ -251,7 +226,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                    <Input
                                        id="cpf"
                                        name="cpf"
-                                       value={dadosIniciais?.cpf}
+                                       value={dadosPaciente?.cpf}
                                        onChange={handleInputChange}
                                        className="col-span-3"/>
                                </div>
@@ -290,7 +265,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
                                    <Label className="text-right text-blue-800" htmlFor="examId">Selecione o
-                                       Exame</Label>
+                                       Canal de Captação</Label>
                                    <Select value={selectedCanal} onValueChange={setSelectedCanal}>
                                        <SelectTrigger className="col-span-3" id="canal">
                                            <SelectValue placeholder="Selecione o Canal de Captação"/>
@@ -332,5 +307,4 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
            </div>
    )
 }
-
-export default RegisterPatient;
+export default ModalRegisterPatient;
