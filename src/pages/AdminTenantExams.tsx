@@ -171,7 +171,7 @@ const AdminTenantExams: React.FC = () => {
                                     <TableHead className="text-oxfordBlue">Ação</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <DataTable openModalEdit={openFlexiveModal} deleteData={handleConfirmationDelete} dataTable={exames} renderRow={renderRow}></DataTable>
+                            <DataTable openModalEdit={openFlexiveModal} openModalBooking={false} deleteData={handleConfirmationDelete} dataTable={exames} renderRow={renderRow}></DataTable>
                         </Table>
                     </CardContent>
                 </Card>

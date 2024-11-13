@@ -2,14 +2,10 @@ import * as React from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import {
     CheckIcon,
-    XCircle,
     ChevronDown,
-    XIcon,
-    WandSparkles,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -24,9 +20,7 @@ import {
     CommandInput,
     CommandItem,
     CommandList,
-    CommandSeparator,
 } from "@/components/ui/command";
-import {IDoctor} from "../../pages/AdminHome";
 
 /**
  * Variants for the multi-select component to handle different styles.

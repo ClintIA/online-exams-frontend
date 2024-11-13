@@ -42,40 +42,30 @@ const ModalExamRender: React.FC<ModalProps> = ({isOpen,onClose,title,modalNewExa
     }
     const submitNewExam = async (examData: IExam, tenantId: number) => {
     if(modalNewExam) {
-        await createExam(examData, tenantId).then(
-            (result) => {
-                console.log(result)
-                if(result.status === 201) {
-                    modalNewExam('Exame cadastrado com sucesso')
-                    onClose()
-                } else {
-                    throw new Error('Não foi possível cadastrar exame')
-                }
-
-            }
-        ).catch(error => console.log(error))
+        const result =  await createExam(examData, tenantId)
+        modalNewExam('Exame cadastrado com sucesso')
+        return result
     }
     }
     const submitUpdateExam = async (examData: IExam, tenantId: number) => {
-        if(modalNewExam) {
-            await updateExam(examData, tenantId).then(
-                (result) => {
-                    if(result.status === 201) {
-                        modalNewExam('Exame atualizado com sucesso')
-                        onClose()
-                    } else {
-                        throw new Error('Não foi possível atualizar exame' + result.message)
-                    }
-                }
-            ).catch(error => console.log(error))
+        if (modalNewExam) {
+              await updateExam(examData, tenantId)
+                  .then((result) => {
+                      if (result.data.status === "success") {
+                          modalNewExam('Exame Atualizado com sucesso')
+                          onClose()
+                      } else {
+                          return new Error('Não foi possível atualizar exame' + result.message)
+                      }
+                  }).catch(error => {console.log(error)})
         }
     }
     const renderModalContent = () => {
         switch (modalContent) {
             case 'editExam':
-                return (<ModalRegisterExam title="Editar Exame" isUpdate={submitUpdateExam} dadosIniciais={dadosExam} onClose={handleClose}  />)
+                return (<ModalRegisterExam title="Editar Exame" isUpdate={submitUpdateExam} dadosIniciais={dadosExam} />)
             case 'newExam':
-                return(<ModalRegisterExam title="Cadastrar Exame" isNewExam={submitNewExam} onClose={handleClose}/>)
+                return(<ModalRegisterExam title="Cadastrar Exame" isNewExam={submitNewExam}/>)
 
         }
     }

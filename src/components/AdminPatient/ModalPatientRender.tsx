@@ -85,9 +85,9 @@ const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, tit
             case 'booking':
                 return (<Booking onClose={handleClose} dadosPaciente={dadosPaciente} isNewBooking={submitBookintExam} />)
             case 'newPatient':
-                return(<ModalRegisterPatient onClose={handleClose} isNewPatient={submitNewPatient}/>)
+                return(<ModalRegisterPatient isNewPatient={submitNewPatient}/>)
             case 'editPatient':
-                return(<ModalRegisterPatient onClose={handleClose} dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
+                return(<ModalRegisterPatient dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
                 )
 
         }

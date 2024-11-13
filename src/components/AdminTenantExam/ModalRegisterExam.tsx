@@ -16,12 +16,11 @@ import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 
 interface RegisterExamProps {
     dadosIniciais?: Exams
-    onClose: () => void
     title: string
     isUpdate?: (examData: IExam, tenant: number) => Promise<any>
     isNewExam?: (examData: IExam, tenant: number) => Promise<any>
 }
-const ModalRegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose,title, isUpdate, isNewExam}) => {
+const ModalRegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, isUpdate, isNewExam}) => {
 
     const [examData, setExamData] = useState<IExam>({
         exam_name: '',
@@ -53,11 +52,13 @@ const ModalRegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose,
                         doctorIDs.push(doctor.id.toString())
                     }
                 })
+                setDoctorsIDs(doctorIDs)
             }
 
         }
         getDoctorsId()
         setSelectedDoctors(doctorIDs)
+        examData.id = dadosIniciais?.id
         const newDados = {...dadosIniciais, doctors: doctorIDs}
         setExamData(prevDados => ({
             ...prevDados,
@@ -104,35 +105,23 @@ const ModalRegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose,
         }
 
         if(isUpdate && tenantId) {
-                await isUpdate(newExam, tenantId).then((result) => {
-                    if(!result) {
-                        setErro("Não foi possível atualizar o exame")
-                        return
+                await isUpdate(newExam, tenantId)
+                    .then(
+                    (result) => {
+                        if(!result) {
+                            setErro('Não foi possível atualizar exame')
+                            return
+                        }
                     }
-                    if(result.status === "error") {
-                        setErro(result.message)
-                        return
-                    }
-                    if(result.data.status === "success") {
-                        onClose()
-                    }
-                }). catch((error) => console.log(error))
+                )
             return
         }
         if(isNewExam && tenantId) {
-            await isNewExam(newExam, tenantId).then((result) => {
-                    if(!result) {
-                        setErro("Não foi possível cadastrar o exame")
-                        return
-                    }
-                    if(result.status === "error") {
-                        setErro(result.message)
-                        return
-                    }
-                    if(result.data.status === "success") {
-                        onClose()
-                    }
-                }). catch((error) => console.log(error))
+            await isNewExam(newExam, tenantId).catch((error) => {
+                setErro(error)
+                console.log(error)
+
+            })
             return
         }
     }

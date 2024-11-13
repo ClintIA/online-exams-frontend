@@ -18,7 +18,7 @@ import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {validarDataNascimento, validarEmail, validarTelefone} from "@/lib/utils.ts";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {canaisOptions, findCanalOptions} from "@/lib/canalOptions.ts";
+import {canaisOptions} from "@/lib/canalOptions.ts";
 
 export interface DadosPaciente {
     id?: number | undefined
@@ -37,12 +37,11 @@ export interface DadosPaciente {
 interface RegisterPatientProps {
     dadosIniciais?: Partial<DadosPaciente>
     onCadastroConcluido?: (dados: DadosPaciente) => void
-    onClose: () => void
     isUpdate?: (pacienteDados: DadosPaciente, tenant: number) => Promise<any>
     isNewPatient?: (pacienteDados: DadosPaciente, tenant: number) => Promise<any>
 }
 
-const ModalRegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido, onClose, isUpdate, isNewPatient}: RegisterPatientProps) => {
+const ModalRegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadastroConcluido, isUpdate, isNewPatient}: RegisterPatientProps) => {
 
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',

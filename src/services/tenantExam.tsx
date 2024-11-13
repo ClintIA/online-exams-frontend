@@ -49,7 +49,7 @@ export const createExam = async (examName: IExam,tenantId:  number) => {
 
 export const updateExam = async (examName: IExam,tenantId:  number) => {
     try {
-        return await apiClient.put('admin/tenantexam', examName, {
+        return await apiClient.put(`admin/tenantexam/${examName.id}`, examName, {
             headers: {
                 'x-tenant-id': tenantId
             }
