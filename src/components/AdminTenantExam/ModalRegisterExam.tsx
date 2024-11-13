@@ -5,13 +5,13 @@ import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
-import {IDoctor} from "@/pages/AdminHome.tsx";
+import {IDoctor} from "@/pages/admin/AdminHome.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import {listDoctors} from "@/services/doctorsSerivce.tsx";
 import {IExam} from "@/components/AdminTenantExam/ModalExamRender.tsx";
-import {Exams} from "@/pages/AdminTenantExams.tsx";
+import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 
 interface RegisterExamProps {

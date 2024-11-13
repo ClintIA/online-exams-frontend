@@ -47,11 +47,9 @@ const CheckCPF: React.FC<VerificacaoCPFProps> = ({onCPFVerificado}: VerificacaoC
         }
         getTenant()
     },[auth.token])
-
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCpf(e.target.value)
     }
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)

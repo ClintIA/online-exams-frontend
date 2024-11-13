@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { useAuth } from "@/hooks/auth"
-import { listDoctors } from "@/services/doctorsSerivce"
-import { createNoticeCard, deleteNoticeCard, listNoticeCards } from "@/services/noticeCardService"
-import { listPatientExams } from "@/services/patientExamService"
-import { ITokenPayload } from "@/types/Auth"
+import { Button } from "@/components/ui/button.tsx"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog.tsx"
+import { Input } from "@/components/ui/input.tsx"
+import { useAuth } from "@/hooks/auth.tsx"
+import { listDoctors } from "@/services/doctorsSerivce.tsx"
+import { createNoticeCard, deleteNoticeCard, listNoticeCards } from "@/services/noticeCardService.tsx"
+import { listPatientExams } from "@/services/patientExamService.tsx"
+import { ITokenPayload } from "@/types/Auth.ts"
 import { format, formatDate } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { jwtDecode } from "jwt-decode"
@@ -42,6 +42,8 @@ export interface IPatientExam {
     id: number
     fullName: string
     CRM: string
+    phone: string
+    email: string
   }
 }
 

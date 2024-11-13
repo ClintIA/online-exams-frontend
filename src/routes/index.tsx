@@ -3,14 +3,14 @@ import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
 import {Exames} from "../pages/patient/Exames.tsx";
 import { DadosCadastrais } from '../pages/patient/DadosCadastrais'
-import LoginAdmin from "../pages/LoginAdmin.tsx";
-import AppLayout from "@/pages/AppLayout.tsx";
-import AdminExams from "@/pages/AdminExams.tsx";
+import LoginAdmin from "../pages/admin/LoginAdmin.tsx";
+import AppLayout from "@/pages/admin/AppLayout.tsx";
+import AdminExams from "@/pages/admin/AdminExams.tsx";
 import LoginPatient from "@/pages/patient/LoginPatient.tsx";
-import AdminPatient from "@/pages/AdminPatient.tsx";
-import NewBooking from "@/components/Booking/NewBooking.tsx";
-import AdminHome from "@/pages/AdminHome.tsx";
-import AdminTenantExams from "@/pages/AdminTenantExams.tsx";
+import AdminPatient from "@/pages/admin/AdminPatient.tsx";
+import AdminBooking from "@/pages/admin/AdminBooking.tsx";
+import AdminHome from "@/pages/admin/AdminHome.tsx";
+import AdminTenantExams from "@/pages/admin/AdminTenantExams.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -66,7 +66,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:'agendamento',
-                element:<NewBooking />,
+                element:<AdminBooking />,
             },
             {
                 path:'pacientes',

@@ -1,25 +1,26 @@
 import React, {useEffect, useState} from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import ListaAgendamentos from "@/components/Booking/BookingList.tsx";
-import Booking from "@/components/Booking/Booking.tsx";
-import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs.tsx"
+import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import ModalPatientRender, {Type} from "@/components/AdminPatient/ModalPatientRender.tsx";
 import {listPatientExams} from "@/services/patientExamService.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
-import {IPatientExam} from "@/pages/AdminHome.tsx";
+import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import {createDate} from "@/lib/utils.ts";
+import BookingList from "@/components/Booking/BookingList.tsx";
+import DoctorList from "@/components/Booking/DoctorList.tsx";
+import BookingPatient from "@/components/Booking/BookingPatient.tsx";
 
-const NewBooking: React.FC = () =>  {
+const AdminBooking: React.FC = () =>  {
+
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
     const [type,setType] = useState<Type>(Type.newPatient)
     const [tenantId, setTenantID] = useState<number | undefined>()
-    const [userId, setUserID] = useState<number | undefined>()
     const [exams, setExams] = useState<IPatientExam[]>([])
-
+    const [title, setTitle] = useState<string>("")
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',
         email: '',
@@ -32,11 +33,12 @@ const NewBooking: React.FC = () =>  {
         health_card_number: '',
     })
     const auth = useAuth()
-    const openFlexiveModal = (modalType: Type, paciente?: DadosPaciente) => {
+    const openFlexiveModal = (title: string, modalType: Type, paciente?: DadosPaciente) => {
         if(paciente) {
             setDadosPaciente(paciente)
         }
         setType(modalType)
+        setTitle(title)
         setOpenModalNewPatient(true)
     }
     useEffect(() => {
@@ -44,7 +46,6 @@ const NewBooking: React.FC = () =>  {
             if (auth?.token) {
                 const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
                 setTenantID(decoded.tenantId)
-                setUserID(decoded.userId)
             }
         }
         getTenant()
@@ -68,8 +69,11 @@ const NewBooking: React.FC = () =>  {
                 console.error(error)
             }
         }
-        fetchPatientExams()
+        fetchPatientExams().then()
     }, [tenantId]);
+    const handleModalMessage = () => {
+        openFlexiveModal('Confirmação de Agendamento', Type.bookingConfirmation)
+    }
 
     return (
         <div className="container mx-auto p-4">
@@ -77,58 +81,71 @@ const NewBooking: React.FC = () =>  {
             <Tabs defaultValue="lista" className="space-y-4">
                 <TabsList className="p-5 gap-2">
                     <TabsTrigger className="p-1 text-base text-oxfordBlue" value="lista">Agendamentos do Dia</TabsTrigger>
-                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="paciente">Medicos Agendados</TabsTrigger>
-                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="agendamentos">Realizar Agendamento</TabsTrigger>
+                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="doctors">Medicos Agendados</TabsTrigger>
+                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="booking">Realizar Agendamento</TabsTrigger>
                 </TabsList>
-                <TabsContent value="paciente">
-                    <Card>
-                        <CardContent>
-                            <RegisterPatient />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-                <TabsContent value="agendamentos">
-                    <Card>
-                        <CardContent>
-                            <Booking dadosPaciente={dadosPaciente} />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
                 <TabsContent value="lista">
-                    <Card>
+                    <Card className="p-4">
+                        <CardTitle className="ml-8 text-oxfordBlue text-xl">
+                            Agendamentos de Hoje
+                        </CardTitle>
                         <CardHeader className="flex flex-row gap-2 justify-items-start text-base text-oxfordBlue">
                             <div className="mt-1.5">
-                                <Button onClick={() => openFlexiveModal(Type.newPatient)}
+                                <Button onClick={() => openFlexiveModal('Registrar Paciente',Type.newPatient)}
                                         className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Cadastrar
                                     Paciente</Button>
                             </div>
                             <div>
-                                <Button onClick={() => openFlexiveModal(Type.booking)}
+                                <Button onClick={() => openFlexiveModal('Agendamento de Exame',Type.newBookingPatient)}
                                         className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Realizar Agendamento
                                 </Button>
                             </div>
                         </CardHeader>
-                        <CardTitle className="ml-8 text-oxfordBlue text-xl">
-                            Agendamentos de Hoje
-                        </CardTitle>
                         <CardContent>
-                                <div className="ml-8">
-                                    <ListaAgendamentos
+                                <div className="ml-4">
+                                    <BookingList
                                         agendamentos={exams}
                                     />
                                 </div>
                         </CardContent>
                     </Card>
                 </TabsContent>
+                <TabsContent value="doctors">
+                    <Card>
+                        <CardHeader className="flex flex-row gap-2 justify-items-start text-base text-oxfordBlue">
+                            <CardTitle className="ml-4 text-oxfordBlue text-xl">
+                                Listagem de médicos para hoje.
+                            </CardTitle>
+                        </CardHeader>
+
+                        <CardContent>
+                            <DoctorList agendamentos={exams} />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="booking">
+                    <Card>
+                        <CardHeader className="flex flex-row gap-2 justify-items-start text-base text-oxfordBlue">
+                            <CardTitle className="ml-4 text-oxfordBlue text-xl">
+                                Realizar Agendamento
+                            </CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <BookingPatient />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
             </Tabs>
         {openModalNewPatient && <ModalPatientRender
             isOpen={openModalNewPatient}
-            onClose={() => setOpenModalNewPatient(false)}
+            title={title}
             type={type}
             dadosPaciente={dadosPaciente}
+            onClose={() => setOpenModalNewPatient(false)}
+            modalNewPatient={handleModalMessage}
         />}
         </div>
     )
 }
 
-export default NewBooking;
+export default AdminBooking;

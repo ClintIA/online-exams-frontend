@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import { useNavigate} from "react-router-dom";
-import logoClintia from '../assets/logoClintia.png';
-import {useAuth} from "../hooks/auth.tsx";
-import { Button } from "@/components/ui/button"
+import logoClintia from '../../assets/logoClintia.png';
+import {useAuth} from "../../hooks/auth.tsx";
+import { Button } from "@/components/ui/button.tsx"
 import {Input} from "@mui/material";
 import {jwtDecode} from "jwt-decode";
 import {ITokenPayload} from "@/types/Auth.ts";

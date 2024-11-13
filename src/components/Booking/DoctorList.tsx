@@ -1,7 +1,6 @@
 import React from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
-import {formatDate} from "date-fns";
 import {Button} from "@/components/ui/button.tsx";
 import {CheckCircle} from "lucide-react";
 
@@ -15,25 +14,21 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
         <Table>
             <TableHeader>
                 <TableRow>
-                    <TableHead>Paciente</TableHead>
-                    <TableHead>Hora</TableHead>
                     <TableHead>Médico</TableHead>
-                    <TableHead>Status</TableHead>
+                    <TableHead>CRM</TableHead>
+                    <TableHead>Contato</TableHead>
+                    <TableHead>E-mail</TableHead>
                     <TableHead>Ação</TableHead>
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {agendamentos.map((agendamento) => (
-                    <TableRow key={agendamento.id}>
-                        <TableCell>{agendamento.patient.full_name}</TableCell>
-                        <TableCell>{formatDate(agendamento.examDate, 'HH:mm')}</TableCell>
-                        <TableCell>{agendamento.doctor.fullName}</TableCell>
+                {agendamentos.map((doctor) => (
+                    <TableRow key={doctor.id}>
+                        <TableCell>{doctor.doctor.fullName}</TableCell>
+                        <TableCell>{doctor.doctor.CRM}</TableCell>
+                        <TableCell>{doctor.doctor.phone}</TableCell>
                         <TableCell>
-                            {agendamento.status ? (
-                                <span className="text-green-600 font-semibold">Compareceu</span>
-                            ) : (
-                                <span className="text-yellow-600 font-semibold">Aguardando</span>
-                            )}
+                            {doctor.doctor.email}
                         </TableCell>
                         <TableCell>
                             <Button

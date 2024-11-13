@@ -5,12 +5,16 @@ import Booking, {DadosBooking} from "@/components/Booking/Booking.tsx";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
 import {registerPatientExam} from "@/services/patientExamService.tsx";
 import {updatePatient} from "@/services/patientService.tsx";
+import BookingPatient from "@/components/Booking/BookingPatient.tsx";
+import BookingConfirmation from "@/components/Booking/BookingConfirmation.tsx";
 export enum Type {
     booking = 'booking',
     newPatient=  'newPatient',
     editPatinet =  'editPatient',
     newExam = 'newExam',
-    editExam ='editExam'
+    editExam ='editExam',
+    newBookingPatient = 'newBookingPatient',
+    bookingConfirmation= 'bookingConfirmation'
 }
 
 interface ModalRegisterProps {
@@ -27,11 +31,13 @@ interface ModalRegisterProps {
 const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Paciente",modalNewPatient,dadosPaciente, type }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
     const [modalContent,setModalContent] = useState<Type>(Type.newPatient)
+    const [dadosBooking,setDadosBooking] = useState<DadosBooking>()
     useEffect(() => {
         openModal(type)
     }, [type])
 
     const openModal = (type: Type) => {
+
         setModalContent(type)
         setOpen(true)
     }
@@ -41,12 +47,12 @@ const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, tit
         onClose()
     }
     const submitBookintExam = async (bookingDados: DadosBooking, tenantId: number) => {
+        setDadosBooking(bookingDados)
         try {
             if (modalNewPatient) {
             const result = await registerPatientExam(bookingDados, tenantId)
                 modalNewPatient('Paciente Agendado com sucesso')
                 return result
-
             }
         } catch (error) {
             console.log(error)
@@ -89,6 +95,10 @@ const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, tit
             case 'editPatient':
                 return(<RegisterPatient dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
                 )
+            case 'newBookingPatient':
+                return(<BookingPatient  submitBooking={submitBookintExam}  handleModalMessage={openModal} />)
+            case 'bookingConfirmation':
+                return(<BookingConfirmation dadosBooking={dadosBooking} />)
 
         }
     }

@@ -1,12 +1,12 @@
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button.tsx"
+import { Calendar } from "@/components/ui/calendar.tsx"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+} from "@/components/ui/popover.tsx"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx"
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BarChart3, CalendarIcon } from 'lucide-react'
