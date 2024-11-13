@@ -119,7 +119,6 @@ export const MultiSelect = React.forwardRef<
             animation = 0,
             maxCount = 3,
             modalPopover = false,
-            asChild = false,
             className,
             ...props
         },
@@ -128,7 +127,6 @@ export const MultiSelect = React.forwardRef<
         const [selectedValues, setSelectedValues] =
             React.useState<string[]>(defaultValue);
         const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
-        const [isAnimating, setIsAnimating] = React.useState(false);
 
         const handleInputKeyDown = (
             event: React.KeyboardEvent<HTMLInputElement>
@@ -179,7 +177,6 @@ export const MultiSelect = React.forwardRef<
                                             <Badge
                                                 key={value}
                                                 className={cn(
-                                                    isAnimating ? "animate-bounce" : "",
                                                     multiSelectVariants({ variant })
                                                 )}
                                                 style={{ animationDuration: `${animation}s` }}
