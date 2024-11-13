@@ -1,0 +1,41 @@
+.trigger {
+    display: inline-flex;
+    align-items: center;
+    padding: 1rem;
+    background-color: var(--gray-50);
+    border: 1px solid var(--gray-100);
+    border-radius: 4px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+  
+  .content {
+    background-color: white;
+    border: 1px solid var(--gray-100);
+    border-radius: 4px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    
+  }
+  
+  .viewport {
+    padding: 0.5rem;
+  }
+  
+  .item {
+    padding: 0.5rem;
+    cursor: pointer;
+  }
+  
+  .item:hover {
+    background-color: var(--gray-50);
+  }
+  
+  .scrollButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0.25rem;
+    cursor: pointer;
+  }
+  

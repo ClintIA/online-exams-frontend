@@ -1,6 +1,7 @@
 import {isAxiosError} from 'axios';
 import apiClient from "@/lib/interceptor.ts";
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
+import { GetPatientExamsResponse } from '../types/Patient.ts';
 
 export interface PatientFilters {
     patientCpf?: string
@@ -66,3 +67,18 @@ export const deletePatient = async (patientId: number, tenantId: number) => {
         }
     }
 }
+
+export const patientExams = async(patientId: number): Promise<GetPatientExamsResponse | undefined> => {
+    try{
+        const response = await apiClient.get(`/patientExams`, {
+            params: { patientId },
+
+        });
+        return response.data;
+
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+};
