@@ -1,25 +1,31 @@
 import React, {useState} from 'react'
-import { CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import { CardContent } from "@/components/ui/card"
 import CheckCPF from "@/components/CheckCPF.tsx";
 import RegisterPatient, {DadosPaciente} from "@/components/RegisterPatient.tsx";
-import Booking, {Exams} from "@/components/Booking.tsx";
+import Booking, {DadosBooking, Exams} from "@/components/Booking.tsx";
 import StepIndicator from "@/components/StepIndicator.tsx";
 import BookingConfirmation from "@/components/BookingConfirmation.tsx";
-
+import {Card} from "@mui/material";
 
 const BookingSteps: React.FC = () => {
     const [etapaAtual, setEtapaAtual] = useState(0)
     const [pacienteCadastrado, setPacienteCadastrado] = useState<boolean>(false)
     const [dadosPaciente, setDadosPaciente] = useState({} as DadosPaciente)
     const [exame, setExame] = useState<Exams>()
-    const [examDate, setExamDate] = useState('')
+    const [examData, setExamData] = useState<DadosBooking>()
     const etapas = [
         "Verificação de CPF",
         "Cadastro de Paciente",
         "Agendamento de Consulta",
         "Confirmação"
     ]
-
+    const handleNewBooking = () => {
+        setEtapaAtual(0)
+        setDadosPaciente({} as DadosPaciente)
+        setPacienteCadastrado(false)
+        setExame(undefined)
+        setExamData(undefined)
+    }
     const avancarEtapa = () => {
         setEtapaAtual(prev => Math.min(prev + 1, etapas.length - 1))
     }
@@ -40,10 +46,10 @@ const BookingSteps: React.FC = () => {
         avancarEtapa()
     }
 
-    const handleAgendamentoConcluido = (exam: Exams, dados: DadosPaciente, date: string) => {
+    const handleAgendamentoConcluido = (exam: Exams, dados: DadosPaciente, dataBooking: DadosBooking) => {
         setDadosPaciente(dados)
         setExame(exam)
-        setExamDate(date)
+        setExamData(dataBooking)
         avancarEtapa()
     }
     const renderEtapaAtual = () => {
@@ -52,31 +58,33 @@ const BookingSteps: React.FC = () => {
                 return <CheckCPF onCPFVerificado={handleCPFVerificado} />
             case 1:
                 return pacienteCadastrado ? (
-                    <Booking dadosPaciente={dadosPaciente} onAgendamentoConcluido={handleAgendamentoConcluido} />
+                    <Booking onClose={() => {}} dadosPaciente={dadosPaciente} onAgendamentoConcluido={handleAgendamentoConcluido} />
                 ) : (
-                    <RegisterPatient dadosIniciais={dadosPaciente} onCadastroConcluido={handleCadastroConcluido} />
+                    <RegisterPatient onClose={() => {}} dadosIniciais={dadosPaciente} onCadastroConcluido={handleCadastroConcluido} />
                 )
             case 2:
-                return <Booking dadosPaciente={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />
+                return <Booking onClose={() => {}} dadosPaciente={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />
             case 3:
                 return <BookingConfirmation exame={exame}
                                             dadosPaciente={dadosPaciente}
-                                            examDate={examDate} />
+                                            dadosBooking={examData}
+                                            onNewBooking={handleNewBooking}
+                />
             default:
                 return null
         }
     }
     return (
-        <div className="w-full max-w-6xl mx-auto">
-            <CardHeader>
-                <CardTitle className='text-3xl text-blue-800'>Agendamento de Consulta</CardTitle>
-            </CardHeader>
+        <div className="w-full max-w-6xl">
+            <h1 className="text-2xl font-bold mb-6 text-blue-800">Agendamento de Consulta</h1>
+            <Card className="p-10">
             <CardContent>
                 <StepIndicator etapas={etapas} etapaAtual={etapaAtual}/>
                 <div className="mt-6">
                     {renderEtapaAtual()}
                 </div>
             </CardContent>
+            </Card>
         </div>
     )
 }
