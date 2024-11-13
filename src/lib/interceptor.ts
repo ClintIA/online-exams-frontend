@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
 
-const apiClient = axios.create({
+export const apiClient = axios.create({
     baseURL: 'https://api.clintia.com.br/api/v1',
 });
 

@@ -13,6 +13,7 @@ export type IAuthContextType = {
     adminLogin: (email: string, password:string) => Promise<ILoginAdmin | undefined>;
     logOut: () => void;
     isAuthenticated: boolean;
+    userId?: number;
 
 }
 export interface ITokenPayload {

@@ -1,0 +1,77 @@
+.overlay{
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+}
+
+.content{
+    min-width: 32rem;
+    max-width: 90%;
+    border-radius: 6px;
+    padding: 2.5rem 3rem;
+    background: var(--white);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+
+}
+
+@media (max-width: 768px) {
+    .content {
+        min-width: 90%; /* Reduz a largura mínima em telas menores */
+        padding: 1.5rem; /* Ajusta o padding para telas pequenas */
+    }
+}
+
+
+.button{
+    height: 50px;
+    border: 0;
+    background: var(--blue-100);
+    color: var(--white);
+    font-weight: bold;
+    padding: 0 1.25rem;
+    border-radius: 6px;
+    margin-top: 1.25rem;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+
+.button:hover{
+    background: var(--blue-700);
+}
+
+.close{
+    position: absolute;
+    background: transparent;
+    border: 0;
+    top: 1.5rem;
+    right: 1.5rem;
+    line-height: 0;
+    cursor: pointer;
+    color: var(--gray-500);
+}
+
+.title{
+    color: var(--blue-700)
+}
+
+.input {
+    border-radius: 6px;
+    border: 0;
+    background: var(--gray-50);
+    color: var(--gray-700);
+    padding: 1rem;
+    margin-top:1rem;
+}
+
+.body{
+    color: var(--gray-300);
+    margin-top:1rem;
+}
+
+

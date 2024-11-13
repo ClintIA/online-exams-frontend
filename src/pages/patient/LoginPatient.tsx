@@ -1,17 +1,22 @@
-import React, { useState} from 'react';
-import logoClintia from '../assets/logoClintia.png';
-import {Input} from "@mui/material";
-import {useNavigate} from "react-router-dom";
-import {useAuth} from "@/hooks/auth.tsx";
-import ErrorModal from "@/error/ErrorModal.tsx";
-import {Button} from "@/components/ui/button.tsx";
+// LoginPatient.tsx
+import React, { useState } from 'react';
+import logoClintia from '../../assets/logoClintiaLogin.png';
+import { Input } from "@mui/material";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/auth.tsx";
+import ErrorModal from "../../error/ErrorModal.tsx";
+import { Button } from "../../components/ui/button.tsx";
+import { useCpf } from '../../hooks/useCpf.tsx'; 
+// import styles from './LoginPatient.module.css';
+// import Cookies from "js-cookie";
+// import { loginPatient } from "../api/patient-login";
 
-
-const LoginPatient: React.FC = () => {
+export function LoginPatient() {
     const [patientCpf, setPatientCpf] = useState("");
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const auth = useAuth();
+    const { setCpf } = useCpf();
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
 
@@ -34,7 +39,8 @@ const LoginPatient: React.FC = () => {
                 return
             }
             if(result?.status === "success" && result?.data !== null) {
-                return  navigate('/paciente/home')
+                setCpf(patientCpf); // Armazena o CPF no contexto
+                return  navigate('/paciente/home');
             }
         }
     }
@@ -105,5 +111,3 @@ const LoginPatient: React.FC = () => {
         </div>
     );
 };
-
-export default LoginPatient;
