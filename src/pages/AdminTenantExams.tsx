@@ -15,7 +15,6 @@ import {TableCell} from "@mui/material";
 import {Type} from "@/components/ModalPatientRender.tsx";
 import ModalExamRender from "@/components/ModalExamRender.tsx";
 import GeneralModal from "@/components/GeneralModal.tsx";
-import {deletePatient} from "@/services/patientService.tsx";
 
 export interface Exams {
     id?: number
@@ -39,7 +38,6 @@ const AdminTenantExams: React.FC = () => {
     const [filterDoctor, setFilterDoctor] = useState<string>()
     const [loading, setLoading] = useState<boolean>(false);
     const [type,setType] = useState<Type>(Type.newExam)
-    const [tenant, setTenant] = useState<number | undefined>()
     const [deleteId, setDeleteId] = useState<number>()
     const [title,setTitle] = useState("");
     const [action,setAction] = useState("");
@@ -53,15 +51,6 @@ const AdminTenantExams: React.FC = () => {
         const getTenant = () => {
             if(auth?.token) {
                 const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenant(decoded.tenantId)
-            }
-        }
-        getTenant()
-    },[auth.token])
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
                 setTenantID(decoded.tenantId)
             }
         }
@@ -71,23 +60,28 @@ const AdminTenantExams: React.FC = () => {
         try {
             if(tenantId) {
                 setLoading(true)
-                const result = await listTenantExam(tenantId)
-                if(result?.data.status === "success") {
-                    setExames(result?.data.data)
-                    setLoading(false)
-                }
+                await listTenantExam(tenantId).then(
+                    (result) => {
+                        if(result.status === 200) {
+                            setLoading(false)
+                            setExames(result.data.data)
+                        }
+                    }
+                ).catch(error => console.log(error))
+
             }
         } catch (error) {
             console.error(error)
         }
     },[tenantId])
+
     useEffect( () => {
         fetchExams().then()
     }, [fetchExams, tenantId]);
     const renderRow = (exame: Exams) => (
         <>
             <TableCell className="text-oxfordBlue font-bold">{exame.exam_name}</TableCell>
-            <TableCell className="text-blue-900">{exame.doctors? exame.doctors.map((doctor) => (<p>{doctor.fullName}</p>)) : 'Não possuí medico cadastrado'}</TableCell>
+            <TableCell className="text-blue-900">{exame.doctors? exame.doctors.map((doctor) => (<p>Dr(a). {doctor.fullName}</p>)) : 'Não possuí medico cadastrado'}</TableCell>
             <TableCell className="text-blue-900">{exame.price}</TableCell>
             <TableCell className="text-blue-900 capitalize">{exame.doctorPrice}</TableCell>
         </>
@@ -100,18 +94,25 @@ const AdminTenantExams: React.FC = () => {
         setType(modalType)
         setOpenModalNewExam(true)
     }
-    const handleConfirmationDelete = (message: string) => {
+    const handleModalMessage = (message: string) => {
         setGeneralMessage(message)
         setTitle('Confirmação')
         setAction('Fechar')
         setIsError(false)
         setIsGeneralModalOpen(true)
     }
+    const handleConfirmationDelete = (id: number) => {
+        setGeneralMessage("Deseja deletar o paciente selecionado?")
+        setTitle('Confirmação de Exclusão')
+        setAction('Excluir')
+        setDeleteId(id)
+        setIsGeneralModalOpen(true)
+
+    }
     const deletePatient = async () => {
         try {
-            if (tenant && deleteId) {
+            if (tenantId && deleteId) {
                 setIsGeneralModalOpen(false)
-
             }
 
         } catch(error) {
@@ -122,6 +123,7 @@ const AdminTenantExams: React.FC = () => {
         if(openModalNewExam) {
             setOpenModalNewExam(false)
         }
+        setIsGeneralModalOpen(false)
         fetchExams().then()
     }
     if (loading) {
@@ -141,16 +143,16 @@ const AdminTenantExams: React.FC = () => {
                         <Input
                             className="w-72"
                             id="filtroNome"
-                            placeholder="Filtrar por nome"
+                            placeholder="Filtrar por Nome do exame"
                             value={filterName}
                             onChange={(e) => setFilterName(e.target.value)}/>
                     </div>
                     <div className='p-2'>
-                        <Label htmlFor="filtroCPF" className="text-oxfordBlue">Nome do Médico</Label>
+                        <Label htmlFor="filtroDoctor" className="text-oxfordBlue">Nome do Médico</Label>
                         <Input
                             className="w-72"
-                            id="filtroCPF"
-                            placeholder="Filtrar por CPF"
+                            id="filtroDoctor"
+                            placeholder="Filtrar por Médico"
                             value={filterDoctor}
                             onChange={(e) => setFilterDoctor(e.target.value)}/>
                     </div>
@@ -172,8 +174,7 @@ const AdminTenantExams: React.FC = () => {
                                     <TableHead className="text-oxfordBlue">Ação</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <DataTable openModalEdit={() => {
-                            }} deleteData={handleConfirmationDelete} dataTable={exames} renderRow={renderRow}></DataTable>
+                            <DataTable openModalEdit={openFlexiveModal} deleteData={handleConfirmationDelete} dataTable={exames} renderRow={renderRow}></DataTable>
                         </Table>
                     </CardContent>
                 </Card>

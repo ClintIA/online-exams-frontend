@@ -2,11 +2,11 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/auth.tsx";
 import {
+  Activity,
   Calendar,
   ChevronDown,
   ChevronRight, CircleUser, Contact2,
-  FilePlus,
-  Home,
+  Home, Lightbulb,
   LogOut, Microscope,
   MonitorCog,
   User,
@@ -17,11 +17,13 @@ import logoClintia from '../assets/logoClintia.png';
 import React, {useState} from "react";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@radix-ui/react-collapsible";
 import {Button} from "@/components/ui/button.tsx";
+import {Dashboard} from "@mui/icons-material";
 
 const AdminSidebar: React.FC = () => {
   const auth = useAuth();
   const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpenRegister, setIsOpenRegister] = useState(false)
+  const [isOpenRelatorios, setIsOpenRelatorios] = useState(false)
 
 
   const handleLogout = async () => {
@@ -54,19 +56,19 @@ const AdminSidebar: React.FC = () => {
                 </SidebarMenuItem>
                 <SidebarMenuItem className="ml-1.5">
                   <SidebarMenuButton>
-                    <a href="/admin/exames">
-                      <FilePlus className="w-5 h-5 inline-block mr-1" /> Exames da clínica
+                    <a href="/admin/agendamento">
+                      <Calendar size={32} className="w-5 h-5 inline-block mr-1" /> Portal de Exames Online
                     </a>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                   <Collapsible
-                      open={isOpen}
-                      onOpenChange={setIsOpen}
+                      open={isOpenRegister}
+                      onOpenChange={setIsOpenRegister}
                       className="w-full" >
                     <CollapsibleTrigger>
                       <Button variant="ghost">
-                        <MonitorCog className="w-5 h-5 inline-block mr-1" /> Configurações da Clínica
-                        {isOpen ? <ChevronDown className="w-5 h-5 inline-block mr-1" /> : <ChevronRight className="w-5 h-5 inline-block mr-1" />}
+                        <MonitorCog className="w-5 h-5 inline-block mr-1" /> Cadastros
+                        {isOpenRegister ? <ChevronDown className="w-5 h-5 inline-block mr-1" /> : <ChevronRight className="w-5 h-5 inline-block mr-1" />}
                       </Button>
                     </CollapsibleTrigger>
                     <CollapsibleContent className="pl-4">
@@ -100,6 +102,33 @@ const AdminSidebar: React.FC = () => {
                       </SidebarMenuItem>
                     </CollapsibleContent>
                   </Collapsible>
+                <Collapsible
+                    open={isOpenRelatorios}
+                    onOpenChange={setIsOpenRelatorios}
+                    className="w-full" >
+                  <CollapsibleTrigger>
+                    <Button variant="ghost">
+                      <Activity className="w-5 h-5 inline-block mr-1" /> Relátorios
+                      {isOpenRelatorios ? <ChevronDown className="w-5 h-5 inline-block mr-1" /> : <ChevronRight className="w-5 h-5 inline-block mr-1" />}
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="pl-4">
+                    <SidebarMenuItem>
+                      <SidebarMenuButton>
+                        <a href="/admin/config-exams">
+                          <Dashboard className="w-5 h-5 inline-block mr-1" /> Marketing
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                      <SidebarMenuButton>
+                        <a href="/admin/pacientes">
+                          <Lightbulb className="w-5 h-5 inline-block mr-1" /> Gestão
+                        </a>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  </CollapsibleContent>
+                </Collapsible>
               </SidebarMenu>
             </SidebarGroup>
           </SidebarContent>

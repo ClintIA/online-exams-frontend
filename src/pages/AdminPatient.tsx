@@ -30,7 +30,6 @@ const AdminPatient: React.FC = () => {
     const [filtroName, setFiltroName] = useState<string>()
     const [filtroCPF, setFiltroCPF] = useState<string>()
     const [loading, setLoading] = useState<boolean>(true);
-    const [openModalEdit, setOpenModalEdit] = useState<boolean>(false)
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({} as DadosPaciente)
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
     const [type,setType] = useState<Type>(Type.newPatient)
@@ -164,9 +163,7 @@ const AdminPatient: React.FC = () => {
     }
 
     const handleClose = () => {
-        if(openModalEdit) {
-            setOpenModalEdit(false)
-        }
+        setOpenModalNewPatient(false)
         fetchPatients().then()
     }
 

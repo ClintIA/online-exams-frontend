@@ -1,7 +1,7 @@
 import apiClient from "@/lib/interceptor.ts";
 import { isAxiosError } from 'axios';
 
-export const listDoctors = async (tenantId: number, page: number, perPage?: number) => {
+export const listDoctors = async (tenantId: number, page?: number, perPage?: number) => {
     try {
         return await apiClient.get('admin/doctors/', {
             headers: {

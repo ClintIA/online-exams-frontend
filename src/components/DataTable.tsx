@@ -6,11 +6,11 @@ import { Button } from "@/components/ui/button.tsx";
 import {Type} from "@/components/ModalPatientRender.tsx";
 
 interface TableProps<T> {
-    dataTable?: T[];
+    dataTable?: any[];
     openModalEdit: (type: Type, data: T) => void;
     deleteData: (id: number) => void;
     openModalBooking?: boolean;
-    renderRow: (data: T) => React.ReactNode;
+    renderRow: (data: any) => React.ReactNode;
 }
 
 const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking, renderRow }: TableProps<T>) => {
@@ -27,10 +27,16 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
                             </PopoverTrigger>
                             <PopoverContent className="w-32">
                                 <div className="p-1 flex flex-col gap-0.5">
-                                    <Button onClick={() => openModalEdit(Type.editPatinet, data)} className="w-full bg-oxfordBlue text-white">
-                                        <Pencil className="mr-1 h-4 w-4" />
+                                    {Object.prototype.hasOwnProperty.call(data, 'full_name') && (<Button onClick={() => openModalEdit(Type.editPatinet, data)}
+                                             className="w-full bg-oxfordBlue text-white">
+                                        <Pencil className="mr-1 h-4 w-4"/>
                                         <span className="text-sm">Editar</span>
-                                    </Button>
+                                    </Button>)}
+                                    {Object.prototype.hasOwnProperty.call(data, 'exam_name') &&  (<Button onClick={() => openModalEdit(Type.editExam, data)}
+                                              className="w-full bg-oxfordBlue text-white">
+                                        <Pencil className="mr-1 h-4 w-4"/>
+                                        <span className="text-sm">Editar</span>
+                                    </Button>)}
                                     {openModalBooking && (
                                         <Button onClick={() => openModalEdit(Type.booking,data)} className="w-full bg-oxfordBlue text-white">
                                             <Calendar className="h-4 w-4" />

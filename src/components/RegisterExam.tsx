@@ -1,53 +1,153 @@
-import React, {useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Label} from "@/components/ui/label.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
-import {Exams} from "@/pages/AdminTenantExams.tsx";
 import {IDoctor} from "@/pages/AdminHome.tsx";
+import {useAuth} from "@/hooks/auth.tsx";
+import {ITokenPayload} from "@/types/Auth.ts";
+import {jwtDecode} from "jwt-decode";
+import {listDoctors} from "@/services/doctorsSerivce.tsx";
+import {IExam} from "@/components/ModalExamRender.tsx";
+import {Exams} from "@/pages/AdminTenantExams.tsx";
+import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 
 interface RegisterExamProps {
-    dadosIniciais?: Partial<Exams>
+    dadosIniciais?: Exams
     onClose: () => void
-    isUpdate?: (examData: Exams, tenant: number) => Promise<any>
-    isNewExam?: (examData: Exams, tenant: number) => Promise<any>
+    title: string
+    isUpdate?: (examData: IExam, tenant: number) => Promise<any>
+    isNewExam?: (examData: IExam, tenant: number) => Promise<any>
 }
-const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose, isUpdate, isNewPatient}) => {
+const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose,title, isUpdate, isNewExam}) => {
 
-    const [examData, setExamData] = useState<Exams>({
+    const [examData, setExamData] = useState<IExam>({
         exam_name: '',
         price: '',
         doctorPrice: ''
     });
+    const [tenantId, setTenantID] = useState<number | undefined>()
+    const [selectedDoctors, setSelectedDoctors] = useState<string[] | undefined>([]);
     const [doctors, setDoctors] = useState<IDoctor[]>([])
-    const [selectedDoctor, setSelectedDoctor] = useState<string>('')
     const [erro, setErro] = useState<string | null>(null)
+    const [doctorIDs, setDoctorsIDs] = useState<string[]>([])
+    const auth = useAuth()
 
+    useEffect(() => {
+        const getTenant = () => {
+            if(auth?.token) {
+                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+                setTenantID(decoded.tenantId)
+            }
+        }
+        getTenant()
+    },[auth.token])
+
+    useEffect(() => {
+        const getDoctorsId = () => {
+            if(dadosIniciais) {
+                dadosIniciais.doctors?.map(doctor => {
+                    if(doctor) {
+                        doctorIDs.push(doctor.id.toString())
+                    }
+                })
+            }
+
+        }
+        getDoctorsId()
+        setSelectedDoctors(doctorIDs)
+        const newDados = {...dadosIniciais, doctors: doctorIDs}
+        setExamData(prevDados => ({
+            ...prevDados,
+            ...newDados
+        }))
+    }, [dadosIniciais, doctorIDs])
+    const fetchDoctors = useCallback(async () => {
+        try {
+            if(tenantId)  {
+                await listDoctors(tenantId).then(
+                    (result) => {
+                        setDoctors(result.data.data.data)
+                    }
+                ).catch((error) => console.log(error))
+
+            }
+        } catch (error) {
+            setErro('Erro ao carregar médicos' + error)
+        }
+    }, [tenantId])
+    useEffect(() => {
+    fetchDoctors().then()
+    }, [fetchDoctors]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        e.preventDefault()
         const { name, value } = e.target
         setExamData(prev => ({ ...prev, [name]: value }))
     }
+    const handleSelectedDoctors = (doctors: string[]) => {
+        setSelectedDoctors(doctors)
+        console.log(doctors)
+    }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        if(!examData.exam_name || !examData.price || !examData.doctorPrice) {
+            setErro('Por favor, preencha todos os campos')
+            return
+        }
+        const newExam = {...examData,
+            price: examData.price.replace(',', '.'),
+            doctorPrice: examData.doctorPrice.replace(',', '.'),
+            doctors: selectedDoctors,
+        }
+
+        if(isUpdate && tenantId) {
+                await isUpdate(newExam, tenantId).then((result) => {
+                    if(!result) {
+                        setErro("Não foi possível atualizar o exame")
+                        return
+                    }
+                    if(result.status === "error") {
+                        setErro(result.message)
+                        return
+                    }
+                    if(result.data.status === "success") {
+                        onClose()
+                    }
+                }). catch((error) => console.log(error))
+        }
+        if(isNewExam && tenantId) {
+            await isNewExam(newExam, tenantId).then((result) => {
+                console.log(result)
+                    if(!result) {
+                        setErro("Não foi possível cadastrar o exame")
+                        return
+                    }
+                    if(result.status === "error") {
+                        setErro(result.message)
+                        return
+                    }
+                    if(result.data.status === "success") {
+                        onClose()
+                    }
+                }). catch((error) => console.log(error))
+
+        }
     }
 
     return (
         <div className="mt-10">
-
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle className='text-blue-900 text-xl'>Cadastro de Exames</CardTitle>
+                    <CardTitle className='text-blue-900 text-xl'>{title}</CardTitle>
                     <CardDescription>
-                        Preencha os detalhes do paciente abaixo. Clique em salvar quando terminar.
+                        Preencha os dados do exame. Clique em salvar quando terminar.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit}>
-
                         <div className="grid gap-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="exam_name" className="text-right text-blue-800">
@@ -56,25 +156,20 @@ const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose, isUp
                                 <Input
                                     id="exam_name"
                                     name="exam_name"
-                                    value={examData.exam_name}
+                                    value={examData?.exam_name}
                                     onChange={handleInputChange}
                                     className="col-span-3"/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label className="text-right text-blue-800" htmlFor="examId">Selecione o
-                                    Médico</Label>
-                                <Select value={selectedDoctor} onValueChange={setSelectedDoctor}>
-                                    <SelectTrigger className="col-span-3" id="doctor">
-                                        <SelectValue placeholder="Selecione o Médico"/>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {doctors.map((doctor: IDoctor) => (
-                                            <SelectItem key={doctor.id} value={doctor.id.toString()}>
-                                                {doctor.fullName}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                <Label className="text-right text-blue-800" htmlFor="doctorId">Selecione o(s)
+                                    Médico(s)</Label>
+                                <MultiSelect
+                                    options={doctors}
+                                    onValueChange={handleSelectedDoctors}
+                                    defaultValue={doctorIDs}
+                                    placeholder="Selecione o(s) médico(s)"
+                                    variant="inverted"
+                                />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="price" className="text-right text-blue-800">
@@ -85,7 +180,7 @@ const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose, isUp
                                     name="price"
                                     type="price"
                                     placeholder="0.00"
-                                    value={examData.price}
+                                    value={examData?.price}
                                     onChange={handleInputChange}
                                     className="col-span-3"/>
                             </div>
@@ -95,8 +190,9 @@ const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose, isUp
                                 </Label>
                                 <Input
                                     id="doctorPrice"
+                                    name="doctorPrice"
                                     type="text"
-                                    value={examData.doctorPrice}
+                                    value={examData?.doctorPrice}
                                     onChange={handleInputChange}
                                     placeholder="0.00"
                                 />
@@ -104,7 +200,9 @@ const RegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais, onClose, isUp
 
                         </div>
                         <div className="flex justify-end mt-6">
-                            <Button className="bg-oxfordBlue text-white" type="submit">Cadastrar Exame</Button>
+                            {isNewExam && (<Button className="bg-oxfordBlue text-white" type="submit">Cadastrar Exame</Button>)}
+                            {isUpdate && (<Button className="bg-oxfordBlue text-white" type="submit">Atualizar Exame</Button>)}
+
                         </div>
                     </form>
                 </CardContent>

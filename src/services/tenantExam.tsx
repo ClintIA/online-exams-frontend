@@ -1,5 +1,6 @@
 import {isAxiosError} from 'axios';
 import apiClient from "@/lib/interceptor.ts";
+import {IExam} from "@/components/ModalExamRender.tsx";
 
 export const listTenantExam = async (tenantId:  number)=> {
     try {
@@ -29,5 +30,34 @@ export const listDoctorByExam = async (tenantId:  number,examName: string)=> {
         if(isAxiosError(error)) {
             return error.response?.data
         }
+    }
+}
+
+export const createExam = async (examName: IExam,tenantId:  number) => {
+    try {
+        return await apiClient.post('admin/tenantexam', examName, {
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+}
+
+export const updateExam = async (examName: IExam,tenantId:  number) => {
+    try {
+        return await apiClient.put('admin/tenantexam', examName, {
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+
     }
 }

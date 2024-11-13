@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import ModalFlexivel from "@/components/ModalFlexivel.tsx";
-
 import RegisterExam from "@/components/RegisterExam.tsx";
-import {Exams} from "@/pages/AdminTenantExams.tsx";
+import { Exams} from "@/pages/AdminTenantExams.tsx";
 import {Type} from "@/components/ModalPatientRender.tsx";
+import {createExam, updateExam} from "@/services/tenantExam.tsx";
 
 interface ModalProps {
     isOpen: boolean;
@@ -15,6 +15,14 @@ interface ModalProps {
 
 }
 
+export interface IExam {
+    id?: number
+    exam_name: string
+    price: string
+    doctorPrice?: string
+    doctors?: string[]
+    createdAt?: Date
+}
 
 const ModalExamRender: React.FC<ModalProps> = ({isOpen,onClose,title,modalNewExam,dadosExam, type}) =>  {
     const [open, setOpen] = useState(isOpen)
@@ -32,18 +40,42 @@ const ModalExamRender: React.FC<ModalProps> = ({isOpen,onClose,title,modalNewExa
         setOpen(false)
         onClose()
     }
-    const submitNewExam = async () => {
+    const submitNewExam = async (examData: IExam, tenantId: number) => {
+    if(modalNewExam) {
+        await createExam(examData, tenantId).then(
+            (result) => {
+                console.log(result)
+                if(result.status === 201) {
+                    modalNewExam('Exame cadastrado com sucesso')
+                    onClose()
+                } else {
+                    throw new Error('Não foi possível cadastrar exame')
+                }
 
+            }
+        ).catch(error => console.log(error))
     }
-    const submitUpdateExam = async () => {
-
+    }
+    const submitUpdateExam = async (examData: IExam, tenantId: number) => {
+        if(modalNewExam) {
+            await updateExam(examData, tenantId).then(
+                (result) => {
+                    if(result.status === 201) {
+                        modalNewExam('Exame atualizado com sucesso')
+                        onClose()
+                    } else {
+                        throw new Error('Não foi possível atualizar exame')
+                    }
+                }
+            ).catch(error => console.log(error))
+        }
     }
     const renderModalContent = () => {
         switch (modalContent) {
             case 'editExam':
-                return (<RegisterExam isUpdate={submitUpdateExam} dadosIniciais={dadosExam} onClose={handleClose}  />)
+                return (<RegisterExam title="Editar Exame" isUpdate={submitUpdateExam} dadosIniciais={dadosExam} onClose={handleClose}  />)
             case 'newExam':
-                return(<RegisterExam isNewExam={submitNewExam} onClose={handleClose}/>)
+                return(<RegisterExam title="Cadastrar Exame" isNewExam={submitNewExam} onClose={handleClose}/>)
 
         }
     }
