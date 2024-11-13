@@ -14,3 +14,20 @@ export const listTenantExam = async (tenantId:  number)=> {
         }
     }
 }
+
+export const listDoctorByExam = async (tenantId:  number,examName: string)=> {
+    try {
+        return await apiClient.get(`admin/exam`,{
+            params: {
+                examName: examName
+            },
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+}

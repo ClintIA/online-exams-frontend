@@ -15,19 +15,26 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx"
 import {registerPatientExam} from "@/services/patientExamService.tsx";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import {DadosPaciente} from "@/components/RegisterPatient.tsx";
-import {listTenantExam} from "@/services/tenantExam.tsx";
+import {listDoctorByExam, listTenantExam} from "@/services/tenantExam.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
+import Loading from "@/components/Loading.tsx";
+import {useNavigate} from "react-router-dom";
 
 export interface DadosBooking {
     patientId: number | undefined
     examId: number | undefined
     examDate: string
+    doctorId: number | undefined
+    userId: number | undefined
+    doctor?: Doctor
 }
 interface BookingModalProps {
     dadosPaciente?: DadosPaciente
-    onAgendamentoConcluido: (exam: Exams, dados: DadosPaciente, date: string) => void
+    onAgendamentoConcluido?: (exam: Exams, dados: DadosPaciente, dadosBooking: DadosBooking) => void
+    isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<any>
+    onClose: () => void
 }
 export interface Exams {
     id: number
@@ -35,39 +42,58 @@ export interface Exams {
     price: string
     createdAt: Date
 }
+export interface Doctor {
+    id: number
+    fullName: string
+    exams: any[]
+}
 
-const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcluido}: BookingModalProps ) => {
+const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcluido, isNewBooking}: BookingModalProps ) => {
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
     const [selectedDoctor, setSelectedDoctor] = useState<string>('')
     const [exames, setExames] = useState<Exams[]>([])
     const [erro, setErro] = useState<string | null>(null)
-
+    const [doctors, setDoctors] = useState<Doctor[] | undefined>(undefined)
+    const [loading, setLoading] = useState<boolean>(false);
     const auth = useAuth()
-    const doctors =  [
-        { id: 1, name: "Carlos Moreira" },
-        { id: 2, name: "João Moreira" },
-        { id: 3, name: "Luis Moreira" },
-    ]
+    const navigate = useNavigate()
+    const [userId, setUserId] = useState<number | undefined>(undefined)
 
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
                 const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+                if(!decoded.isAdmin) {
+                    navigate('/admin')
+                }
                 setTenantID(decoded.tenantId)
+                setUserId(decoded.userId)
+            } else {
+                navigate('/admin')
             }
         }
         getTenant()
-    },[auth.token])
+    },[auth.token, navigate])
 
     useEffect( () => {
         const fetchExams = async () => {
             try {
                 if(tenantId) {
+                    setLoading(true)
+
                     const result = await listTenantExam(tenantId)
+                    if(result?.data.data.length === 0 ) {
+                      setErro('Não possui exames cadastrados')
+                        setLoading(false)
+                        return
+                    }
                     if(result?.data.status === "success") {
                         setExames(result?.data.data)
+                        setErro(null)
+                        setLoading(false)
+
                     }
                 }
             } catch (error) {
@@ -77,6 +103,38 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
         }
         fetchExams().then()
     }, [tenantId]);
+    useEffect( () => {
+        const fetchDoctors = async () => {
+            try {
+                if(tenantId && selectedExame) {
+                    setLoading(true)
+                    const exam = exames.find((exam) => exam.id === parseInt(selectedExame))
+                    if(exam) {
+                        const result = await listDoctorByExam(tenantId,exam.exam_name)
+                        if(result?.data.status === "success") {
+                            if(result?.data.data.length === 0) {
+                                setDoctors(undefined)
+                                setErro('Não possui médico cadastrado para esse exame')
+                                setLoading(false)
+
+                                return
+                            } else {
+                                setDoctors(result?.data.data)
+                                setErro(null)
+                            }
+                        }
+                    }
+                    setLoading(false)
+
+                }
+
+            } catch (error) {
+                setErro("Não possível carregar os Médicos")
+                console.error(error)
+            }
+        }
+        fetchDoctors().then()
+    }, [exames, selectedExame, tenantId]);
 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,9 +150,10 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
         }
         dadosBooking.examId = parseInt(selectedExame)
         dadosBooking.patientId = dadosPaciente?.id;
+        dadosBooking.userId = userId;
+        dadosBooking.doctorId = parseInt(selectedDoctor)
 
         if (!dadosBooking.examDate ||
-            !dadosBooking.patientId ||
             !dadosBooking.examId) {
             setErro('Por favor, preencha todos os campos')
             return
@@ -104,25 +163,41 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
             return dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2]
         }
         const selectedExam = exames.find(e => e.id === dadosBooking.examId);
+        const doctorSelected = doctors?.find(e => e.id === dadosBooking.doctorId);
 
         try {
             if(tenantId) {
-                const bookingDados = { ...dadosBooking, examDate: createDate(dadosBooking.examDate) }
+                const bookingDados = { ...dadosBooking, examDate: createDate(dadosBooking.examDate), doctor: doctorSelected }
+                console.log(bookingDados)
+                if(isNewBooking) {
+                    try {
+                        const result = await isNewBooking(bookingDados, tenantId)
+                        console.log(result)
+
+                    } catch (error) {
+                        console.error(error)
+                    }
+
+                }
                 const result = await registerPatientExam(bookingDados, tenantId)
-                console.log(result)
-                if(result?.data.status === "success" && selectedExam && dadosPaciente) {
-                    onAgendamentoConcluido(selectedExam, dadosPaciente, dadosBooking.examDate)
+                if(result?.data.status === "success" && selectedExam && dadosPaciente && onAgendamentoConcluido) {
+                    onAgendamentoConcluido(selectedExam, dadosPaciente, bookingDados)
                 }
                 setDadosBooking({
                     examDate: '',
                     patientId: undefined,
                     examId: undefined,
+                    doctorId: undefined,
+                    userId: undefined,
                 })
             }
         } catch (error) {
             setErro('Falha ao cadastrar paciente. Por favor, tente novamente.')
             console.log(error)
         }
+    }
+    if (loading) {
+        return <Loading />
     }
 
 
@@ -165,23 +240,6 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="doctor" className="text-right text-blue-800">
-                                    Selecione o médico
-                                </Label>
-                                <Select value={selectedDoctor} onValueChange={setSelectedDoctor}>
-                                    <SelectTrigger className="col-span-3" id="doctor">
-                                        <SelectValue placeholder="Selecione o Médico"/>
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {doctors.map((doctor) => (
-                                            <SelectItem key={doctor.id} value={doctor.id.toString()}>
-                                                {doctor.name}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
                                 <Label className="text-right text-blue-800" htmlFor="examId">Selecione o Exame</Label>
                                 <Select value={selectedExame} onValueChange={setSelectedExame}>
                                     <SelectTrigger className="col-span-3" id="examId">
@@ -197,6 +255,24 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
                                 </Select>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="doctor" className="text-right text-blue-800">
+                                    Selecione o Médico
+                                </Label>
+                                <Select disabled={!doctors} value={selectedDoctor} onValueChange={setSelectedDoctor}>
+                                    <SelectTrigger className="col-span-3" id="doctor">
+                                        <SelectValue placeholder="Selecione o Médico"/>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {doctors?.map((doctor) => (
+                                            <SelectItem key={doctor.id} value={doctor.id.toString()}>
+                                                {doctor.fullName}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="examDate" className="text-right text-blue-800">
                                     Dia do Exame
                                 </Label>
@@ -204,7 +280,6 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
                                     id="examDate"
                                     name="examDate"
                                     type="datetime-local"
-                                    value={dadosBooking.examDate}
                                     onChange={handleInputChange}
                                     className="col-span-3"
                                 />

@@ -10,15 +10,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { BarChart3, CalendarIcon } from 'lucide-react'
-import { useState } from 'react'
+import React, { useState} from 'react'
 import { DateRange } from 'react-day-picker'
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
-export function AdminDashboard() {
+const AdminDashboard: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
-
   const [selectedFilter, setSelectedFilter] = useState('hoje')
   const [isCustomDateOpen, setIsCustomDateOpen] = useState(false)
+
 
   const filterOptions = [
     {
@@ -39,7 +39,7 @@ export function AdminDashboard() {
     },
     {
       name: 'personalizado',
-      disabled: true
+      disabled: false
     },
   ]
 
@@ -260,3 +260,5 @@ export function AdminDashboard() {
       </div>
   )
 }
+
+export default AdminDashboard;

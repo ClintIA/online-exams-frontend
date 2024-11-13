@@ -4,12 +4,12 @@ import logoClintia from '../../assets/logoClintiaLogin.png';
 import { Input } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth.tsx";
-import ErrorModal from "../../error/ErrorModal.tsx";
 import { Button } from "../../components/ui/button.tsx";
-import { useCpf } from '../../hooks/useCpf.tsx'; 
+import { useCpf } from '../../hooks/useCpf.tsx';
 // import styles from './LoginPatient.module.css';
 // import Cookies from "js-cookie";
 // import { loginPatient } from "../api/patient-login";
+import GeneralModal from "@/components/GeneralModal.tsx";
 
 export function LoginPatient() {
     const [patientCpf, setPatientCpf] = useState("");
@@ -94,7 +94,9 @@ export function LoginPatient() {
                                                 >
                                                     Acessar
                                                 </Button>
-                                                    <ErrorModal
+                                                    <GeneralModal
+                                                        action={'Close'}
+                                                        error={true}
                                                         isOpen={isErrorModalOpen}
                                                         onClose={() => setIsErrorModalOpen(false)}
                                                         message={errorMessage}/>
@@ -111,3 +113,5 @@ export function LoginPatient() {
         </div>
     );
 };
+
+export default LoginPatient;

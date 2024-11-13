@@ -7,12 +7,13 @@ import { ITokenPayload } from "@/types/Auth"
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
 import { jwtDecode } from "jwt-decode"
 import { FileUp, Upload } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 interface IPatientExam {
   id: number
   link: string | null
+  patient: string
   createdAt: string
   examDate: string
   uploadedAt: string | null
@@ -31,7 +32,7 @@ const s3Client = new S3Client({
   }
 });
 
-export function AdminExams() {
+const AdminExams: React.FC = () =>  {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [exams, setExams] = useState<IPatientExam[]>([])
@@ -151,7 +152,7 @@ export function AdminExams() {
         <TableBody>
           {exams.map((exam) => (
             <TableRow key={exam.id}>
-              <TableCell>Nome do paciente</TableCell>
+              <TableCell>{exam.patient}</TableCell>
               <TableCell>{exam.exam.exam_name}</TableCell>
               <TableCell>{new Date(exam.createdAt).toLocaleDateString()}</TableCell>
               <TableCell>{new Date(exam.examDate).toLocaleDateString()}</TableCell>
@@ -210,3 +211,4 @@ export function AdminExams() {
     </div>
   )
 }
+export default AdminExams;

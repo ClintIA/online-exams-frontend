@@ -20,6 +20,8 @@ export interface ITokenPayload {
     userId: number;
     tenantId?: number;
     isAdmin: boolean;
+    exp: number;
+    iat: number;
 }
 export type Props = {
     children?: React.ReactNode;

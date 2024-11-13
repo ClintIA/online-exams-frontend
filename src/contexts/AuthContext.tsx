@@ -27,6 +27,13 @@ const AuthProvider = ({ children }: Props) => {
                 const decoded: ITokenPayload = jwtDecode(tokenFromStorage);
                 setAuthenticated(decoded.isAdmin);
                 setUserId(decoded.userId);
+                const timeNow = new Date();
+                const timeExp = new Date(decoded.exp)
+                if(!(timeNow > timeExp)) {
+                    Cookies.remove('token');
+                    Cookies.remove('user');
+
+                }
             }
         }
         checkToken()

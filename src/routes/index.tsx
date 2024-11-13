@@ -1,14 +1,17 @@
-import BookingSteps from "@/components/BookingSteps.tsx";
-import { AdminExams } from "@/pages/AdminExams.tsx";
-import AdminHome from "@/pages/AdminHome.tsx";
-import AppLayout from "@/pages/AppLayout.tsx";
-import LoginAdmin from "@/pages/LoginAdmin.tsx";
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import  AdminDashboard from "@/pages/AdminDashboard.tsx";
+import {createBrowserRouter, Navigate} from "react-router-dom";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
 import {Exames} from "../pages/patient/Exames.tsx";
 import {LoginPatient} from "../pages/patient/LoginPatient.tsx";
 import { DadosCadastrais } from '../pages/patient/DadosCadastrais'
+import Home from "../pages/Home.tsx";
+import LoginAdmin from "../pages/LoginAdmin.tsx";
+import LoginPatient from "../pages/LoginPatient.tsx";
+import AppLayout from "@/pages/AppLayout.tsx";
+import BookingSteps from "@/components/BookingSteps.tsx";
+import Patient from "@/pages/Patient.tsx";
+import AdminExams from "@/pages/AdminExams.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -60,11 +63,15 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:<AdminHome />,
+                element:<AdminDashboard />,
             },
             {
                 path:'agendamento',
                 element:<BookingSteps />,
+            },
+            {
+                path:'pacientes',
+                element:<Patient />,
             },
             {
                 path:'exames',
