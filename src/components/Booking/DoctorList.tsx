@@ -39,13 +39,13 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {doctors.map((doctor) => (
+                {doctors?.map((doctor) => (
                     <TableRow key={doctor.id}>
-                        <TableCell>{doctor.doctor.fullName}</TableCell>
-                        <TableCell>{doctor.doctor.CRM}</TableCell>
-                        <TableCell>{doctor.doctor.phone}</TableCell>
+                        <TableCell>{doctor.doctor?.fullName}</TableCell>
+                        <TableCell>{doctor.doctor?.CRM}</TableCell>
+                        <TableCell>{doctor.doctor?.phone}</TableCell>
                         <TableCell>
-                            {doctor.doctor.email}
+                            {doctor.doctor?.email}
                         </TableCell>
                         <TableCell>
                             <Button
