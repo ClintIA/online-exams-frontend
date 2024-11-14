@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import {Button} from "@/components/ui/button.tsx";
@@ -10,6 +10,23 @@ interface ListaAgendamentosProps {
 }
 
 const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAgendamentosProps) => {
+    const [doctors, setDoctors] = useState<IPatientExam[]>([])
+    useEffect(() => {
+        const uniqueValues = () => {
+            const uniqueNames = new Set();
+            const uniquePeople: IPatientExam[] = agendamentos.filter(doctor => {
+                if (uniqueNames.has(doctor.doctor.id)) {
+                    return false;
+                } else {
+                    uniqueNames.add(doctor.doctor.id);
+                    return true;
+                }
+            });
+            setDoctors(uniquePeople)
+        }
+        uniqueValues()
+    }, [agendamentos]);
+
     return (
         <Table>
             <TableHeader>
@@ -22,7 +39,7 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {agendamentos.map((doctor) => (
+                {doctors.map((doctor) => (
                     <TableRow key={doctor.id}>
                         <TableCell>{doctor.doctor.fullName}</TableCell>
                         <TableCell>{doctor.doctor.CRM}</TableCell>
