@@ -1,11 +1,10 @@
-import { Header } from "../../components/patient/Header";
 import '../../global.css';
 import styles from './Exames.module.css';
 import { Post } from '../../components/patient/Post';
 import { ConsultorioDropdown } from '../../components/patient/ConsultorioDropdown';
 import { useState, useEffect } from 'react';
 import logoExam from '../../assets/icon-clintia.png';
-import { getPatientExams } from '../../api/patient-exams';
+import { getPatientExams } from '@/api/patient-exams.ts';
 import { useAuth } from '../../hooks/auth';
 
 
@@ -131,9 +130,8 @@ export function Exames() {
   const consultorios = Array.from(new Set(exames.map(exame => exame.consultorio)));
 
   return (
-    <div>
+      <div>
       <div className={styles.wrapper}>
-        <Header />
         <main>
           <div>
             <h1 className={styles.title}>Resultado de Exames</h1>
@@ -153,6 +151,6 @@ export function Exames() {
         )}
         </main>
       </div>
-    </div>
+      </div>
   );
 }

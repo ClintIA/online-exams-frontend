@@ -4,7 +4,7 @@ import Error404 from "../error/Error404.tsx";
 import {Exames} from "../pages/patient/Exames.tsx";
 import { DadosCadastrais } from '../pages/patient/DadosCadastrais'
 import LoginAdmin from "../pages/admin/LoginAdmin.tsx";
-import AppLayout from "@/pages/admin/AppLayout.tsx";
+import AppLayout from "@/pages/AppLayout.tsx";
 import AdminExams from "@/pages/admin/AdminExams.tsx";
 import LoginPatient from "@/pages/patient/LoginPatient.tsx";
 import AdminPatient from "@/pages/admin/AdminPatient.tsx";
