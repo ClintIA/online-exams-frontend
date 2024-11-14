@@ -23,10 +23,10 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
             </TableHeader>
             <TableBody>
                 {agendamentos.map((agendamento) => (
-                    <TableRow key={agendamento?.id}>
-                        <TableCell>{agendamento.patient?.full_name}</TableCell>
+                    <TableRow key={agendamento.id}>
+                        <TableCell>{agendamento.patient.full_name}</TableCell>
                         <TableCell>{new Date(agendamento.examDate).toISOString().substring(11, 16)}</TableCell>
-                        <TableCell>{agendamento.doctor?.fullName}</TableCell>
+                        <TableCell>{agendamento.doctor.fullName}</TableCell>
                         <TableCell>
                             {agendamento.status ? (
                                 <span className="text-green-600 font-semibold">Compareceu</span>
