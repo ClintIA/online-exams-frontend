@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useCallback} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs.tsx"
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
@@ -50,33 +50,34 @@ const AdminBooking: React.FC = () =>  {
         }
         getTenant()
     }, [auth.token])
-    const fetchPatientExams = useCallback(async () => {
-        try {
-            if (tenantId) {
-                const today = new Date().toLocaleDateString()
-                const result = await listPatientExams(tenantId, {
-                    startDate: createDate(today),
-                    endDate: createDate(today),
-                    status: 'Scheduled'
-                })
-                if (result?.data?.status === "success") {
-                    const examsList = result?.data?.data?.exams as IPatientExam[]
-                    setExams(examsList || [])
-                }
-            }
-        } catch (error) {
-            console.error(error)
-        }
-    },[tenantId])
+
     useEffect(() => {
+        const fetchPatientExams = async () => {
+            try {
+                if (tenantId) {
+                    const today = new Date().toLocaleDateString()
+                    const result = await listPatientExams(tenantId, {
+                        startDate: createDate(today),
+                        endDate: createDate(today),
+                        status: 'Scheduled'
+                    })
+                    if (result?.data?.status === "success") {
+                        const examsList = result?.data?.data?.exams as IPatientExam[]
+                        setExams(examsList || [])
+                    }
+                }
+            } catch (error) {
+                console.error(error)
+            }
+        }
         fetchPatientExams().then()
-    }, [fetchPatientExams, tenantId]);
+    }, [tenantId]);
     const handleModalMessage = () => {
         openFlexiveModal('Confirmação de Agendamento', Type.bookingConfirmation)
     }
     const handleClose = () => {
         setOpenModalNewPatient(false)
-        fetchPatientExams().then()
+        setExams(exams)
     }
     return (
         <div className="w-full max-w-6xl p-4 mx-auto">
