@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useCallback} from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs.tsx"
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
@@ -50,31 +50,34 @@ const AdminBooking: React.FC = () =>  {
         }
         getTenant()
     }, [auth.token])
-    useEffect(() => {
-        const fetchPatientExams = async () => {
-            try {
-                if (tenantId) {
-                    const today = new Date().toLocaleDateString()
-                    const result = await listPatientExams(tenantId, {
-                        startDate: createDate(today),
-                        endDate: createDate(today),
-                        status: 'Scheduled'
-                    })
-                    if (result?.data?.status === "success") {
-                        const examsList = result?.data?.data?.exams as IPatientExam[]
-                        setExams(examsList || [])
-                    }
+    const fetchPatientExams = useCallback(async () => {
+        try {
+            if (tenantId) {
+                const today = new Date().toLocaleDateString()
+                const result = await listPatientExams(tenantId, {
+                    startDate: createDate(today),
+                    endDate: createDate(today),
+                    status: 'Scheduled'
+                })
+                if (result?.data?.status === "success") {
+                    const examsList = result?.data?.data?.exams as IPatientExam[]
+                    setExams(examsList || [])
                 }
-            } catch (error) {
-                console.error(error)
             }
+        } catch (error) {
+            console.error(error)
         }
+    },[tenantId])
+    useEffect(() => {
         fetchPatientExams().then()
-    }, [tenantId]);
+    }, [fetchPatientExams, tenantId]);
     const handleModalMessage = () => {
         openFlexiveModal('Confirmação de Agendamento', Type.bookingConfirmation)
     }
-
+    const handleClose = () => {
+        setOpenModalNewPatient(false)
+        fetchPatientExams().then()
+    }
     return (
         <div className="w-full max-w-6xl p-4 mx-auto">
             <h1 className="text-2xl font-bold mb-4 text-oxfordBlue">Gerenciamento de Agendamentos</h1>
@@ -136,7 +139,7 @@ const AdminBooking: React.FC = () =>  {
             title={title}
             type={type}
             dadosPaciente={dadosPaciente}
-            onClose={() => setOpenModalNewPatient(false)}
+            onClose={handleClose}
             modalNewPatient={handleModalMessage}
         />}
         </div>
