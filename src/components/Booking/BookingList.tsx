@@ -26,7 +26,7 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
                 {agendamentos.map((agendamento) => (
                     <TableRow key={agendamento?.id}>
                         <TableCell>{agendamento.patient?.full_name}</TableCell>
-                        <TableCell>{formatDate(agendamento.examDate, 'HH:mm')}</TableCell>
+                        <TableCell>{new Date(agendamento.examDate).toISOString().substring(11, 16)}</TableCell>
                         <TableCell>{agendamento.doctor?.fullName}</TableCell>
                         <TableCell>
                             {agendamento.status ? (
