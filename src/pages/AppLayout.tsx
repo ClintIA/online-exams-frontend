@@ -34,7 +34,7 @@ const AppLayout: React.FC = () => {
             <div>
                 <HandleSideBar isAdmin={isAdmin}/>
             </div>
-            <div className="flex-1 md:ml-64">
+            <div className="flex-1 overflow-y-auto md:ml-64">
                 <Outlet/>
             </div>
             <footer className={`w-full fixed bottom-0 h-10 bg-oxfordBlue`}>

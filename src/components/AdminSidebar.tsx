@@ -1,4 +1,3 @@
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar";
 import { useAuth } from "@/hooks/auth.tsx";
 import {
@@ -20,11 +19,12 @@ import clintiaLogo from "@/assets/logoClintia.png";
 import {List, SignOut} from "phosphor-react";
 
 const AdminSidebar: React.FC = () => {
-  const auth = useAuth();
-  const navigate = useNavigate();
+
   const [isOpenRegister, setIsOpenRegister] = useState(false)
   const [isOpenRelatorios, setIsOpenRelatorios] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false);
+  const auth = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -37,20 +37,19 @@ const AdminSidebar: React.FC = () => {
 
   return (
       <aside className={`${styles.sidebar} ${menuOpen ? styles.mobileSidebar : ''}`}>
-
-        <div className="flex justify-items-start">
+        <div className="flex justify-end ml-10">
           <img src={clintiaLogo} className="w-32 h-auto md:w-64 md:h-auto"
                alt="Logo ClintIA"/>
         </div>
-        <div className="flex justify-end mt-3 mr-5">
-          <button className={styles.menuButton} onClick={toggleMenu}>
+        <div className="flex md:hidden absolute top-0 mt-3">
+          <button onClick={toggleMenu}>
             <List size={32} color="white"/>
           </button>
         </div>
 
-        <nav className={`${styles.nav} ${menuOpen ? styles.open : ''}`}>
+        <nav className={`overflow-y-auto ${styles.nav} ${menuOpen ? styles.open : ''}`}>
           <SidebarProvider>
-            <SidebarMenu className="h-screen">
+            <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton>
                   <a href="/admin/home">
@@ -142,26 +141,18 @@ const AdminSidebar: React.FC = () => {
                   </SidebarMenuItem>
                 </CollapsibleContent>
               </Collapsible>
-              <div className="absolute bottom-1">
-            <SidebarFooter className="flex flex-row">
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                      <button className="ml-2  md:ml-0 md:mr-28 text-white">
-                        <User color="white" className="w-8 h-8"/>Perfil
-                      </button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent side="top">
-                    <DropdownMenuItem>
-                      <span>Editar Perfil</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-                  <button className="mr-10 text-white" onClick={handleLogout}>
-                    <SignOut color="white" className="w-8 h-8"/> Sair
-                  </button>
-
-            </SidebarFooter>
+            <SidebarFooter className="flex flex-row justify-between">
+              <div className="fixed bottom-16 md:bottom-2 md:left-2">
+                <button className="text-white">
+                  <User color="white" className="w-8 h-8"/>Perfil
+                </button>
               </div>
+              <div className="fixed bottom-16 right-2 md:bottom-2  md:left-48">
+                <button className="text-white" onClick={handleLogout}>
+                  <SignOut color="white" className="w-8 h-8"/> Sair
+                </button>
+              </div>
+            </SidebarFooter>
             </SidebarMenu>
           </SidebarProvider>
         </nav>
