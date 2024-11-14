@@ -14,11 +14,11 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
     useEffect(() => {
         const uniqueValues = () => {
             const uniqueNames = new Set();
-            const uniquePeople: IPatientExam[] = agendamentos.filter(doctor => {
-                if (uniqueNames.has(doctor.doctor.id)) {
+            const uniquePeople: IPatientExam[] = agendamentos.filter(exams => {
+                if (uniqueNames.has(exams?.doctor?.id)) {
                     return false;
                 } else {
-                    uniqueNames.add(doctor.doctor.id);
+                    uniqueNames.add(exams?.doctor?.id);
                     return true;
                 }
             });
@@ -39,7 +39,7 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {doctors?.map((doctor) => (
+                {doctors.map((doctor) => (
                     <TableRow key={doctor.id}>
                         <TableCell>{doctor.doctor?.fullName}</TableCell>
                         <TableCell>{doctor.doctor?.CRM}</TableCell>
