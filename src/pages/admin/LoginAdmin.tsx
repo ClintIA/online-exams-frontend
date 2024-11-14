@@ -93,7 +93,7 @@ const LoginAdmin: React.FC = () => {
                                                     </div>
                                                     <div className='mb-4'>
                                                         <Input autoComplete="true" placeholder="Senha"
-                                                               className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
+                                                               className='!text-white mr-2 focus:text-white border-b border-blue-500 p-1 w-full'
                                                                type='password' value={password}
                                                                onChange={(e) => setPassword(e.target.value)}/>
 

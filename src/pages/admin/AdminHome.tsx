@@ -184,8 +184,8 @@ export default function AdminHome() {
   const totalPages = Math.ceil(doctorsPagination.total / doctorsPagination.take);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background w-[90%] mx-auto">
-      <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-2">
+      <div className="w-full max-w-6xl p-4 mx-auto">
+        <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-2">
         <div className="flex items-center space-x-2">
           <Dialog>
             <DialogTrigger asChild>

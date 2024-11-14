@@ -76,7 +76,7 @@ const AdminBooking: React.FC = () =>  {
     }
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="w-full max-w-6xl p-4 mx-auto">
             <h1 className="text-2xl font-bold mb-4 text-oxfordBlue">Gerenciamento de Agendamentos</h1>
             <Tabs defaultValue="lista" className="space-y-4">
                 <TabsList className="p-5 gap-2">
@@ -125,11 +125,6 @@ const AdminBooking: React.FC = () =>  {
                 </TabsContent>
                 <TabsContent value="booking">
                     <Card>
-                        <CardHeader className="flex flex-row gap-2 justify-items-start text-base text-oxfordBlue">
-                            <CardTitle className="ml-4 text-oxfordBlue text-xl">
-                                Realizar Agendamento
-                            </CardTitle>
-                        </CardHeader>
                         <CardContent>
                             <BookingPatient />
                         </CardContent>

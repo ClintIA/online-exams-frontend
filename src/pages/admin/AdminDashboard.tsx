@@ -104,7 +104,7 @@ const AdminDashboard: React.FC = () => {
   ]
 
   return (
-      <div className="flex-1 ml-0 md:ml-6">
+      <div className="w-full max-w-6xl p-4 mx-auto">
         <div className="p-8">
           <h1 className="text-3xl font-bold mb-6">Dashboard de Exames</h1>
 

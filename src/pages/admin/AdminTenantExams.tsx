@@ -143,7 +143,7 @@ const AdminTenantExams: React.FC = () => {
     }
     return (
         <>
-            <div className="w-full max-w-6xl">
+            <div className="w-full max-w-6xl p-4 mx-auto">
                 <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Listagem de Exames da Clínica</h1>
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
                     <Cards name='Total de Exames' content={exames?.length}/>
