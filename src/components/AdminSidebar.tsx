@@ -142,7 +142,7 @@ const AdminSidebar: React.FC = () => {
                   </SidebarMenuItem>
                 </CollapsibleContent>
               </Collapsible>
-              <div className="absolute bottom-0gi">
+              <div className="absolute bottom-1">
             <SidebarFooter className="flex flex-row">
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
