@@ -1,7 +1,6 @@
 import React from 'react'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
-import {formatDate} from "date-fns";
 import {Button} from "@/components/ui/button.tsx";
 import {CheckCircle} from "lucide-react";
 
