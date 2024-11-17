@@ -23,7 +23,7 @@ interface ModalRegisterProps {
     title?: string;
     modalNewPatient?: (message: string) => void;
     dadosPaciente?: DadosPaciente
-    dadosBooking: any
+    dadosBooking?: any
     type: Type
 
 }
