@@ -21,19 +21,19 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {canaisOptions} from "@/lib/canalOptions.ts";
 
 export interface DadosPaciente {
-    id?: number | undefined
-    full_name: string | undefined
-    email: string | undefined
-    phone: string | undefined
-    dob: string | undefined
-    cpf?: string | undefined
-    address: string | undefined
-    canal?: string | undefined
-    gender: string | undefined
-    exams?: any[] | undefined
-    sessionToken?: string | undefined
-    created_at?: string | undefined
-    health_card_number: string | undefined
+    id?: number
+    full_name?: string
+    email?: string
+    phone?: string
+    dob?: string
+    cpf?: string
+    address?: string
+    canal?: string
+    gender?: string
+    exams?: any[]
+    sessionToken?: string
+    created_at?: string
+    health_card_number?: string
     tenants?: any[]
 }
 
@@ -57,7 +57,6 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
         gender: '',
         health_card_number: '',
     })
-
     const [tenant, setTenant] = useState<number | undefined>(undefined)
     const [erro, setErro] = useState<string | null>(null)
     const [selectedCanal, setSelectedCanal] = useState<string | undefined>('')

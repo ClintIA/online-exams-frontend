@@ -3,13 +3,21 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {CheckCircle} from "lucide-react";
+import Loading from "@/components/Loading.tsx";
 
 interface ListaAgendamentosProps {
     agendamentos: IPatientExam[]
     onConfirmarPresenca?: (id: string) => void
+    loading: boolean
 }
 
-const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAgendamentosProps) => {
+const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos ,loading }: ListaAgendamentosProps) => {
+    if(loading) {
+        return (<Loading />)
+    }
+    if(agendamentos.length === 0) {
+        return (<p className="text-base font-semibold">Não possuí exames para o dia selecionado</p>)
+    }
     return (
         <Table>
             <TableHeader>

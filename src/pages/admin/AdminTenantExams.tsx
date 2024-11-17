@@ -12,8 +12,8 @@ import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import Loading from "@/components/Loading.tsx";
 import {TableCell} from "@mui/material";
-import {Type} from "@/components/ModalHandle/ModalRender.tsx";
-import ModalExamRender from "@/components/AdminTenantExam/ModalExamRender.tsx";
+import {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
+import ModalTenantExamRender from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 
 export interface Exams {
@@ -37,7 +37,7 @@ const AdminTenantExams: React.FC = () => {
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [filterDoctor, setFilterDoctor] = useState<string>()
     const [loading, setLoading] = useState<boolean>(false);
-    const [type,setType] = useState<Type>(Type.newExam)
+    const [type,setType] = useState<ModalType>(ModalType.newExam)
     const [deleteId, setDeleteId] = useState<number>()
     const [title,setTitle] = useState("");
     const [action,setAction] = useState("");
@@ -91,7 +91,7 @@ const AdminTenantExams: React.FC = () => {
             <TableCell className="text-blue-900 capitalize">{exame.doctorPrice}</TableCell>
         </>
     );
-    const openFlexiveModal = (modalType: Type, exams?: Exams) => {
+    const openFlexiveModal = (modalType: ModalType, exams?: Exams) => {
         if(exams) {
             setExame(exams)
         }
@@ -169,7 +169,7 @@ const AdminTenantExams: React.FC = () => {
                             onChange={(e) => setFilterDoctor(e.target.value)}/>
                     </div>
                     <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={() => openFlexiveModal(Type.newExam)}
+                        <Button onClick={() => openFlexiveModal(ModalType.newExam)}
                                 className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
                             Exame</Button>
                     </div>
@@ -192,7 +192,7 @@ const AdminTenantExams: React.FC = () => {
                 </Card>
             </div>
             {openModalNewExam && (
-                <ModalExamRender
+                <ModalTenantExamRender
                     modalNewExam={handleModalMessage}
                     isOpen={openModalNewExam}
                     onClose={() => setOpenModalNewExam(false)}

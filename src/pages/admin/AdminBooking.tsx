@@ -1,9 +1,9 @@
-import React, {useEffect, useState, useCallback} from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs.tsx"
+import React, {useCallback, useEffect, useState} from 'react'
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx"
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx"
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import ModalRender, {Type} from "@/components/ModalHandle/ModalRender.tsx";
+import ModalRender, {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 import {listPatientExams} from "@/services/patientExamService.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
@@ -14,11 +14,12 @@ import DoctorList from "@/components/Booking/DoctorList.tsx";
 import BookingPatient from "@/components/Booking/BookingPatient.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {formatDate} from "@/lib/utils.ts";
+import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 
 const AdminBooking: React.FC = () =>  {
 
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
-    const [type,setType] = useState<Type>(Type.newPatient)
+    const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [exams, setExams] = useState<IPatientExam[]>([])
     const [title, setTitle] = useState<string>("")
@@ -34,14 +35,16 @@ const AdminBooking: React.FC = () =>  {
         gender: '',
         health_card_number: '',
     })
-    const [confirmationBookingData, setConfirmaationBookingData] = useState({})
+    const [loading, setLoading] = useState<boolean>(false)
+    const [titleModal,setTitleModal] = useState("");
+    const [action,setAction] = useState("");
+    const [isError, setIsError] = useState(false);
+    const [generalMessage, setGeneralMessage] = useState<string>('')
+    const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const auth = useAuth()
-    const openFlexiveModal = (title: string, modalType: Type, confirmationBooking?: any, paciente?: DadosPaciente) => {
+    const openFlexiveModal = (title: string, modalType: ModalType, paciente?: DadosPaciente) => {
         if(paciente) {
             setDadosPaciente(paciente)
-        }
-        if(modalType === Type.bookingConfirmation) {
-            setConfirmaationBookingData(confirmationBooking)
         }
         setType(modalType)
         setTitle(title)
@@ -56,20 +59,24 @@ const AdminBooking: React.FC = () =>  {
         }
         getTenant()
     }, [auth.token])
+
     const fetchPatientExams = useCallback(async (newDate: string) => {
         try {
             if (tenantId) {
+                setLoading(true)
                 const result = await listPatientExams(tenantId, {
                     startDate: newDate,
                     endDate: newDate,
                     status: 'Scheduled'
                 })
                 if (result?.data?.status === "success") {
+                    setLoading(false)
                     const examsList = result?.data?.data?.exams as IPatientExam[]
                     setExams(examsList || [])
                 }
             }
         } catch (error) {
+            setLoading(false)
             console.error(error)
         }
     }, [tenantId])
@@ -80,10 +87,18 @@ const AdminBooking: React.FC = () =>  {
     useEffect(() => {
         fetchPatientExams(date).then()
     }, [date, fetchPatientExams]);
-    const handleModalMessage = () => {
-        openFlexiveModal('Confirmação de Agendamento', Type.bookingConfirmation)
+    const handleConfirmationBooking = () => {
+        openFlexiveModal('Confirmação de Agendamento', ModalType.bookingConfirmation)
+    }
+    const handleModalMessage = (message: string) => {
+        setGeneralMessage(message)
+        setTitleModal('Confirmação')
+        setAction('Fechar')
+        setIsError(false)
+        setIsGeneralModalOpen(true)
     }
     const handleClose = () => {
+
         fetchPatientExams(date).then()
         setOpenModalNewPatient(false)
     }
@@ -93,9 +108,8 @@ const AdminBooking: React.FC = () =>  {
             <h1 className="text-2xl font-bold mb-4 text-oxfordBlue">Gerenciamento de Agendamentos</h1>
             <Tabs defaultValue="lista" className="space-y-4">
                 <TabsList className="p-5 gap-2">
-                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="lista">Pacientes <span className="hidden sm:flex">Agendados</span></TabsTrigger>
-                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="doctors">Medicos <span className="hidden sm:flex">Agendados</span></TabsTrigger>
-                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="booking">Realizar Agendamento</TabsTrigger>
+                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="lista">Pacientes &nbsp;<span className="hidden sm:flex">Agendados</span></TabsTrigger>
+                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="doctors">Medicos &nbsp;<span className="hidden sm:flex"> Agendados</span></TabsTrigger>
                 </TabsList>
                 <TabsContent value="lista">
                     <Card className="p-4">
@@ -104,10 +118,10 @@ const AdminBooking: React.FC = () =>  {
                         </CardTitle>
                         <CardHeader className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">
                             <div className="mt-1.5 flex gap-2">
-                                <Button onClick={() => openFlexiveModal('Registrar Paciente', Type.newPatient)}
+                                <Button onClick={() => openFlexiveModal('Registrar Paciente', ModalType.newPatient)}
                                         className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Cadastrar
                                     Paciente</Button>
-                                <Button onClick={() => openFlexiveModal('Agendamento de Exame', Type.newBookingPatient)}
+                                <Button onClick={() => openFlexiveModal('Agendamento de Exame', ModalType.newBookingPatient)}
                                         className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Realizar
                                     Agendamento
                                 </Button>
@@ -125,6 +139,7 @@ const AdminBooking: React.FC = () =>  {
                         <CardContent>
                             <div className="ml-4">
                                 <BookingList
+                                    loading={loading}
                                     agendamentos={exams}
                                 />
                             </div>
@@ -144,13 +159,6 @@ const AdminBooking: React.FC = () =>  {
                         </CardContent>
                     </Card>
                 </TabsContent>
-                <TabsContent value="booking">
-                    <Card>
-                        <CardContent>
-                            <BookingPatient />
-                        </CardContent>
-                    </Card>
-                </TabsContent>
             </Tabs>
         {openModalNewPatient && <ModalRender
             isOpen={openModalNewPatient}
@@ -158,9 +166,16 @@ const AdminBooking: React.FC = () =>  {
             type={type}
             dadosPaciente={dadosPaciente}
             onClose={handleClose}
-            dadosBooking={confirmationBookingData}
             modalNewPatient={handleModalMessage}
+            modalNewBookingConfirmation={handleConfirmationBooking}
         />}
+            <GeneralModal
+                title={titleModal}
+                action={action}
+                error={isError}
+                isOpen={isGeneralModalOpen}
+                onClose={() => setIsGeneralModalOpen(false)}
+                message={generalMessage}/>
         </div>
     )
 }

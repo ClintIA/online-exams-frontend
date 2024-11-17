@@ -22,7 +22,7 @@ import Loading from "@/components/Loading.tsx";
 import {useNavigate} from "react-router-dom";
 import {validarCPF} from "@/lib/utils.ts";
 import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
-import {Type} from "@/components/ModalHandle/ModalRender.tsx";
+import {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 
 export interface DadosBooking {
     patientId: number | undefined
@@ -45,7 +45,7 @@ interface Doctor {
     exams: any[]
 }
 interface BookingModalProps {
-    handleModalMessage?: (type: Type) => void
+    handleModalMessage?: (type: ModalType) => void
     submitBooking?: (bookingDados: DadosBooking, tenantId: number) => Promise<any>
 }
 
@@ -209,7 +209,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                    if (submitBooking) {
                        const result = await submitBooking(bookingDados, tenant)
                        if(result.status === 201 && handleModalMessage) {
-                           handleModalMessage(Type.bookingConfirmation)
+                           handleModalMessage(ModalType.bookingConfirmation)
                        }
                    }
                } catch (error) {

@@ -11,7 +11,7 @@ import {jwtDecode} from "jwt-decode";
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import Loading from "@/components/Loading.tsx";
-import ModalRender, {Type} from "@/components/ModalHandle/ModalRender.tsx";
+import ModalRender, {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
@@ -32,7 +32,7 @@ const AdminPatient: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({} as DadosPaciente)
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
-    const [type,setType] = useState<Type>(Type.newPatient)
+    const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const auth = useAuth()
 
     const fetchPatients = useCallback(async () => {
@@ -152,7 +152,7 @@ const AdminPatient: React.FC = () => {
         setIsGeneralModalOpen(true)
     }
 
-    const openFlexiveModal = (modalType: Type, paciente?: DadosPaciente) => {
+    const openFlexiveModal = (modalType: ModalType, paciente?: DadosPaciente) => {
         if(paciente) {
             setDadosPaciente(paciente)
         }
@@ -198,7 +198,7 @@ const AdminPatient: React.FC = () => {
                             onChange={(e) => setFiltroCPF(e.target.value)}/>
                     </div>
                     <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={() => openFlexiveModal(Type.newPatient)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
+                        <Button onClick={() => openFlexiveModal(ModalType.newPatient)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
                     </div>
                 </div>
 

@@ -3,19 +3,26 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} f
 import {Button} from "@/components/ui/button.tsx";
 import { Exams} from "@/components/Booking/Booking.tsx";
 import {CalendarDays, Clock, FileText, User} from "lucide-react";
-import {Type} from "@/components/ModalHandle/ModalRender.tsx";
+import {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 
 export interface BookingConfirmationProps {
     exame?: Exams,
-    dadosBooking?: any,
-    onNewBooking?: (type: Type) => void
+    dadosBooking: BookingConfirmationState,
+    onNewBooking?: (type: ModalType) => void
+}
+export interface BookingConfirmationState {
+    exam_name: string
+    exameDate: string
+    doctor: string
+    patientName: string
+    patientPhone: string
 }
 const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking, onNewBooking}: BookingConfirmationProps) => {
 
 
     const newBooking = () => {
         if (onNewBooking) {
-            onNewBooking(Type.newBookingPatient);
+            onNewBooking(ModalType.newBookingPatient);
         }
     }
     console.log(dadosBooking)
@@ -47,12 +54,12 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking,
                         <div className="flex items-center">
                             <CalendarDays className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Data:</span>
-                            <span className="ml-2">{createDate(dadosBooking?.exameDate.split('T')[0])}</span>
+                            <span className="ml-2">{createDate(dadosBooking.exameDate.split('T')[0])}</span>
                         </div>
                         <div className="flex items-center">
                             <Clock className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Hora:</span>
-                            <span className="ml-2">{new Date(dadosBooking?.exameDate).toISOString().substring(11, 16)}</span>
+                            <span className="ml-2">{new Date(dadosBooking.exameDate).toISOString().substring(11, 16)}</span>
                         </div>
                         <div className="flex items-center">
                             <FileText className="mr-2 h-4 w-4 opacity-70"/>

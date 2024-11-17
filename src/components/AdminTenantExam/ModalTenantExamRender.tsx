@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from "react";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
-import ModalRegisterExam from "@/components/AdminTenantExam/ModalRegisterExam.tsx";
+import RegisterTenantExam from "@/components/AdminTenantExam/RegisterTenantExam.tsx";
 import { Exams} from "@/pages/admin/AdminTenantExams.tsx";
-import {Type} from "@/components/ModalHandle/ModalRender.tsx";
+import {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 import {createExam, updateExam} from "@/services/tenantExam.tsx";
 
 interface ModalProps {
@@ -11,10 +11,9 @@ interface ModalProps {
     title?: string;
     modalNewExam?: (message: string) => void;
     dadosExam?: Exams | undefined;
-    type: Type
+    type: ModalType
 
 }
-
 export interface IExam {
     id?: number
     exam_name: string
@@ -23,15 +22,14 @@ export interface IExam {
     doctors?: string[]
     createdAt?: Date
 }
-
-const ModalExamRender: React.FC<ModalProps> = ({isOpen,onClose,title,modalNewExam,dadosExam, type}) =>  {
+const ModalTenantExamRender: React.FC<ModalProps> = ({isOpen,onClose,title,modalNewExam,dadosExam, type}) =>  {
     const [open, setOpen] = useState(isOpen)
-    const [modalContent,setModalContent] = useState<Type>(Type.newExam)
+    const [modalContent,setModalContent] = useState<ModalType>(ModalType.newExam)
     useEffect(() => {
         openModal(type)
     }, [type])
 
-    const openModal = (type: Type) => {
+    const openModal = (type: ModalType) => {
         setModalContent(type)
         setOpen(true)
     }
@@ -63,9 +61,9 @@ const ModalExamRender: React.FC<ModalProps> = ({isOpen,onClose,title,modalNewExa
     const renderModalContent = () => {
         switch (modalContent) {
             case 'editExam':
-                return (<ModalRegisterExam title="Editar Exame" isUpdate={submitUpdateExam} dadosIniciais={dadosExam} />)
+                return (<RegisterTenantExam title="Editar Exame" isUpdate={submitUpdateExam} dadosIniciais={dadosExam} />)
             case 'newExam':
-                return(<ModalRegisterExam title="Cadastrar Exame" isNewExam={submitNewExam}/>)
+                return(<RegisterTenantExam title="Cadastrar Exame" isNewExam={submitNewExam}/>)
 
         }
     }
@@ -79,4 +77,4 @@ const ModalExamRender: React.FC<ModalProps> = ({isOpen,onClose,title,modalNewExa
     )
 }
 
-export default ModalExamRender;
+export default ModalTenantExamRender;

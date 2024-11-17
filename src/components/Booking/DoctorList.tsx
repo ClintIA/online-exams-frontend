@@ -27,6 +27,9 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
         uniqueValues()
     }, [agendamentos]);
 
+    if(doctors.length == 0) {
+        return (<p className="text-base font-semibold">Não possuí médicos para o dia selecionado</p>)
+    }
     return (
         <Table>
             <TableHeader>

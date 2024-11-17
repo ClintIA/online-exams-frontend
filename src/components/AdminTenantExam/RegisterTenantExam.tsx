@@ -10,7 +10,7 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import {listDoctors} from "@/services/doctorsSerivce.tsx";
-import {IExam} from "@/components/AdminTenantExam/ModalExamRender.tsx";
+import {IExam} from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 
@@ -20,7 +20,7 @@ interface RegisterExamProps {
     isUpdate?: (examData: IExam, tenant: number) => Promise<any>
     isNewExam?: (examData: IExam, tenant: number) => Promise<any>
 }
-const ModalRegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, isUpdate, isNewExam}) => {
+const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, isUpdate, isNewExam}) => {
 
     const [examData, setExamData] = useState<IExam>({
         exam_name: '',
@@ -207,4 +207,4 @@ const ModalRegisterExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, is
         </div>
     )
 }
-export default ModalRegisterExam;
+export default RegisterTenantExam;
