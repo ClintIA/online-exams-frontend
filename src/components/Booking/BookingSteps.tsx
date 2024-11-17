@@ -24,7 +24,7 @@ const BookingSteps: React.FC = () => {
         setDadosPaciente({} as DadosPaciente)
         setPacienteCadastrado(false)
         setExame(undefined)
-        setExamData(undefined)
+        setExamData(examData)
     }
     const avancarEtapa = () => {
         setEtapaAtual(prev => Math.min(prev + 1, etapas.length - 1))
