@@ -66,7 +66,6 @@ const BookingSteps: React.FC = () => {
                 return <Booking onClose={() => {}} dadosPaciente={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />
             case 3:
                 return <BookingConfirmation exame={exame}
-                                            dadosPaciente={dadosPaciente}
                                             dadosBooking={examData}
                                             onNewBooking={handleNewBooking}
                 />

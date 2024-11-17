@@ -11,7 +11,7 @@ import {jwtDecode} from "jwt-decode";
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import Loading from "@/components/Loading.tsx";
-import ModalPatientRender, {Type} from "@/components/AdminPatient/ModalPatientRender.tsx";
+import ModalRender, {Type} from "@/components/ModalHandle/ModalRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
@@ -222,7 +222,7 @@ const AdminPatient: React.FC = () => {
                 </Card>
             </div>
 
-            {openModalNewPatient && <ModalPatientRender
+            {openModalNewPatient && <ModalRender
                 modalNewPatient={handleModalMessage}
                 isOpen={openModalNewPatient}
                 onClose={() => setOpenModalNewPatient(false)}

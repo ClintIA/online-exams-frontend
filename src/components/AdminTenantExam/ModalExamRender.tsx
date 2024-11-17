@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
 import ModalRegisterExam from "@/components/AdminTenantExam/ModalRegisterExam.tsx";
 import { Exams} from "@/pages/admin/AdminTenantExams.tsx";
-import {Type} from "@/components/AdminPatient/ModalPatientRender.tsx";
+import {Type} from "@/components/ModalHandle/ModalRender.tsx";
 import {createExam, updateExam} from "@/services/tenantExam.tsx";
 
 interface ModalProps {

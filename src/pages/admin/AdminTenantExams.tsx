@@ -12,7 +12,7 @@ import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import Loading from "@/components/Loading.tsx";
 import {TableCell} from "@mui/material";
-import {Type} from "@/components/AdminPatient/ModalPatientRender.tsx";
+import {Type} from "@/components/ModalHandle/ModalRender.tsx";
 import ModalExamRender from "@/components/AdminTenantExam/ModalExamRender.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 

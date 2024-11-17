@@ -23,16 +23,18 @@ interface ModalRegisterProps {
     title?: string;
     modalNewPatient?: (message: string) => void;
     dadosPaciente?: DadosPaciente
+    dadosBooking: any
     type: Type
 
 }
 
 
-const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Paciente",modalNewPatient,dadosPaciente, type }: ModalRegisterProps) => {
+const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title = "Paciente",modalNewPatient,dadosPaciente, type }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
     const [modalContent,setModalContent] = useState<Type>(Type.newPatient)
-    const [dadosBooking,setDadosBooking] = useState<DadosBooking>()
-    useEffect(() => {
+    const [patientData, setPatientData] = useState({})
+
+        useEffect(() => {
         openModal(type)
     }, [type])
 
@@ -47,10 +49,10 @@ const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, tit
         onClose()
     }
     const submitBookintExam = async (bookingDados: DadosBooking, tenantId: number) => {
-        setDadosBooking(bookingDados)
         try {
             if (modalNewPatient) {
             const result = await registerPatientExam(bookingDados, tenantId)
+                setPatientData(result.data.data.data)
                 modalNewPatient('Paciente Agendado com sucesso')
                 return result
             }
@@ -98,7 +100,7 @@ const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, tit
             case 'newBookingPatient':
                 return(<BookingPatient  submitBooking={submitBookintExam}  handleModalMessage={openModal} />)
             case 'bookingConfirmation':
-                return(<BookingConfirmation dadosBooking={dadosBooking} />)
+                return(<BookingConfirmation dadosBooking={patientData} onNewBooking={openModal} />)
 
         }
     }
@@ -111,4 +113,4 @@ const ModalPatientRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, tit
             </ModalFlexivel>
     )
 }
-export default ModalPatientRender;
+export default ModalRender;

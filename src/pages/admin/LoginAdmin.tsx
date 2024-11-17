@@ -79,7 +79,7 @@ const LoginAdmin: React.FC = () => {
                                                 className="p-3 text-base sm:text-xl md:text-xl tracking-widest text-white font-semibold">
                                                 Login
                                             </h4>
-                                            <form id="login-form">
+                                            <form className="sm:w-3/4 md:w-3/5" id="login-form">
                                                 {/* Username Input */}
                                                 <div className="flex flex-col relative">
                                                     <div className="mb-4">

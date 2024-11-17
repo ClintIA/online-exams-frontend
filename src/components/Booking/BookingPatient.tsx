@@ -22,7 +22,7 @@ import Loading from "@/components/Loading.tsx";
 import {useNavigate} from "react-router-dom";
 import {validarCPF} from "@/lib/utils.ts";
 import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
-import {Type} from "@/components/AdminPatient/ModalPatientRender.tsx";
+import {Type} from "@/components/ModalHandle/ModalRender.tsx";
 
 export interface DadosBooking {
     patientId: number | undefined
@@ -118,7 +118,6 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                 setDoctors(undefined)
                                 setErro('Não possui médico cadastrado para esse exame')
                                 setLoading(false)
-
                                 return
                             } else {
                                 setDoctors(result?.data.data)
@@ -159,12 +158,17 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
         try {
             if(tenant) {
                 const result = await getPatientByCpfAndTenant(numericCPF, tenant)
+
+                if(result?.message?.includes("não encontrado")) {
+                    setErro(result.message)
+                    return
+                }
                 const data = result?.data.data
                 if(!data) {
                     setErro('Cadastro não encontrado, realizar o cadastro do paciente')
+                    return
                 } else {
                     setPatientData(data)
-                    return
                 }
             }
         } catch (error) {

@@ -7,7 +7,7 @@ import { listDoctors } from "@/services/doctorsSerivce.tsx"
 import { createNoticeCard, deleteNoticeCard, listNoticeCards } from "@/services/noticeCardService.tsx"
 import { listPatientExams } from "@/services/patientExamService.tsx"
 import { ITokenPayload } from "@/types/Auth.ts"
-import { format, formatDate } from "date-fns"
+import { format } from "date-fns"
 import { ptBR } from "date-fns/locale"
 import { jwtDecode } from "jwt-decode"
 import { ChevronLeft, ChevronRight, Plus, Search, X } from "lucide-react"
@@ -310,10 +310,10 @@ export default function AdminHome() {
                   exams.map((exam) => (
                     <div key={exam.id} className="flex justify-between items-center p-3 bg-muted rounded-lg">
                       <div>
-                        <p className="font-medium">{exam.patient.full_name}</p>
-                        <p className="text-sm text-muted-foreground">{exam.exam.exam_name}</p>
+                        <p className="font-medium">Paciente: <strong>{exam.patient.full_name}</strong></p>
+                        <p className="text-sm text-muted-foreground"><strong>{exam.exam.exam_name}</strong></p>
                       </div>
-                      <span className="text-sm font-medium">{formatDate(exam.examDate, 'HH:mm')}</span>
+                      <span className="text-sm font-medium"><strong>{new Date(exam?.examDate).toISOString().substring(11, 16)}</strong></span>
                     </div>
                   ))
                 ) : (
