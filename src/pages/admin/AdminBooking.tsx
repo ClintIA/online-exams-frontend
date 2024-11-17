@@ -11,7 +11,6 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import BookingList from "@/components/Booking/BookingList.tsx";
 import DoctorList from "@/components/Booking/DoctorList.tsx";
-import BookingPatient from "@/components/Booking/BookingPatient.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {formatDate} from "@/lib/utils.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
