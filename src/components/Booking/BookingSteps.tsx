@@ -1,10 +1,10 @@
 import React, {useState} from 'react'
-import {CardContent} from "@/components/ui/card.tsx"
+import { CardContent } from "@/components/ui/card.tsx"
 import CheckCPF from "@/components/Booking/CheckCPF.tsx";
 import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import Booking, {DadosBooking, Exams} from "@/components/Booking/Booking.tsx";
 import StepIndicator from "@/components/Booking/StepIndicator.tsx";
-import BookingConfirmation from "@/components/Booking/BookingConfirmation.tsx";
+import BookingConfirmation, {BookingConfirmationState} from "@/components/Booking/BookingConfirmation.tsx";
 import {Card} from "@mui/material";
 
 const BookingSteps: React.FC = () => {
@@ -66,7 +66,7 @@ const BookingSteps: React.FC = () => {
                 return <Booking onClose={() => {}} dadosPaciente={dadosPaciente}  onAgendamentoConcluido={handleAgendamentoConcluido} />
             case 3:
                 return <BookingConfirmation exame={exame}
-                                            dadosBooking={examData}
+                                            dadosBooking={{} as BookingConfirmationState}
                                             onNewBooking={handleNewBooking}
                 />
             default:

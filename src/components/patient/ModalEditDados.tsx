@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import styles from './ModalEditDados.module.css';
-import {useState} from 'react';
-import {X} from "phosphor-react";
+import { useState } from 'react';
+import { X } from "phosphor-react";
 
 type PersonalInfo = {
   label: string;

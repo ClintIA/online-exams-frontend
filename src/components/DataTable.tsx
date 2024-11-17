@@ -1,8 +1,8 @@
 import React from "react";
-import {TableBody, TableCell, TableRow} from "@/components/ui/table.tsx";
-import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
-import {Calendar, MoreHorizontal, Pencil, Trash2} from "lucide-react";
-import {Button} from "@/components/ui/button.tsx";
+import { TableBody, TableCell, TableRow } from "@/components/ui/table.tsx";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover.tsx";
+import { Calendar, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { Button } from "@/components/ui/button.tsx";
 import {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 
 interface TableProps<T> {

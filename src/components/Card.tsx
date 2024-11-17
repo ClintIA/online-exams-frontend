@@ -1,7 +1,6 @@
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx";
+import {Card, CardHeader, CardContent, CardTitle} from "@/components/ui/card.tsx";
 import {UserCheck} from "lucide-react";
 import React from "react";
-
 interface CardProps {
     name: string
     content?: number

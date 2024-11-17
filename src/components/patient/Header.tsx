@@ -1,7 +1,7 @@
-import {useState} from 'react';
+import { useState } from 'react';
 import styles from './Header.module.css';
-import {Flask, List, SignOut, UserCircleGear} from 'phosphor-react';
-import {NavLink} from 'react-router-dom';
+import { Flask, List, SignOut, UserCircleGear } from 'phosphor-react';
+import { NavLink } from 'react-router-dom';
 import clintiaLogo from '../../assets/logoClintia.png';
 
 export function Header() {

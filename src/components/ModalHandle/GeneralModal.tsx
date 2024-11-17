@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from 'react'
-import {Button} from "@/components/ui/button.tsx"
+import React, { useState, useEffect } from 'react'
+import { Button } from "@/components/ui/button.tsx"
 import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog.tsx"
-import {CheckCircle, OctagonX} from "lucide-react";
+import { CheckCircle, OctagonX} from "lucide-react";
 
 interface ErrorModalProps {
   isOpen: boolean;
