@@ -34,11 +34,11 @@ export interface IPatientExam {
     id: number
     exam_name: string
   },
-  "patient": {
+  patient?: {
     id: number
     full_name: string
   }
-  "doctor": {
+  doctor?: {
     id: number
     fullName: string
     CRM: string
@@ -310,7 +310,7 @@ export default function AdminHome() {
                   exams.map((exam) => (
                     <div key={exam.id} className="flex justify-between items-center p-3 bg-muted rounded-lg">
                       <div>
-                        <p className="font-medium">Paciente: <strong>{exam.patient.full_name}</strong></p>
+                        <p className="font-medium">Paciente: <strong>{exam?.patient?.full_name}</strong></p>
                         <p className="text-sm text-muted-foreground"><strong>{exam.exam.exam_name}</strong></p>
                       </div>
                       <span className="text-sm font-medium"><strong>{new Date(exam?.examDate).toISOString().substring(11, 16)}</strong></span>

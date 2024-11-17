@@ -30,6 +30,9 @@ export interface DadosPaciente {
     address: string | undefined
     canal?: string | undefined
     gender: string | undefined
+    exams?: any[] | undefined
+    sessionToken?: string | undefined
+    created_at?: string | undefined
     health_card_number: string | undefined
     tenants?: any[]
 }

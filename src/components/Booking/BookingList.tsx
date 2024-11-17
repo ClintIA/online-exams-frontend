@@ -24,11 +24,11 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
             <TableBody>
                 {agendamentos?.map((agendamento) => (
                     <TableRow key={agendamento?.id}>
-                        <TableCell>{agendamento.patient?.full_name}</TableCell>
+                        <TableCell>{agendamento?.patient?.full_name}</TableCell>
                         <TableCell>{new Date(agendamento?.examDate).toISOString().substring(11, 16)}</TableCell>
-                        <TableCell>{agendamento.doctor?.fullName}</TableCell>
+                        <TableCell>{agendamento?.doctor?.fullName}</TableCell>
                         <TableCell>
-                            {agendamento.status ? (
+                            {agendamento?.status ? (
                                 <span className="text-green-600 font-semibold">Compareceu</span>
                             ) : (
                                 <span className="text-yellow-600 font-semibold">Aguardando</span>
@@ -40,7 +40,7 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos }: ListaAg
                                 variant="outline"
                             >
                                 <CheckCircle className="mr-1 h-4 w-4 bg-green-500 rounded-full text-white" />
-                                Confirmar Presença
+                                <span className="hidden sm:flex">Confirmar Presença</span>
                             </Button>
                         </TableCell>
                     </TableRow>

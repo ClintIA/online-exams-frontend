@@ -9,20 +9,8 @@ import { jwtDecode } from "jwt-decode"
 import { FileUp, Upload } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
+import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 
-interface IPatientExam {
-  id: number
-  link: string | null
-  patient: string
-  createdAt: string
-  examDate: string
-  uploadedAt: string | null
-  status: string
-  exam: {
-    id: number
-    exam_name: string
-  }
-}
 
 const s3Client = new S3Client({
   region: "us-east-1",
@@ -47,18 +35,17 @@ const AdminExams: React.FC = () =>  {
       setTenantId(decoded.tenantId)
     }
   }, [auth.token])
-
-  useEffect(() => {
-    const fetchExams = async () => {
-      if (tenantId) {
-        const result = await listPatientExams(tenantId, {})
-        if (result?.data?.status === "success") {
-          setExams(result.data.data.exames[0].patientExams || [])
-        }
+  const fetchExams = async () => {
+    if (tenantId) {
+      const result = await listPatientExams(tenantId, {})
+      if (result?.data?.status === "success") {
+        setExams(result?.data?.data.exams || [])
       }
     }
-    fetchExams()
-  }, [tenantId])
+  }
+  useEffect(() => {
+    fetchExams().then()
+  }, [fetchExams])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -151,19 +138,19 @@ const AdminExams: React.FC = () =>  {
         </TableHeader>
         <TableBody>
           {exams.map((exam) => (
-            <TableRow key={exam.id}>
-              <TableCell>{exam.patient}</TableCell>
-              <TableCell>{exam.exam.exam_name}</TableCell>
-              <TableCell>{new Date(exam.createdAt).toLocaleDateString()}</TableCell>
-              <TableCell>{new Date(exam.examDate).toLocaleDateString()}</TableCell>
-              <TableCell>{translateStatus(exam.status)}</TableCell>
+            <TableRow key={exam?.id}>
+              <TableCell>{exam?.patient?.full_name}</TableCell>
+              <TableCell>{exam?.exam?.exam_name}</TableCell>
+              <TableCell>{new Date(exam?.createdAt).toLocaleDateString()}</TableCell>
+              <TableCell>{new Date(exam?.examDate).toLocaleDateString()}</TableCell>
+              <TableCell>{translateStatus(exam?.status)}</TableCell>
               <TableCell>
                 <Button 
                   onClick={() => {
-                    setSelectedExamId(exam.id);
+                    setSelectedExamId(exam?.id);
                     setIsDialogOpen(true);
                   }}
-                  disabled={exam.status === 'Completed'}
+                  disabled={exam?.status === 'Completed'}
                 >
                   <Upload className="mr-2 h-4 w-4" /> Upload
                 </Button>
