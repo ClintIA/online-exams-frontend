@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, {useEffect, useState} from 'react'
 import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {registerPatient} from "@/services/loginService.tsx";
 import Booking, {DadosBooking} from "@/components/Booking/Booking.tsx";
@@ -7,6 +7,7 @@ import {registerPatientExam} from "@/services/patientExamService.tsx";
 import {updatePatient} from "@/services/patientService.tsx";
 import BookingPatient from "@/components/Booking/BookingPatient.tsx";
 import BookingConfirmation, {BookingConfirmationState} from "@/components/Booking/BookingConfirmation.tsx";
+
 export enum ModalType {
     booking = 'booking',
     newPatient=  'newPatient',

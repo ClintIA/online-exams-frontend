@@ -1,11 +1,11 @@
 import '../../global.css';
 import styles from './Exames.module.css';
-import { Post } from '../../components/patient/Post';
-import { ConsultorioDropdown } from '../../components/patient/ConsultorioDropdown';
-import { useState, useEffect } from 'react';
+import {Post} from '../../components/patient/Post';
+import {ConsultorioDropdown} from '../../components/patient/ConsultorioDropdown';
+import {useEffect, useState} from 'react';
 import logoExam from '../../assets/icon-clintia.png';
-import { getPatientExams } from '@/api/patient-exams.ts';
-import { useAuth } from '../../hooks/auth';
+import {getPatientExams} from '@/api/patient-exams.ts';
+import {useAuth} from '../../hooks/auth';
 
 
 // interface Exam {

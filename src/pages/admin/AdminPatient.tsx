@@ -1,8 +1,8 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import { Card, CardContent } from "@/components/ui/card.tsx"
-import { Input } from "@/components/ui/input.tsx"
-import { Label } from "@/components/ui/label.tsx"
-import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx"
+import {Card, CardContent} from "@/components/ui/card.tsx"
+import {Input} from "@/components/ui/input.tsx"
+import {Label} from "@/components/ui/label.tsx"
+import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx"
 import Cards from "@/components/Card.tsx";
 import {deletePatient, listPatientsByTenant, PatientFilters} from "@/services/patientService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
@@ -15,7 +15,7 @@ import ModalRender, {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
-import { findCanalOptions} from "@/lib/canalOptions.ts";
+import {findCanalOptions} from "@/lib/canalOptions.ts";
 
 const AdminPatient: React.FC = () => {
 

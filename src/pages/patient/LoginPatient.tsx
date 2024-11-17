@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, {useState} from 'react';
 import logoClintia from '../../assets/logoClintia.png';
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@/hooks/auth.tsx";

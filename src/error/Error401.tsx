@@ -1,5 +1,5 @@
-import { Button } from "@/components/ui/button.tsx"
-import { Stethoscope, HardHat, Home, Lock, Link } from 'lucide-react'
+import {Button} from "@/components/ui/button.tsx"
+import {HardHat, Home, Link, Lock, Stethoscope} from 'lucide-react'
 import React from "react";
 
 const Error401: React.FC = () => {

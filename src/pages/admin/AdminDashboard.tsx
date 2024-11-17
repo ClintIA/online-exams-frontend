@@ -1,18 +1,14 @@
-import { Button } from "@/components/ui/button.tsx"
-import { Calendar } from "@/components/ui/calendar.tsx"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover.tsx"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx"
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { BarChart3, CalendarIcon } from 'lucide-react'
-import React, { useState} from 'react'
-import { DateRange } from 'react-day-picker'
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {Button} from "@/components/ui/button.tsx"
+import {Calendar} from "@/components/ui/calendar.tsx"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx"
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover.tsx"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx"
+import {format} from 'date-fns'
+import {ptBR} from 'date-fns/locale'
+import {BarChart3, CalendarIcon} from 'lucide-react'
+import React, {useState} from 'react'
+import {DateRange} from 'react-day-picker'
+import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 
 const AdminDashboard: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)

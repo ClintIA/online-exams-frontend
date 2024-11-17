@@ -1,14 +1,14 @@
-import { Button } from "@/components/ui/button.tsx"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog.tsx"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table.tsx"
-import { useAuth } from "@/hooks/auth.tsx"
-import { listPatientExams, updatePatientExam } from "@/services/patientExamService.tsx"
-import { ITokenPayload } from "@/types/Auth.ts"
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
-import { jwtDecode } from "jwt-decode"
-import { FileUp, Upload } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
+import {Button} from "@/components/ui/button.tsx"
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx"
+import {useAuth} from "@/hooks/auth.tsx"
+import {listPatientExams, updatePatientExam} from "@/services/patientExamService.tsx"
+import {ITokenPayload} from "@/types/Auth.ts"
+import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3"
+import {jwtDecode} from "jwt-decode"
+import {FileUp, Upload} from 'lucide-react'
+import React, {useEffect, useState} from 'react'
+import {toast} from 'react-toastify'
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 
 

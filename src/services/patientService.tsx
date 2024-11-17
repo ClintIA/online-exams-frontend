@@ -1,6 +1,6 @@
 import {isAxiosError} from 'axios';
 import apiClient from "@/lib/interceptor.ts";
-import { GetPatientExamsResponse } from '../types/Patient.ts';
+import {GetPatientExamsResponse} from '../types/Patient.ts';
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 
 export interface PatientFilters {

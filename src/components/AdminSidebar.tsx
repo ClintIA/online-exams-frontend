@@ -1,11 +1,16 @@
-import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar";
-import { useAuth } from "@/hooks/auth.tsx";
+import {SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider} from "@/components/ui/sidebar";
+import {useAuth} from "@/hooks/auth.tsx";
 import {
   Activity,
   Calendar,
   ChevronDown,
-  ChevronRight, CircleUser, Contact2,
-  Home, LayoutDashboard, Lightbulb, Microscope,
+  ChevronRight,
+  CircleUser,
+  Contact2,
+  Home,
+  LayoutDashboard,
+  Lightbulb,
+  Microscope,
   MonitorCog,
   User,
   Users

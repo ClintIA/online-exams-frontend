@@ -1,6 +1,6 @@
 import {Outlet, useNavigate} from "react-router-dom";
 import React, {useEffect, useState} from "react";
-import AdminSidebar  from "@/components/AdminSidebar.tsx";
+import AdminSidebar from "@/components/AdminSidebar.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {jwtDecode} from "jwt-decode";
 import {ITokenPayload} from "@/types/Auth.ts";

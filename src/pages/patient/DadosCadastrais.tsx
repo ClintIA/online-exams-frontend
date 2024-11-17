@@ -1,4 +1,4 @@
-import { PersonalInfoTable } from "../../components/patient/PersonalInfoTable";
+import {PersonalInfoTable} from "../../components/patient/PersonalInfoTable";
 import styles from './DadosCadastrais.module.css';
 
 

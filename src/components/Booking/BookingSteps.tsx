@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { CardContent } from "@/components/ui/card.tsx"
+import {CardContent} from "@/components/ui/card.tsx"
 import CheckCPF from "@/components/Booking/CheckCPF.tsx";
 import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import Booking, {DadosBooking, Exams} from "@/components/Booking/Booking.tsx";
