@@ -1,4 +1,4 @@
-import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar";
+import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar.tsx";
 import { useAuth } from "@/hooks/auth.tsx";
 import {
   Activity,
@@ -47,7 +47,7 @@ const AdminSidebar: React.FC = () => {
           </button>
         </div>
 
-        <nav className={`overflow-y-auto ${styles.nav} ${menuOpen ? styles.open : ''}`}>
+        <nav className={`overflow-y-hidden  ${styles.nav} ${menuOpen ? styles.open : ''}`}>
           <SidebarProvider>
             <SidebarMenu>
               <SidebarMenuItem>
