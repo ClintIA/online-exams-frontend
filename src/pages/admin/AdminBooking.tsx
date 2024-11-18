@@ -68,8 +68,8 @@ const AdminBooking: React.FC = () =>  {
                     endDate: newDate,
                     status: 'Scheduled'
                 })
+                setLoading(false)
                 if (result?.data?.status === "success") {
-                    setLoading(false)
                     const examsList = result?.data?.data?.exams as IPatientExam[]
                     setExams(examsList || [])
                 }
