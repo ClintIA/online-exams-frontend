@@ -106,7 +106,7 @@ const AdminBooking: React.FC = () =>  {
         <div className="w-full max-w-6xl p-4 mx-auto">
             <h1 className="text-2xl font-bold mb-4 text-oxfordBlue">Gerenciamento de Agendamentos</h1>
             <Tabs defaultValue="lista" className="space-y-4">
-                <TabsList className="p-5 gap-2">
+                <TabsList className="p-5 h-12 gap-2">
                     <TabsTrigger className="p-1 text-base text-oxfordBlue" value="lista">Pacientes &nbsp;<span className="hidden sm:flex">Agendados</span></TabsTrigger>
                     <TabsTrigger className="p-1 text-base text-oxfordBlue" value="doctors">Medicos &nbsp;<span className="hidden sm:flex"> Agendados</span></TabsTrigger>
                 </TabsList>
