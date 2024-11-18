@@ -89,7 +89,7 @@ const LoginPatient: React.FC = () => {
                                         <Button
                                             variant="outline"
                                             onClick={(e) => handleLogin(e)}
-                                            className="mb-3 inline-block w-3/4 bg-amber-50 hover:bg-oxfordBlue hover:text-black rounded-xl px-6 pb-2 pt-2.5 text-sm font-semibold uppercase leading-normal text-oxfordBlue shadow-dark-3 transition duration-150 ease-in-out hover:shadow-dark-2 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:shadow-dark-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
+                                            className="mb-3 inline-block w-3/4 bg-amber-50 hover:bg-amber-500 hover:text-oxfordBlue rounded-xl px-6 pb-2 pt-2.5 text-sm font-semibold uppercase leading-normal text-oxfordBlue shadow-dark-3 transition duration-150 ease-in-out hover:shadow-dark-2 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:shadow-dark-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
                                         >
                                             Acessar
                                         </Button>
