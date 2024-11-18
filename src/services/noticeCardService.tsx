@@ -1,5 +1,5 @@
 import apiClient from "@/lib/interceptor.ts";
-import { isAxiosError } from 'axios';
+import {isAxiosError} from 'axios';
 
 interface ListNoticeCardsFilters {
     startDate?: string

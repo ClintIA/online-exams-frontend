@@ -10,7 +10,6 @@ interface ModalDetail {
   }
 
 export function ModalDetail({ exame }: ModalDetail){
-    console.log(exame.link)
     return(
         <Dialog.Portal>
         <Dialog.Overlay className={styles.overlay}/>

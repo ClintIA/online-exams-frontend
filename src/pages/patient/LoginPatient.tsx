@@ -1,17 +1,13 @@
-// LoginPatient.tsx
-import React, { useState } from 'react';
-import logoClintia from '../../assets/logoClintiaLogin.png';
-import { Input } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../hooks/auth.tsx";
-import { Button } from "../../components/ui/button.tsx";
-import { useCpf } from '../../hooks/useCpf.tsx';
-// import styles from './LoginPatient.module.css';
-// import Cookies from "js-cookie";
-// import { loginPatient } from "../api/patient-login";
-import GeneralModal from "@/components/GeneralModal.tsx";
+import React, {useState} from 'react';
+import logoClintia from '../../assets/logoClintia.png';
+import {useNavigate} from "react-router-dom";
+import {useAuth} from "@/hooks/auth.tsx";
+import {Button} from "@/components/ui/button.tsx";
+import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
+import {useCpf} from "@/hooks/useCpf.tsx";
 
-export function LoginPatient() {
+
+const LoginPatient: React.FC = () => {
     const [patientCpf, setPatientCpf] = useState("");
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
@@ -46,65 +42,65 @@ export function LoginPatient() {
     }
 
     return (
-        <div className="gradient-form bg-oxfordBlue">
-            <div className="container h-screen w-max m-auto">
-                <div
-                    className="flex h-full items-center justify-center text-neutral-800 dark:text-neutral-200">
-                    <div className="w-full">
-                        <div
-                            className="block rounded-lg bg-oxfordBlue shadow-lg shadow-amber-100 dark:bg-neutral-800">
-                            <div className="flex justify-center">
+        <div className="gradient-form bg-oxfordBlue w-full h-screen m-auto">
+            <div
+                className="flex h-full items-center justify-center">
+                <div className="w-3/4 md:w-2/4">
+                    <div
+                        className="block rounded-lg bg-oxfordBlue shadow-lg shadow-amber-100 dark:bg-neutral-800">
+                        <div className="p-5 text-center">
 
-                                <div className="text-center">
-                                    <div className="md:mx-6 md:px-12">
-                                        {/* Logo */}
-                                        <div className="text-center">
-                                            {/* Logo */}
-                                            <div className="p-4">
-                                                <img src={logoClintia} alt="Logo"
-                                                     className="w-30 mb-4 shadow shadow-amber-50"/>
-                                            </div>
-                                            <h4 className="mb-12 mt-1 pb-1 text-xl tracking-widest text-white font-semibold">
-                                                Bem vindo a ClintIA.
-                                            </h4>
-                                        </div>
+                            <div className="flex flex-col items-center md:mx-6 md:px-12">
+                                <div className="">
 
-                                        <form id="login-form">
-                                            {/* CPF Input */}
-                                            <div className="flex flex-col relative">
-                                                <div className="mb-4">
-                                                    <Input placeholder="Digite seu CPF"
-                                                           className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
-                                                           type='text' value={patientCpf}
-                                                           onChange={(e) => setPatientCpf(e.target.value)}/>
-                                                </div>
-                                                <div className="mb-4">
-                                                    <Input placeholder="Digite sua senha"
-                                                           className='!text-white focus:text-white border-b border-blue-500 p-1 w-full'
-                                                           type='password' value={password}
-                                                           onChange={(e) => setPassword(e.target.value)}/>
-                                                </div>
-                                            </div>
-                                            {/* Submit Button */}
-                                            <div className="mb-12 pb-1 pt-1 text-center">
-                                                <Button
-                                                    variant="outline"
-                                                    onClick={(e) => handleLogin(e)}
-                                                    className="mb-3 inline-block w-full bg-gray-800 hover:bg-amber-100 hover:text-black rounded px-6 pb-2 pt-2.5 text-xs font-medium uppercase leading-normal text-white shadow-dark-3 transition duration-150 ease-in-out hover:shadow-dark-2 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:shadow-dark-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
-                                                >
-                                                    Acessar
-                                                </Button>
-                                                    <GeneralModal
-                                                        action={'Close'}
-                                                        error={true}
-                                                        isOpen={isErrorModalOpen}
-                                                        onClose={() => setIsErrorModalOpen(false)}
-                                                        message={errorMessage}/>
-                                            </div>
-                                        </form>
+                                    <div className="p-4">
+                                        <img src={logoClintia} alt="Logo"
+                                             className="w-full h-auto shadow shadow-amber-50"/>
                                     </div>
+                                    <h3 className="mt-1 text-sm sm:text-base tracking-widest text-white font-semibold">
+                                        Bem vindo a ClintIA.
+                                    </h3>
                                 </div>
+                                <h4
+                                    className="p-3 text-base sm:text-xl md:text-xl tracking-widest text-white font-semibold">
+                                    Login
+                                </h4>
+                                <form className="sm:w-3/4 md:w-3/5" id="login-form">
+                                    {/* Username Input */}
+                                    <div className="flex flex-col relative">
+                                        <div className="mb-4">
+                                            <input autoComplete="true" placeholder="Digite seu CPF"
+                                                   className='!text-oxfordBlue rounded-xl p-3 focus:text-white w-full'
+                                                   type='text' value={patientCpf}
+                                                   name="patientCpf"
+                                                   onChange={(e) => setPatientCpf(e.target?.value)}/>
 
+                                        </div>
+                                        <div className='mb-4'>
+                                            <input autoComplete="true" placeholder="Digite sua Senha"
+                                                   className='!text-oxfordBlue rounded-xl p-3 focus:text-white w-full'
+                                                   type='password' value={password}
+                                                   onChange={(e) => setPassword(e.target.value)}/>
+
+                                        </div>
+                                    </div>
+                                    {/* Submit Button */}
+                                    <div className="mb-12 pb-1 pt-1 text-center">
+                                        <Button
+                                            variant="outline"
+                                            onClick={(e) => handleLogin(e)}
+                                            className="mb-3 inline-block w-3/4 bg-amber-50 hover:bg-amber-500 hover:text-oxfordBlue rounded-xl px-6 pb-2 pt-2.5 text-sm font-semibold uppercase leading-normal text-oxfordBlue shadow-dark-3 transition duration-150 ease-in-out hover:shadow-dark-2 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:shadow-dark-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
+                                        >
+                                            Acessar
+                                        </Button>
+                                        <GeneralModal
+                                            error={true}
+                                            action={'Close'}
+                                            isOpen={isErrorModalOpen}
+                                            onClose={() => setIsErrorModalOpen(false)}
+                                            message={errorMessage}/>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

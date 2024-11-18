@@ -1,18 +1,14 @@
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { format } from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import { BarChart3, CalendarIcon } from 'lucide-react'
-import React, { useState} from 'react'
-import { DateRange } from 'react-day-picker'
-import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
+import {Button} from "@/components/ui/button.tsx"
+import {Calendar} from "@/components/ui/calendar.tsx"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx"
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover.tsx"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx"
+import {format} from 'date-fns'
+import {ptBR} from 'date-fns/locale'
+import {BarChart3, CalendarIcon} from 'lucide-react'
+import React, {useState} from 'react'
+import {DateRange} from 'react-day-picker'
+import {CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis} from 'recharts'
 
 const AdminDashboard: React.FC = () => {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined)
@@ -104,7 +100,7 @@ const AdminDashboard: React.FC = () => {
   ]
 
   return (
-      <div className="flex-1 ml-0 md:ml-6">
+      <div className="w-full max-w-6xl p-4 mx-auto">
         <div className="p-8">
           <h1 className="text-3xl font-bold mb-6">Dashboard de Exames</h1>
 

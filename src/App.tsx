@@ -3,7 +3,7 @@ import './App.css';
 import {RouterProvider} from "react-router-dom";
 import {router} from "@/routes";
 import AuthProvider from "@/contexts/AuthContext.tsx";
-import { CpfProvider } from '../src/contexts/CpfContext'; 
+import {CpfProvider} from '@/contexts/CpfContext.tsx';
 
 const App: React.FC = () => {
 

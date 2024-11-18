@@ -1,27 +1,35 @@
 import React from 'react'
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {DadosPaciente} from "@/components/RegisterPatient.tsx";
-import {DadosBooking, Exams} from "@/components/Booking.tsx";
-import {CalendarDays, Clock, FileText, MapPin, User} from "lucide-react";
+import { Exams} from "@/components/Booking/Booking.tsx";
+import {CalendarDays, Clock, FileText, User} from "lucide-react";
+import {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 
 export interface BookingConfirmationProps {
     exame?: Exams,
-    dadosPaciente?: DadosPaciente,
-    dadosBooking?: DadosBooking,
-    onNewBooking: () => void
+    dadosBooking: BookingConfirmationState,
+    onNewBooking?: (type: ModalType) => void
 }
-const BookingConfirmation: React.FC<BookingConfirmationProps> = ({exame, dadosPaciente, dadosBooking, onNewBooking}: BookingConfirmationProps) => {
+export interface BookingConfirmationState {
+    exam_name: string
+    exameDate: string
+    doctor: string
+    patientName: string
+    patientPhone: string
+}
+const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking, onNewBooking}: BookingConfirmationProps) => {
 
 
     const newBooking = () => {
-        onNewBooking();
+        if (onNewBooking) {
+            onNewBooking(ModalType.newBookingPatient);
+        }
     }
+    console.log(dadosBooking)
     const createDate = (date: string) => {
         const dateArray = date.split('-')
         return dateArray[2] + "/" + dateArray[1] + "/" + dateArray[0]
     }
-
      return (
         <div className="mt-10">
             <Card className="w-full max-w-2xl mx-auto">
@@ -36,32 +44,27 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({exame, dadosPa
                         <div className="flex items-center">
                             <User className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Paciente:</span>
-                            <span className="ml-2">{dadosPaciente?.full_name}</span>
+                            <span className="ml-2">{dadosBooking?.patientName}</span>
                         </div>
                         <div className="flex items-center">
                             <User className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Médico:</span>
-                            <span className="ml-2">{dadosBooking?.doctor? dadosBooking?.doctor?.fullName : 'Medico não informado'}</span>
+                            <span className="ml-2">{dadosBooking.doctor? dadosBooking.doctor : 'Medico não informado'}</span>
                         </div>
                         <div className="flex items-center">
                             <CalendarDays className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Data:</span>
-                            <span className="ml-2">{dadosBooking?.examDate?.split('T') ? createDate(dadosBooking?.examDate?.split('T')[0]) : dadosBooking?.examDate?.split('T')[0]}</span>
+                            <span className="ml-2">{createDate(dadosBooking.exameDate.split('T')[0])}</span>
                         </div>
                         <div className="flex items-center">
                             <Clock className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Hora:</span>
-                            <span className="ml-2">{dadosBooking?.examDate?.split('T')[1]}</span>
-                        </div>
-                        <div className="flex items-center">
-                            <MapPin className="mr-2 h-4 w-4 opacity-70"/>
-                            <span className="font-semibold">Local:</span>
-                            <span className="ml-2">{dadosPaciente?.tenants? dadosPaciente?.tenants[0].name : 'Não selecionado'}</span>
+                            <span className="ml-2">{new Date(dadosBooking.exameDate).toISOString().substring(11, 16)}</span>
                         </div>
                         <div className="flex items-center">
                             <FileText className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Tipo de Exame:</span>
-                            <span className="ml-2">{exame?.exam_name}</span>
+                            <span className="ml-2">{dadosBooking?.exam_name}</span>
                         </div>
                     </div>
                 </CardContent>

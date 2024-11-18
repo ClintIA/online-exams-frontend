@@ -1,7 +1,7 @@
 import React from 'react';
-import { Exame } from '../types/Exame';
+import { Exame } from '../../types/Exame.ts';
 import { Button, IconButton } from '@mui/material';
-import { InsertPhoto, ArrowForwardIos, KeyboardArrowDown  } from '@mui/icons-material'; 
+import { InsertPhoto, ArrowForwardIos, KeyboardArrowDown  } from '@mui/icons-material';
 
 interface ExameListProps {
   exames: Exame[];

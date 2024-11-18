@@ -1,28 +1,16 @@
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { useAuth } from "@/hooks/auth"
-import { listPatientExams, updatePatientExam } from "@/services/patientExamService"
-import { ITokenPayload } from "@/types/Auth"
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3"
-import { jwtDecode } from "jwt-decode"
-import { FileUp, Upload } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
-import { toast } from 'react-toastify'
+import {Button} from "@/components/ui/button.tsx"
+import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx"
+import {useAuth} from "@/hooks/auth.tsx"
+import {listPatientExams, updatePatientExam} from "@/services/patientExamService.tsx"
+import {ITokenPayload} from "@/types/Auth.ts"
+import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3"
+import {jwtDecode} from "jwt-decode"
+import {FileUp, Upload} from 'lucide-react'
+import React, {useEffect, useState} from 'react'
+import {toast} from 'react-toastify'
+import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 
-interface IPatientExam {
-  id: number
-  link: string | null
-  patient: string
-  createdAt: string
-  examDate: string
-  uploadedAt: string | null
-  status: string
-  exam: {
-    id: number
-    exam_name: string
-  }
-}
 
 const s3Client = new S3Client({
   region: "us-east-1",
@@ -47,18 +35,17 @@ const AdminExams: React.FC = () =>  {
       setTenantId(decoded.tenantId)
     }
   }, [auth.token])
-
-  useEffect(() => {
-    const fetchExams = async () => {
-      if (tenantId) {
-        const result = await listPatientExams(tenantId, {})
-        if (result?.data?.status === "success") {
-          setExams(result.data.data.exames[0].patientExams || [])
-        }
+  const fetchExams = async () => {
+    if (tenantId) {
+      const result = await listPatientExams(tenantId, {})
+      if (result?.data?.status === "success") {
+        setExams(result?.data?.data.exams || [])
       }
     }
-    fetchExams()
-  }, [tenantId])
+  }
+  useEffect(() => {
+    fetchExams().then()
+  }, [fetchExams])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -136,8 +123,8 @@ const AdminExams: React.FC = () =>  {
   };
 
   return (
-    <div className="container mx-auto py-10 px-6">
-      <h1 className="text-2xl font-bold mb-5">Exames Pendentes</h1>
+      <div className="w-full max-w-6xl p-4 mx-auto">
+        <h1 className="text-2xl font-bold mb-5">Exames Pendentes</h1>
       <Table>
         <TableHeader>
           <TableRow>
@@ -151,19 +138,19 @@ const AdminExams: React.FC = () =>  {
         </TableHeader>
         <TableBody>
           {exams.map((exam) => (
-            <TableRow key={exam.id}>
-              <TableCell>{exam.patient}</TableCell>
-              <TableCell>{exam.exam.exam_name}</TableCell>
-              <TableCell>{new Date(exam.createdAt).toLocaleDateString()}</TableCell>
-              <TableCell>{new Date(exam.examDate).toLocaleDateString()}</TableCell>
-              <TableCell>{translateStatus(exam.status)}</TableCell>
+            <TableRow key={exam?.id}>
+              <TableCell>{exam?.patient?.full_name}</TableCell>
+              <TableCell>{exam?.exam?.exam_name}</TableCell>
+              <TableCell>{new Date(exam?.createdAt).toLocaleDateString()}</TableCell>
+              <TableCell>{new Date(exam?.examDate).toLocaleDateString()}</TableCell>
+              <TableCell>{translateStatus(exam?.status)}</TableCell>
               <TableCell>
                 <Button 
                   onClick={() => {
-                    setSelectedExamId(exam.id);
+                    setSelectedExamId(exam?.id);
                     setIsDialogOpen(true);
                   }}
-                  disabled={exam.status === 'Completed'}
+                  disabled={exam?.status === 'Completed'}
                 >
                   <Upload className="mr-2 h-4 w-4" /> Upload
                 </Button>

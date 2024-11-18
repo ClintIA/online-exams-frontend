@@ -13,8 +13,8 @@ import {
 import { AlertCircle } from "lucide-react"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx"
 import {registerPatientExam} from "@/services/patientExamService.tsx";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import {DadosPaciente} from "@/components/RegisterPatient.tsx";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select.tsx"
+import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {listDoctorByExam, listTenantExam} from "@/services/tenantExam.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
@@ -34,7 +34,7 @@ interface BookingModalProps {
     dadosPaciente?: DadosPaciente
     onAgendamentoConcluido?: (exam: Exams, dados: DadosPaciente, dadosBooking: DadosBooking) => void
     isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<any>
-    onClose: () => void
+    onClose?: () => void
 }
 export interface Exams {
     id: number
@@ -42,7 +42,7 @@ export interface Exams {
     price: string
     createdAt: Date
 }
-export interface Doctor {
+interface Doctor {
     id: number
     fullName: string
     exams: any[]
@@ -168,11 +168,9 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
         try {
             if(tenantId) {
                 const bookingDados = { ...dadosBooking, examDate: createDate(dadosBooking.examDate), doctor: doctorSelected }
-                console.log(bookingDados)
                 if(isNewBooking) {
                     try {
-                        const result = await isNewBooking(bookingDados, tenantId)
-                        console.log(result)
+                        await isNewBooking(bookingDados, tenantId)
 
                     } catch (error) {
                         console.error(error)

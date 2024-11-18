@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import {useContext} from 'react';
 import CpfContext from '../contexts/CpfContext'; // Importa o contexto
 
 export const useCpf = () => {

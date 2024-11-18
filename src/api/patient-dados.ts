@@ -1,4 +1,4 @@
-import { apiClient } from '../lib/interceptor';
+import {apiClient} from '../lib/interceptor';
 
 export interface Tenant {
   id: number;

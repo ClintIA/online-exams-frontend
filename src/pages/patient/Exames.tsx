@@ -1,12 +1,11 @@
-import { Header } from "../../components/patient/Header";
 import '../../global.css';
 import styles from './Exames.module.css';
-import { Post } from '../../components/patient/Post';
-import { ConsultorioDropdown } from '../../components/patient/ConsultorioDropdown';
-import { useState, useEffect } from 'react';
+import {Post} from '../../components/patient/Post';
+import {ConsultorioDropdown} from '../../components/patient/ConsultorioDropdown';
+import {useEffect, useState} from 'react';
 import logoExam from '../../assets/icon-clintia.png';
-import { getPatientExams } from '../../api/patient-exams';
-import { useAuth } from '../../hooks/auth';
+import {getPatientExams} from '@/api/patient-exams.ts';
+import {useAuth} from '../../hooks/auth';
 
 
 // interface Exam {
@@ -70,10 +69,6 @@ export function Exames() {
   const [exames, setExames] = useState<MappedExam[]>([]);
   const [filteredExames, setFilteredExames] = useState<MappedExam[]>([]);
   const { userId } = useAuth();
-  
-
-  console.log(userId)
-
 
   useEffect(() => {
   
@@ -81,11 +76,7 @@ export function Exames() {
       try {
         const response = await getPatientExams(Number(userId));
 
-        console.log(response)
-        console.log(response.data)
-
         if (!response.data || !response.data.exams || response.data.exams.length === 0) {
-          console.log("Sem exames cadastrados");
           setExames([]);
           setFilteredExames([]);
           return;
@@ -139,9 +130,8 @@ export function Exames() {
   const consultorios = Array.from(new Set(exames.map(exame => exame.consultorio)));
 
   return (
-    <div>
+      <div>
       <div className={styles.wrapper}>
-        <Header />
         <main>
           <div>
             <h1 className={styles.title}>Resultado de Exames</h1>
@@ -161,6 +151,6 @@ export function Exames() {
         )}
         </main>
       </div>
-    </div>
+      </div>
   );
 }

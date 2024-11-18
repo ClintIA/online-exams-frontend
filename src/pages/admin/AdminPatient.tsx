@@ -1,23 +1,23 @@
 import React, {useCallback, useEffect, useState} from 'react'
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Table, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import {Card, CardContent} from "@/components/ui/card.tsx"
+import {Input} from "@/components/ui/input.tsx"
+import {Label} from "@/components/ui/label.tsx"
+import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx"
 import Cards from "@/components/Card.tsx";
 import {deletePatient, listPatientsByTenant, PatientFilters} from "@/services/patientService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
-import {DadosPaciente} from "@/components/RegisterPatient.tsx";
+import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import Loading from "@/components/Loading.tsx";
-import ModalEditPatient from "@/components/ModalEditPatient.tsx";
-import ModalNewPatient from "@/components/ModalNewPatient.tsx";
+import ModalRender, {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
-import GeneralModal from "@/components/GeneralModal.tsx";
-import ModalBookingPatient from "@/components/ModalBookingPatient.tsx";
+import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
+import {TableCell} from "@mui/material";
+import {findCanalOptions} from "@/lib/canalOptions.ts";
 
-const Patient: React.FC = () => {
+const AdminPatient: React.FC = () => {
 
     const [title,setTitle] = useState("");
     const [action,setAction] = useState("");
@@ -25,16 +25,14 @@ const Patient: React.FC = () => {
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const [tenant, setTenant] = useState<number | undefined>()
+    const [deleteId, setDeleteId] = useState<number>()
     const [pacientes, setPacientes] = useState<DadosPaciente[]>([])
-    const [filtroName, setFiltroName] = useState<string>()
-    const [filtroCPF, setFiltroCPF] = useState<string>()
+    const [filtroName, setFiltroName] = useState<string>('')
+    const [filtroCPF, setFiltroCPF] = useState<string>('')
     const [loading, setLoading] = useState<boolean>(true);
-    const [openModalEdit, setOpenModalEdit] = useState<boolean>(false)
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({} as DadosPaciente)
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
-    const [deleteId, setDeleteId] = useState<number>()
-    const [openModalBookingPatient,setOpenModalBookingPatient] = useState<boolean>(false)
-
+    const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const auth = useAuth()
 
     const fetchPatients = useCallback(async () => {
@@ -61,28 +59,7 @@ const Patient: React.FC = () => {
 
         }
     }, [tenant])
-    const fetchFilters =  async () => {
-        if (tenant) {
-            if (filtroCPF || filtroName) {
-                const filters: PatientFilters = {
-                    patientCpf: filtroCPF,
-                    patientName: filtroName
-                }
-                try {
-                    const result = await listPatientsByTenant(tenant, filters)
-                    if (result?.data.data.length !== 0) {
-                        setPacientes(result?.data.data)
-                    } else {
-                        setPacientes([])
-                    }
-                } catch (error) {
-                    console.log(error)
-                }
-            }
-        } else {
-            fetchPatients().then()
-        }
-    }
+
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
@@ -94,10 +71,31 @@ const Patient: React.FC = () => {
     },[auth.token])
 
     useEffect( () => {
+        const fetchFilters =  async () => {
+            if (tenant) {
+                if (filtroCPF.length > 0 || filtroName.length > 0) {
+                    const filters: PatientFilters = {
+                        patientCpf: filtroCPF,
+                        patientName: filtroName
+                    }
+                    try {
+                        const result = await listPatientsByTenant(tenant, filters)
+                        if (result?.data.data.length !== 0) {
+                            setPacientes(result?.data.data)
+                        } else {
+                            setPacientes([])
+                        }
+                    } catch (error) {
+                        console.log(error)
+                    }
+                }
+            }
+        }
     fetchFilters().then()
-    }, [fetchFilters, fetchPatients, filtroCPF, filtroName, tenant]);
+    }, [fetchPatients, filtroCPF, filtroName, tenant]);
 
     useEffect(() => {
+
        fetchPatients().then()
     }, [fetchPatients])
 
@@ -109,11 +107,37 @@ const Patient: React.FC = () => {
         setIsGeneralModalOpen(true)
 
     }
+    const formatDate = (date?: string) => {
+        if(date) {
+            const spliData = new Date(date).toLocaleDateString().split("/");
+            return spliData[1] + "/" + spliData[0] + "/" + spliData[2]
+        }
+    }
+
+    const renderRow = (paciente: DadosPaciente) => (
+        <>
+            <TableCell className="text-oxfordBlue font-bold">{paciente.full_name}</TableCell>
+            <TableCell className="text-blue-900">{paciente.cpf}</TableCell>
+            <TableCell className="text-blue-900">{paciente.phone}</TableCell>
+            <TableCell className="text-blue-900">{formatDate(paciente?.dob)}</TableCell>
+            <TableCell className="text-blue-900">{paciente.health_card_number}</TableCell>
+            <TableCell className="text-blue-900 capitalize">{findCanalOptions(paciente.canal)}</TableCell>
+        </>
+    );
     const handleDeletePatient = async () => {
         try {
             if (tenant && deleteId) {
                 setIsGeneralModalOpen(false)
-               return await deletePatient(deleteId,tenant)
+                await deletePatient(deleteId.toString(),tenant).then(
+                    (result) => {
+                        if(result.message && result.message.includes('FK_')){
+                            handleModalMessage('Não é possível deletar um paciente com agendamento ou exame realizado')
+                            return
+                        } else {
+                            return result
+                        }
+                    }
+                )
             }
 
         } catch(error) {
@@ -122,30 +146,23 @@ const Patient: React.FC = () => {
     }
     const handleModalMessage = (message: string) => {
         setGeneralMessage(message)
-        setTitle('Confirmação de Cadastro')
+        setTitle('Confirmação')
         setAction('Fechar')
         setIsError(false)
         setIsGeneralModalOpen(true)
     }
 
-    const openModal = (paciente: DadosPaciente) => {
-        setDadosPaciente(paciente)
-        setOpenModalEdit(true)
+    const openFlexiveModal = (modalType: ModalType, paciente?: DadosPaciente) => {
+        if(paciente) {
+            setDadosPaciente(paciente)
+        }
+
+        setType(modalType)
+        setOpenModalNewPatient(true)
     }
-    const openBookingModal = (dadosBooking: DadosPaciente) => {
-        setDadosPaciente(dadosBooking)
-        setOpenModalBookingPatient(true)
-    }
+
     const handleClose = () => {
-        if(openModalEdit) {
-            setOpenModalEdit(false)
-        }
-        if(openModalBookingPatient) {
-            setOpenModalBookingPatient(false)
-        }
-        if(openModalNewPatient) {
-            setOpenModalNewPatient(false)
-        }
+        setIsGeneralModalOpen(false)
         fetchPatients().then()
     }
 
@@ -155,7 +172,7 @@ const Patient: React.FC = () => {
 
     return (
         <>
-            <div className="w-full max-w-6xl">
+            <div className="w-full max-w-6xl p-4 mx-auto">
                 <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Listagem de Pacientes</h1>
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
                     <Cards name='Total de Pacientes' content={pacientes?.length}/>
@@ -181,7 +198,7 @@ const Patient: React.FC = () => {
                             onChange={(e) => setFiltroCPF(e.target.value)}/>
                     </div>
                     <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={() => setOpenModalNewPatient(true)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
+                        <Button onClick={() => openFlexiveModal(ModalType.newPatient)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
                     </div>
                 </div>
 
@@ -199,27 +216,20 @@ const Patient: React.FC = () => {
                                     <TableHead className="text-oxfordBlue">Ação</TableHead>
                                 </TableRow>
                             </TableHeader>
-                            <DataTable openModal={openModal} openModalBooking={openBookingModal} isDelete={handleConfirmationDelete} dataTable={pacientes}></DataTable>
+                            <DataTable renderRow={renderRow} openModalBooking={true} openModalEdit={openFlexiveModal}  deleteData={handleConfirmationDelete} dataTable={pacientes}></DataTable>
                         </Table>
                     </CardContent>
                 </Card>
             </div>
-            {openModalEdit && <ModalEditPatient
-                isOpen={openModalEdit}
-                onClose={handleClose}
-                modalEditPatient={handleModalMessage}
-                dadosPaciente={dadosPaciente}/>}
-            {openModalNewPatient && <ModalNewPatient
+
+            {openModalNewPatient && <ModalRender
                 modalNewPatient={handleModalMessage}
                 isOpen={openModalNewPatient}
-                onClose={handleClose}
-                />}
-            {openModalBookingPatient && <ModalBookingPatient
-                modalBookingPatient={handleModalMessage}
-                isOpen={openModalBookingPatient}
+                onClose={() => setOpenModalNewPatient(false)}
+                type={type}
                 dadosPaciente={dadosPaciente}
-                onClose={handleClose}
             />}
+
             <GeneralModal
                 title={title}
                 action={action}
@@ -231,4 +241,4 @@ const Patient: React.FC = () => {
         </>
     )
 }
-export default Patient;
+export default AdminPatient;

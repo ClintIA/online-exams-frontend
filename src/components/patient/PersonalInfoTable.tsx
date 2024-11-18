@@ -2,8 +2,8 @@ import { NotePencil } from 'phosphor-react';
 import styles from './PersonalInfoTable.module.css';
 import { useEffect, useState } from 'react';
 import { ModalEditDados } from './ModalEditDados';
-import { getPatientData, PatientData } from '../../api/patient-dados'; 
-import { useCpf } from '../../hooks/useCpf'; 
+import { getPatientData, PatientData } from '@/api/patient-dados.ts';
+import { useCpf } from '../../hooks/useCpf';
 import { useAuth } from '../../hooks/auth';
 
 type PersonalInfo = {
@@ -26,7 +26,6 @@ export function PersonalInfoTable() {
     const fetchPatientData = async () => {
       try {
         const response = await getPatientData(Number(userId),cpf);
-        console.log(response)
         const data: PatientData = response.data;
 
         // Atualiza personalInfoData com as informações do paciente

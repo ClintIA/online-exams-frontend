@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode } from 'react';
+import {createContext, ReactNode, useState} from 'react';
 
 interface CpfContextType {
   cpf: string;

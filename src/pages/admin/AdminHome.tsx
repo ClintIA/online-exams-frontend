@@ -1,19 +1,21 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { useAuth } from "@/hooks/auth"
-import { listDoctors } from "@/services/doctorsSerivce"
-import { createNoticeCard, deleteNoticeCard, listNoticeCards } from "@/services/noticeCardService"
-import { listPatientExams } from "@/services/patientExamService"
-import { ITokenPayload } from "@/types/Auth"
-import { format, formatDate } from "date-fns"
-import { ptBR } from "date-fns/locale"
-import { jwtDecode } from "jwt-decode"
-import { ChevronLeft, ChevronRight, Plus, Search, X } from "lucide-react"
-import { useEffect, useState } from "react"
+import {Button} from "@/components/ui/button.tsx"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx"
+import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog.tsx"
+import {Input} from "@/components/ui/input.tsx"
+import {useAuth} from "@/hooks/auth.tsx"
+import {listDoctors} from "@/services/doctorsSerivce.tsx"
+import {createNoticeCard, deleteNoticeCard, listNoticeCards} from "@/services/noticeCardService.tsx"
+import {listPatientExams} from "@/services/patientExamService.tsx"
+import {ITokenPayload} from "@/types/Auth.ts"
+import {format} from "date-fns"
+import {ptBR} from "date-fns/locale"
+import {jwtDecode} from "jwt-decode"
+import {ChevronLeft, ChevronRight, Plus, Search, X} from "lucide-react"
+import {useEffect, useState} from "react"
+import CardDoctor from "@/components/AdminHome/CardDoctor.tsx";
+import {createDate} from "@/lib/utils.ts";
 
-interface IDoctor {
+export interface IDoctor {
   id: number
   fullName: string
   email: string
@@ -21,7 +23,7 @@ interface IDoctor {
   phone: string
 }
 
-interface IPatientExam {
+export interface IPatientExam {
   id: number
   link: string | null
   createdAt: string
@@ -31,6 +33,17 @@ interface IPatientExam {
   exam: {
     id: number
     exam_name: string
+  },
+  patient?: {
+    id: number
+    full_name: string
+  }
+  doctor?: {
+    id: number
+    fullName: string
+    CRM: string
+    phone: string
+    email: string
   }
 }
 
@@ -92,13 +105,15 @@ export default function AdminHome() {
     const fetchPatientExams = async () => {
       try {
         if (tenantId) {
-          const today = new Date().toISOString()
+          const today = new Date().toLocaleDateString()
           const result = await listPatientExams(tenantId, {
-            startDate: today,
-            endDate: today,
+            startDate: createDate(today),
+            endDate: createDate(today),
+            status: 'Scheduled'
           })
           if (result?.data?.status === "success") {
-            const examsList = result?.data?.data?.exames[0]?.patientExams as IPatientExam[]
+
+            const examsList = result?.data?.data?.exams as IPatientExam[]
             setExams(examsList || [])
           }
         }
@@ -169,8 +184,8 @@ export default function AdminHome() {
   const totalPages = Math.ceil(doctorsPagination.total / doctorsPagination.take);
 
   return (
-    <div className="flex flex-col min-h-screen bg-background w-[90%] mx-auto">
-      <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-2">
+      <div className="w-full max-w-6xl p-4 mx-auto">
+        <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-2">
         <div className="flex items-center space-x-2">
           <Dialog>
             <DialogTrigger asChild>
@@ -215,14 +230,10 @@ export default function AdminHome() {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
+                <div className="space-y-2">
                   {Array.isArray(doctors) ? (
                     doctors.map((doctor) => (
-                      <div key={doctor.id} className="flex items-center space-x-4">
-                        <div>
-                          <p className="font-medium">{doctor.fullName}</p>
-                        </div>
-                      </div>
+                      <CardDoctor nome={doctor.fullName} crm={doctor.CRM} contato={doctor.phone} />
                     ))
                   ) : (
                     <p>Não há corpo clínico cadastrado</p>
@@ -299,10 +310,10 @@ export default function AdminHome() {
                   exams.map((exam) => (
                     <div key={exam.id} className="flex justify-between items-center p-3 bg-muted rounded-lg">
                       <div>
-                        <p className="font-medium">Está faltando</p>
-                        <p className="text-sm text-muted-foreground">{exam.exam.exam_name}</p>
+                        <p className="font-medium">Paciente: <strong>{exam?.patient?.full_name}</strong></p>
+                        <p className="text-sm text-muted-foreground"><strong>{exam.exam.exam_name}</strong></p>
                       </div>
-                      <span className="text-sm font-medium">{formatDate(exam.examDate, 'HH:mm')}</span>
+                      <span className="text-sm font-medium"><strong>{new Date(exam?.examDate).toISOString().substring(11, 16)}</strong></span>
                     </div>
                   ))
                 ) : (
