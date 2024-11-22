@@ -1,10 +1,10 @@
 import React from 'react'
-import { User } from 'lucide-react'
+import {User} from 'lucide-react'
 
 interface CardMedicoProps {
-    nome: string
-    crm: string
-    contato: string
+    nome?: string
+    crm?: string
+    contato?: string
 }
 
 const CardDoctor: React.FC<CardMedicoProps>  = ({ nome, crm = 'Não informado', contato = 'Não informado' }: CardMedicoProps) => {

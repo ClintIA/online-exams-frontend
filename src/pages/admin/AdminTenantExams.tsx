@@ -6,15 +6,15 @@ import {Button} from "@/components/ui/button.tsx";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
 import DataTable from "@/components/DataTable.tsx";
-import {deleteExam, listTenantExam} from "@/services/tenantExam.tsx";
+import {deleteExam, listTenantExam} from "@/services/tenantExamService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import Loading from "@/components/Loading.tsx";
 import {TableCell} from "@mui/material";
-import {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
 import ModalTenantExamRender from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
+import {ModalType} from "@/types/ModalType.ts";
 
 export interface Exams {
     id?: number

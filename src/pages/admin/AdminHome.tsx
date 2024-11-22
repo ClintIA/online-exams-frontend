@@ -3,7 +3,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog.tsx"
 import {Input} from "@/components/ui/input.tsx"
 import {useAuth} from "@/hooks/auth.tsx"
-import {listDoctors} from "@/services/doctorsSerivce.tsx"
+import {listDoctors} from "@/services/doctorsService.tsx"
 import {createNoticeCard, deleteNoticeCard, listNoticeCards} from "@/services/noticeCardService.tsx"
 import {listPatientExams} from "@/services/patientExamService.tsx"
 import {ITokenPayload} from "@/types/Auth.ts"
@@ -15,12 +15,15 @@ import {useEffect, useState} from "react"
 import CardDoctor from "@/components/AdminHome/CardDoctor.tsx";
 import {createDate} from "@/lib/utils.ts";
 
-export interface IDoctor {
-  id: number
-  fullName: string
-  email: string
-  CRM: string
-  phone: string
+export interface IAdmin {
+  id?: number
+  fullName?: string
+  email?: string
+  CRM?: string
+  cpf?: string
+  phone?: string
+  isDoctor?: boolean
+  created_at?: string
 }
 
 export interface IPatientExam {
@@ -65,7 +68,7 @@ export default function AdminHome() {
   const [currentDoctorPage, setCurrentDoctorPage] = useState(1)
   const [currentExamPage, setCurrentExamPage] = useState(1)
   const examsPerPage = 12
-  const [doctors, setDoctors] = useState<IDoctor[]>([])
+  const [doctors, setDoctors] = useState<IAdmin[]>([])
   const [doctorsPagination, setDoctorsPagination] = useState({ total: 0, page: 1, take: 5, skip: 0, remaining: 0 })
   const [exams, setExams] = useState<IPatientExam[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -89,7 +92,7 @@ export default function AdminHome() {
         if (tenantId) {
           const result = await listDoctors(tenantId, page, doctorsPagination.take)
           if (result?.data.status === "success") {
-            const doctorsList = result?.data?.data?.data as IDoctor[]
+            const doctorsList = result?.data?.data?.data as IAdmin[]
             setDoctors(doctorsList || [])
             setDoctorsPagination(result.data?.data?.pagination)
           }
@@ -98,7 +101,7 @@ export default function AdminHome() {
         console.error(error)
       }
     }
-    fetchDoctors(currentDoctorPage)
+    fetchDoctors(currentDoctorPage).then()
   }, [tenantId, currentDoctorPage, doctorsPagination.take]);
 
   useEffect(() => {
@@ -121,7 +124,7 @@ export default function AdminHome() {
         console.error(error)
       }
     }
-    fetchPatientExams()
+    fetchPatientExams().then()
   }, [tenantId]);
 
   useEffect(() => {
@@ -137,7 +140,7 @@ export default function AdminHome() {
         console.error(error)
       }
     }
-    fetchNotices()
+    fetchNotices().then()
   }, [tenantId])
 
   const indexOfLastExam = currentExamPage * examsPerPage
@@ -233,7 +236,7 @@ export default function AdminHome() {
                 <div className="space-y-2">
                   {Array.isArray(doctors) ? (
                     doctors.map((doctor) => (
-                      <CardDoctor nome={doctor.fullName} crm={doctor.CRM} contato={doctor.phone} />
+                      <CardDoctor nome={doctor.fullName} crm={doctor?.CRM} contato={doctor.phone} />
                     ))
                   ) : (
                     <p>Não há corpo clínico cadastrado</p>

@@ -1,14 +1,25 @@
-import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar.tsx";
-import { useAuth } from "@/hooks/auth.tsx";
 import {
-  Activity,
-  Calendar,
-  ChevronDown,
-  ChevronRight, CircleUser, Contact2,
-  Home, LayoutDashboard, Lightbulb, Microscope,
-  MonitorCog,
-  User,
-  Users
+    SidebarFooter,
+    SidebarMenu,
+    SidebarMenuButton,
+    SidebarMenuItem,
+    SidebarProvider
+} from "@/components/ui/sidebar.tsx";
+import {useAuth} from "@/hooks/auth.tsx";
+import {
+    Activity,
+    Calendar,
+    ChevronDown,
+    ChevronRight,
+    CircleUser,
+    Contact2,
+    Home,
+    LayoutDashboard,
+    Lightbulb,
+    Microscope,
+    MonitorCog,
+    User,
+    Users
 } from "lucide-react";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
@@ -66,7 +77,7 @@ const AdminSidebar: React.FC = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>
-                  <a href="/admin/exames">
+                  <a href="/admin/upload-exames">
                     <Microscope size={32} className="w-4 h-4 inline-block"/> Portal de Exames
                   </a>
                 </SidebarMenuButton>
@@ -85,28 +96,28 @@ const AdminSidebar: React.FC = () => {
                 <CollapsibleContent>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a className="text-sm" href="/admin/config-exams">
+                      <a href="/admin/registrar-exames">
                         <Microscope size={16} className="w-3 h-3 inline-block"/> Exames
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/pacientes">
+                      <a href="/admin/registrar-pacientes">
                         <Users size={16} className="w-3 h-3 inline-block"/> Pacientes
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/pacientes">
+                      <a href="/admin/registrar-medicos">
                         <Contact2 size={16} className="w-3 h-3 inline-block"/> Médicos
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/pacientes">
+                      <a href="/admin/registrar-admin">
                         <CircleUser size={16} className="w-3 h-3 inline-block"/> Administradores
                       </a>
                     </SidebarMenuButton>
@@ -127,14 +138,14 @@ const AdminSidebar: React.FC = () => {
                 <CollapsibleContent>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/config-exams">
+                      <a href="#">
                         <LayoutDashboard size={16} className="w-3 h-3 inline-block mr-1"/> Marketing
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/pacientes">
+                      <a href="#">
                         <Lightbulb size={16} className="w-3 h-3 inline-block mr-1"/> Gestão
                       </a>
                     </SidebarMenuButton>

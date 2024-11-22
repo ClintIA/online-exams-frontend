@@ -1,8 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import styles from './ModalDetail.module.css';
-import { X } from "phosphor-react";
-import { ExameDetail } from "./ExameDetail";
-import { Exame } from './Post';
+import {X} from "phosphor-react";
+import {ExameDetail} from "./ExameDetail";
+import {Exame} from './Post';
 
 
 interface ModalDetail {

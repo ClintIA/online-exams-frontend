@@ -1,9 +1,9 @@
 import styles from './Post.module.css';
-import { Avatar } from './Avatar';
-import {  useState } from 'react';
-import { Share } from 'phosphor-react';
+import {Avatar} from './Avatar';
+import {useState} from 'react';
+import {Share} from 'phosphor-react';
 import * as Dialog from "@radix-ui/react-dialog";
-import { ModalDetail } from './ModalDetail';
+import {ModalDetail} from './ModalDetail';
 
 
 export interface Exame {

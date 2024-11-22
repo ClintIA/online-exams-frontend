@@ -3,7 +3,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx"
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import ModalRender, {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
+import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import {listPatientExams} from "@/services/patientExamService.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
@@ -14,6 +14,7 @@ import DoctorList from "@/components/Booking/DoctorList.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {formatDate} from "@/lib/utils.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
+import {ModalType} from "@/types/ModalType.ts";
 
 const AdminBooking: React.FC = () =>  {
 
@@ -30,7 +31,7 @@ const AdminBooking: React.FC = () =>  {
         dob: '',
         cpf: '',
         canal:'',
-        address:'',
+        cep:'',
         gender: '',
         health_card_number: '',
     })

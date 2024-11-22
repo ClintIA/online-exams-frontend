@@ -1,15 +1,12 @@
 import apiClient from "@/lib/interceptor.ts";
 import {isAxiosError} from 'axios';
+import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 
-export const listDoctors = async (tenantId: number, page?: number, perPage?: number) => {
+export const listAdmins = async (tenantId: number) => {
     try {
-        return await apiClient.get('admin/doctors/', {
+        return await apiClient.get('admin/', {
             headers: {
                 'x-tenant-id': tenantId
-            },
-            params: {
-                page: page,
-                take: perPage || 10
             }
         })
     } catch (error) {

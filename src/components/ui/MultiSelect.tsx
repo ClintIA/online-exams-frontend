@@ -1,26 +1,12 @@
 import * as React from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import {
-    CheckIcon,
-    ChevronDown,
-} from "lucide-react";
+import {cva, type VariantProps} from "class-variance-authority";
+import {CheckIcon, ChevronDown,} from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-    CommandList,
-} from "@/components/ui/command";
+import {cn} from "@/lib/utils";
+import {Button} from "@/components/ui/button";
+import {Badge} from "@/components/ui/badge";
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/components/ui/command";
 
 /**
  * Variants for the multi-select component to handle different styles.
