@@ -1,10 +1,10 @@
-import { NotePencil } from 'phosphor-react';
+import {NotePencil} from 'phosphor-react';
 import styles from './PersonalInfoTable.module.css';
-import { useEffect, useState } from 'react';
-import { ModalEditDados } from './ModalEditDados';
-import { getPatientData, PatientData } from '@/api/patient-dados.ts';
-import { useCpf } from '../../hooks/useCpf';
-import { useAuth } from '../../hooks/auth';
+import {useEffect, useState} from 'react';
+import {ModalEditDados} from './ModalEditDados';
+import {getPatientData, PatientData} from '@/api/patient-dados.ts';
+import {useCpf} from '../../hooks/useCpf';
+import {useAuth} from '../../hooks/auth';
 
 type PersonalInfo = {
   label: string;

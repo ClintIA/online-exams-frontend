@@ -11,6 +11,8 @@ import AdminPatient from "@/pages/admin/AdminPatient.tsx";
 import AdminBooking from "@/pages/admin/AdminBooking.tsx";
 import AdminHome from "@/pages/admin/AdminHome.tsx";
 import AdminTenantExams from "@/pages/admin/AdminTenantExams.tsx";
+import AdminDoctor from "@/pages/admin/AdminDoctor.tsx";
+import AdminList from "@/pages/admin/AdminList.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -69,16 +71,24 @@ export const router = createBrowserRouter([
                 element:<AdminBooking />,
             },
             {
-                path:'pacientes',
+                path:'registrar-pacientes',
                 element:<AdminPatient />,
             },
             {
-                path:'exames',
+                path:'upload-exames',
                 element:<AdminExams />,
             },
             {
-                path:'config-exams',
+                path:'registrar-exames',
                 element:<AdminTenantExams />,
+            },
+            {
+                path:'registrar-medicos',
+                element:<AdminDoctor />,
+            },
+            {
+                path:'registrar-admin',
+                element:<AdminList />,
             },
         ]
     },

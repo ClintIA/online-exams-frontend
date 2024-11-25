@@ -11,11 +11,12 @@ import {jwtDecode} from "jwt-decode";
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import Loading from "@/components/Loading.tsx";
-import ModalRender, {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
+import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
 import {findCanalOptions} from "@/lib/canalOptions.ts";
+import {ModalType} from "@/types/ModalType.ts";
 
 const AdminPatient: React.FC = () => {
 
@@ -171,7 +172,6 @@ const AdminPatient: React.FC = () => {
     }
 
     return (
-        <>
             <div className="w-full max-w-6xl p-4 mx-auto">
                 <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Listagem de Pacientes</h1>
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
@@ -220,11 +220,11 @@ const AdminPatient: React.FC = () => {
                         </Table>
                     </CardContent>
                 </Card>
-            </div>
 
             {openModalNewPatient && <ModalRender
                 modalNewPatient={handleModalMessage}
                 isOpen={openModalNewPatient}
+                title="Gerenciamento de Pacientes"
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}
                 dadosPaciente={dadosPaciente}
@@ -238,7 +238,7 @@ const AdminPatient: React.FC = () => {
                 isDelete={handleDeletePatient}
                 onClose={handleClose}
                 message={generalMessage}/>
-        </>
+            </div>
     )
 }
 export default AdminPatient;

@@ -1,17 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import { Button } from "@/components/ui/button.tsx"
-import { Input } from "@/components/ui/input.tsx"
-import { Label } from "@/components/ui/label.tsx"
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card.tsx"
-import { AlertCircle } from "lucide-react"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert.tsx"
+import {Button} from "@/components/ui/button.tsx"
+import {Input} from "@/components/ui/input.tsx"
+import {Label} from "@/components/ui/label.tsx"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card.tsx"
+import {AlertCircle} from "lucide-react"
+import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx"
 import {registerPatient} from "@/services/loginService.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
@@ -27,7 +20,7 @@ export interface DadosPaciente {
     phone?: string
     dob?: string
     cpf?: string
-    address?: string
+    cep?: string
     canal?: string
     gender?: string
     exams?: any[]
@@ -53,7 +46,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
         dob: '',
         cpf: '',
         canal:'',
-        address:'',
+        cep:'',
         gender: '',
         health_card_number: '',
     })
@@ -99,7 +92,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
             !dadosPaciente.email ||
             !dadosPaciente.phone ||
             !dadosPaciente.dob ||
-            !dadosPaciente.address ||
+            !dadosPaciente.cep ||
             !dadosPaciente.canal ||
             !dadosPaciente.gender ||
             !dadosPaciente.health_card_number) {
@@ -148,7 +141,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                     dob: '',
                     canal: '',
                     cpf: '',
-                    address: '',
+                    cep: '',
                     gender: '',
                     health_card_number: '',
                 })
@@ -232,13 +225,14 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                        className="col-span-3"/>
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="address" className="text-right text-blue-800">
-                                       Endereço
+                                   <Label htmlFor="cep" className="text-right text-blue-800">
+                                       CEP
                                    </Label>
                                    <Input
-                                       id="address"
-                                       name="address"
-                                       value={dadosPaciente.address}
+                                       id="cep"
+                                       name="cep"
+                                       type="number"
+                                       value={dadosPaciente.cep}
                                        onChange={handleInputChange}
                                        className="col-span-3"/>
                                </div>

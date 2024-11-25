@@ -1,10 +1,11 @@
-import React, {useState, useEffect, ReactNode} from 'react'
+import React, {ReactNode, useEffect, useState} from 'react'
 import {Users} from 'lucide-react'
-import { Button } from "@/components/ui/button.tsx"
+import {Button} from "@/components/ui/button.tsx"
 import {
     Dialog,
     DialogContent,
-    DialogDescription, DialogFooter,
+    DialogDescription,
+    DialogFooter,
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog.tsx"
@@ -18,7 +19,7 @@ interface ModalProps {
 
 }
 
-const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Editar Paciente",children  }: ModalProps) => {
+const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Gerenciamento de Funcionários",children  }: ModalProps) => {
 
     const [open, setOpen] = useState(isOpen)
 

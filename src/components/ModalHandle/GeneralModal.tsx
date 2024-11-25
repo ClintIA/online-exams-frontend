@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Button } from "@/components/ui/button.tsx"
+import React, {useEffect, useState} from 'react'
+import {Button} from "@/components/ui/button.tsx"
 import {
   Dialog,
   DialogContent,
@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog.tsx"
-import { CheckCircle, OctagonX} from "lucide-react";
+import {AlertTriangleIcon, CheckCircle} from "lucide-react";
 
 interface ErrorModalProps {
   isOpen: boolean;
@@ -37,7 +37,7 @@ const GeneralModal: React.FC<ErrorModalProps> = ({ isOpen, onClose, title = "Con
       <DialogContent className="bg-white h-56 sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-oxfordBlue text-xl">
-            <OctagonX className={error ? 'h-8 w-8 text-red-700' : 'hidden' } />
+            <AlertTriangleIcon className={error ? 'h-8 w-8 text-red-700' : 'hidden' } />
             <CheckCircle className={error ? 'hidden' : 'h-8 w-8 text-green-800' } />
             {title}
           </DialogTitle>
