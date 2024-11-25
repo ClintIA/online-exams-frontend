@@ -130,7 +130,7 @@ const AdminExams: React.FC = () =>  {
         <TableHeader>
           <TableRow>
             <TableHead>Paciente</TableHead>
-            <TableHead>Tipo de Exame</TableHead>
+            <TableHead>Tipo de Procedimento</TableHead>
             <TableHead>Data de Criação</TableHead>
             <TableHead>Data de Agendamento</TableHead>
             <TableHead>Status</TableHead>

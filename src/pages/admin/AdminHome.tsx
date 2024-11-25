@@ -10,8 +10,8 @@ import {ITokenPayload} from "@/types/Auth.ts"
 import {format} from "date-fns"
 import {ptBR} from "date-fns/locale"
 import {jwtDecode} from "jwt-decode"
-import {ChevronLeft, ChevronRight, Plus, Search, X} from "lucide-react"
-import {useEffect, useState} from "react"
+import {ChevronLeft, ChevronRight, Plus, X} from "lucide-react"
+import React, {useCallback, useEffect, useState} from "react"
 import CardDoctor from "@/components/AdminHome/CardDoctor.tsx";
 import {createDate} from "@/lib/utils.ts";
 
@@ -33,6 +33,7 @@ export interface IPatientExam {
   examDate: string
   uploadedAt: string | null
   status: string
+  attended: boolean
   exam: {
     id: number
     exam_name: string
@@ -60,7 +61,7 @@ interface INoticeCard {
   date: string
 }
 
-export default function AdminHome() {
+const AdminHome: React.FC = () => {
   const [notices, setNotices] = useState<INoticeCard[]>([])
   const [tenantId, setTenantID] = useState<number | undefined>()
   const [userId, setUserID] = useState<number | undefined>()
@@ -126,22 +127,21 @@ export default function AdminHome() {
     }
     fetchPatientExams().then()
   }, [tenantId]);
-
-  useEffect(() => {
-    const fetchNotices = async () => {
-      try {
-        if (tenantId) {
-          const result = await listNoticeCards(tenantId, {})
-          if (result?.data?.status === "success") {
-            setNotices(result.data.data || [])
-          }
+  const fetchNotices = useCallback(async () => {
+    try {
+      if (tenantId) {
+        const result = await listNoticeCards(tenantId, {})
+        if (result?.data?.status === "success") {
+          setNotices(result.data.data || [])
         }
-      } catch (error) {
-        console.error(error)
       }
+    } catch (error) {
+      console.error(error)
     }
-    fetchNotices().then()
   }, [tenantId])
+  useEffect(() => {
+    fetchNotices().then()
+  }, [fetchNotices])
 
   const indexOfLastExam = currentExamPage * examsPerPage
 
@@ -163,6 +163,7 @@ export default function AdminHome() {
           setNotices(updatedNotices.data.data || [])
           setNewNotice("")
           setDialogOpen(false)
+          fetchNotices().then()
         }
       } catch (error) {
         console.error(error)
@@ -190,20 +191,9 @@ export default function AdminHome() {
       <div className="w-full max-w-6xl p-4 mx-auto">
         <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-2">
         <div className="flex items-center space-x-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Search className="h-4 w-4" />
-                <span className="sr-only">Buscar Paciente</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] bg-white">
-              <DialogHeader>
-                <DialogTitle>Buscar Paciente</DialogTitle>
-              </DialogHeader>
-              <Input className="w-full" placeholder="Digite o nome ou CPF do paciente" />
-            </DialogContent>
-          </Dialog>
+          <Button
+                  className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Cadastrar
+            Paciente</Button>
         </div>
       </header>
       <main className="flex-1 p-4 md:p-6">
@@ -211,7 +201,7 @@ export default function AdminHome() {
           <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-1">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Corpo clínico</CardTitle>
+                <CardTitle>Médicos Atendendo Hoje</CardTitle>
                 <div className="flex items-center space-x-2">
                   <Button
                     variant="ghost"
@@ -239,7 +229,7 @@ export default function AdminHome() {
                       <CardDoctor nome={doctor.fullName} crm={doctor?.CRM} contato={doctor.phone} />
                     ))
                   ) : (
-                    <p>Não há corpo clínico cadastrado</p>
+                    <p>Não há médicos agendados para hoje</p>
                   )}
                 </div>
               </CardContent>
@@ -286,7 +276,7 @@ export default function AdminHome() {
           </div>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Próximos Exames ({format(new Date(), "dd/MM/yyyy", { locale: ptBR })})</CardTitle>
+              <CardTitle>Próximos Agendamentos ({format(new Date(), "dd/MM/yyyy", { locale: ptBR })})</CardTitle>
               <div className="flex items-center space-x-2">
                 <Button
                   variant="ghost"
@@ -332,3 +322,4 @@ export default function AdminHome() {
     </div>
   )
 }
+export default AdminHome;

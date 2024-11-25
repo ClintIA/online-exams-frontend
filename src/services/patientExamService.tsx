@@ -53,3 +53,19 @@ export const updatePatientExam = async (tenantId: number, examId: number, data: 
         }
     }
 }
+
+export const confirmPatientExam = async (tenantId: number, examId: number) => {
+    try {
+        return await apiClient.put(`admin/patientexams/attendance/${examId}`, {
+            attended: true
+        }, {
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+}

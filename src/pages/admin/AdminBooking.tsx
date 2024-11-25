@@ -4,13 +4,12 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
-import {listPatientExams} from "@/services/patientExamService.tsx";
+import {confirmPatientExam, listPatientExams} from "@/services/patientExamService.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import BookingList from "@/components/Booking/BookingList.tsx";
-import DoctorList from "@/components/Booking/DoctorList.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import {formatDate} from "@/lib/utils.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
@@ -98,9 +97,22 @@ const AdminBooking: React.FC = () =>  {
         setIsGeneralModalOpen(true)
     }
     const handleClose = () => {
-
         fetchPatientExams(date).then()
         setOpenModalNewPatient(false)
+    }
+    const handlePresence  = async (examId: number) => {
+        try {
+            if(tenantId) {
+
+                const result = await confirmPatientExam(tenantId, examId)
+                if(result) {
+                    handleModalMessage('Paciente Confirmado')
+                    fetchPatientExams(date).then()
+                }
+            }
+        } catch(error) {
+            console.log(error)
+        }
     }
 
     return (
@@ -108,8 +120,7 @@ const AdminBooking: React.FC = () =>  {
             <h1 className="text-2xl font-bold mb-4 text-oxfordBlue">Gerenciamento de Agendamentos</h1>
             <Tabs defaultValue="lista" className="space-y-4">
                 <TabsList className="p-5 h-12 gap-2">
-                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="lista">Pacientes &nbsp;<span className="hidden sm:flex">Agendados</span></TabsTrigger>
-                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="doctors">Medicos &nbsp;<span className="hidden sm:flex"> Agendados</span></TabsTrigger>
+                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="lista">Exames&nbsp;<span className="hidden sm:flex">Agendados</span></TabsTrigger>
                 </TabsList>
                 <TabsContent value="lista">
                     <Card className="p-4">
@@ -118,9 +129,6 @@ const AdminBooking: React.FC = () =>  {
                         </CardTitle>
                         <CardHeader className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">
                             <div className="mt-1.5 flex gap-2">
-                                <Button onClick={() => openFlexiveModal('Registrar Paciente', ModalType.newPatient)}
-                                        className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Cadastrar
-                                    Paciente</Button>
                                 <Button onClick={() => openFlexiveModal('Agendamento de Exame', ModalType.newBookingPatient)}
                                         className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Realizar
                                     Agendamento
@@ -139,23 +147,11 @@ const AdminBooking: React.FC = () =>  {
                         <CardContent>
                             <div className="ml-4">
                                 <BookingList
+                                    onConfirmarPresenca={handlePresence}
                                     loading={loading}
                                     agendamentos={exams}
                                 />
                             </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-                <TabsContent value="doctors">
-                    <Card>
-                        <CardHeader className="flex flex-row gap-2 justify-items-start text-base text-oxfordBlue">
-                            <CardTitle className="ml-4 text-oxfordBlue text-xl">
-                                {`Médicos agendados para ${formatDate(date)}`}
-                            </CardTitle>
-                        </CardHeader>
-
-                        <CardContent>
-                            <DoctorList agendamentos={exams} />
                         </CardContent>
                     </Card>
                 </TabsContent>

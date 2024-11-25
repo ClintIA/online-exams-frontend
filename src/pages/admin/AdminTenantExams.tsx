@@ -179,9 +179,9 @@ const AdminTenantExams: React.FC = () => {
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead className="text-oxfordBlue">Nome do Exame</TableHead>
+                                    <TableHead className="text-oxfordBlue">Nome do Procedimento</TableHead>
                                     <TableHead className="text-oxfordBlue">Médicos</TableHead>
-                                    <TableHead className="text-oxfordBlue">Preço do Exame</TableHead>
+                                    <TableHead className="text-oxfordBlue">Preço do Procedimento</TableHead>
                                     <TableHead className="text-oxfordBlue">Valor do Médico</TableHead>
                                     <TableHead className="text-oxfordBlue">Ação</TableHead>
                                 </TableRow>
