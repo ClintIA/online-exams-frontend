@@ -197,6 +197,7 @@ const AdminTenantExams: React.FC = () => {
                     isOpen={openModalNewExam}
                     onClose={() => setOpenModalNewExam(false)}
                     type={type}
+                    title="Gerenciamento de Exames da Clínica"
                     dadosExam={exame}/>
             )
             }

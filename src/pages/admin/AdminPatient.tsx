@@ -224,6 +224,7 @@ const AdminPatient: React.FC = () => {
             {openModalNewPatient && <ModalRender
                 modalNewPatient={handleModalMessage}
                 isOpen={openModalNewPatient}
+                title="Gerenciamento de Pacientes"
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}
                 dadosPaciente={dadosPaciente}

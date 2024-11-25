@@ -3,7 +3,7 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog.tsx"
 import {Input} from "@/components/ui/input.tsx"
 import {useAuth} from "@/hooks/auth.tsx"
-import {listDoctors} from "@/services/doctorsService.tsx"
+import {listDoctors} from "@/services/adminsService.tsx"
 import {createNoticeCard, deleteNoticeCard, listNoticeCards} from "@/services/noticeCardService.tsx"
 import {listPatientExams} from "@/services/patientExamService.tsx"
 import {ITokenPayload} from "@/types/Auth.ts"

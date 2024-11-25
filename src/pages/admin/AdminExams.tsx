@@ -35,17 +35,18 @@ const AdminExams: React.FC = () =>  {
       setTenantId(decoded.tenantId)
     }
   }, [auth.token])
-  const fetchExams = async () => {
-    if (tenantId) {
-      const result = await listPatientExams(tenantId, {})
-      if (result?.data?.status === "success") {
-        setExams(result?.data?.data.exams || [])
+
+  useEffect(() => {
+    const fetchExams = async () => {
+      if (tenantId) {
+        const result = await listPatientExams(tenantId, {})
+        if (result?.data?.status === "success") {
+          setExams(result?.data?.data.exams || [])
+        }
       }
     }
-  }
-  useEffect(() => {
     fetchExams().then()
-  }, [fetchExams])
+  }, [tenantId])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {

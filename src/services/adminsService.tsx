@@ -10,7 +10,7 @@ export const listDoctors = async (tenantId: number, page?: number, perPage?: num
             },
             params: {
                 page: page,
-                take: perPage || 10
+                take: perPage || 100
             }
         })
     } catch (error) {
@@ -19,11 +19,12 @@ export const listDoctors = async (tenantId: number, page?: number, perPage?: num
         }
     }
 }
-export const registerAdminDoctor = async (adminData: IAdmin, tenantId:  number) => {
-    const newDoctor = {...adminData, isDoctor: true}
+export const registerAdmin = async (adminData: IAdmin, tenantId:  number,isDoctor: boolean) => {
+    const newAdmin = {...adminData, isDoctor: isDoctor}
+
 
     try {
-        return await apiClient.post('admin/register', newDoctor, {
+        return await apiClient.post('admin/register', newAdmin, {
             headers: {
                 'x-tenant-id': tenantId
             }
@@ -35,10 +36,11 @@ export const registerAdminDoctor = async (adminData: IAdmin, tenantId:  number) 
         }
     }
 }
-export const updateAdminDoctor = async (adminData: IAdmin, tenantId:  number) => {
-    const newDoctor = {...adminData, isDoctor: true}
+export const updateAdmin = async (adminData: IAdmin, tenantId:  number,isDoctor: boolean) => {
+    const newAdmin = {...adminData, isDoctor: isDoctor}
+
     try {
-        return await apiClient.put(`admin/update/${adminData.id}`, newDoctor, {
+        return await apiClient.put(`admin/update/${adminData.id}`, newAdmin, {
             headers: {
                 'x-tenant-id': tenantId
             }
@@ -61,5 +63,19 @@ export const deleteDoctor = async (deleteId:number, tenantId: number) => {
         if (isAxiosError(error)) {
         return error.response?.data
      }
+    }
+}
+
+export const listAdmins = async (tenantId: number) => {
+    try {
+        return await apiClient.get('admin/', {
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
+    } catch (error) {
+        if (isAxiosError(error)) {
+            return error.response?.data
+        }
     }
 }

@@ -13,11 +13,12 @@ import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 
 interface RegisterDoctorProps {
     dadosIniciais?: Partial<IAdmin>
-    isUpdate?: (pacienteDados: IAdmin, tenant: number) => Promise<any>
-    isNewDoctor?: (pacienteDados: IAdmin, tenant: number) => Promise<any>
+    isUpdate?: (pacienteDados: IAdmin, tenant: number,isDoctor: boolean) => Promise<any>
+    isAdmin?: (pacienteDados: IAdmin, tenant: number,isDoctor: boolean) => Promise<any>
+    isDoctor: boolean
 }
 
-const RegisterPatient: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, isNewDoctor}: RegisterDoctorProps) => {
+const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, isAdmin, isDoctor}: RegisterDoctorProps) => {
 
     const [doctorData, setDoctorData] = useState<IAdmin>({
         fullName: '',
@@ -60,7 +61,6 @@ const RegisterPatient: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate
         if (!doctorData.fullName ||
             !doctorData.email ||
             !doctorData.phone ||
-            !doctorData.CRM ||
             !doctorData.cpf) {
             setErro('Por favor, preencha todos os campos')
             return
@@ -78,12 +78,12 @@ const RegisterPatient: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate
             if(tenant) {
 
                 if(isUpdate) {
-                    await isUpdate(doctorData, tenant)
+                    await isUpdate(doctorData, tenant, isDoctor)
                         .catch((error) => console.log(error))
                     return
                 }
-                if(isNewDoctor) {
-                        await isNewDoctor(doctorData, tenant)
+                if(isAdmin) {
+                        await isAdmin(doctorData, tenant, isDoctor)
                             .catch((error) => console.log(error))
                 }
 
@@ -106,9 +106,11 @@ const RegisterPatient: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate
 
                <Card className="w-full max-w-2xl mx-auto">
                    <CardHeader>
-                       <CardTitle className='text-blue-900 text-xl'>Cadastro de Médicos</CardTitle>
+                       <CardTitle className={isDoctor? `text-blue-900 text-xl` : 'hidden'}>Cadastro de Médicos</CardTitle>
+                       <CardTitle className={isDoctor? 'hidden' : `text-blue-900 text-xl`}>Cadastro de Administradores</CardTitle>
+
                        <CardDescription>
-                           Preencha os dados do médico abaixo. Clique em salvar quando terminar.
+                           Preencha os dados abaixo. Clique em salvar para finalizar o cadastro.
                        </CardDescription>
                    </CardHeader>
                    <CardContent>
@@ -127,17 +129,19 @@ const RegisterPatient: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate
                                        onChange={handleInputChange}
                                        className="col-span-3"/>
                                </div>
-                               <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="CRM" className="text-right text-blue-800">
-                                       CRM
-                                   </Label>
-                                   <Input
-                                       id="CRM"
-                                       name="CRM"
-                                       type="text"
-                                       value={doctorData?.CRM}
-                                       onChange={handleInputChange}
-                                       className="col-span-3"/>
+                               <div className={isDoctor ? "" : "hidden"}>
+                                   <div className="grid grid-cols-4 items-center gap-4">
+                                       <Label htmlFor="CRM" className="text-right text-blue-800">
+                                           CRM
+                                       </Label>
+                                       <Input
+                                           id="CRM"
+                                           name="CRM"
+                                           type="text"
+                                           value={doctorData?.CRM}
+                                           onChange={handleInputChange}
+                                           className="col-span-3"/>
+                                   </div>
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
                                    <Label htmlFor="cpf" className="text-right text-blue-800">
@@ -177,12 +181,12 @@ const RegisterPatient: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate
                                </div>
                            </div>
                            <div className="flex justify-end mt-6">
-                               {isNewDoctor && (
-                                   <Button className="bg-oxfordBlue text-white" type="submit">Cadastrar Médico</Button>
+                               {isAdmin && (
+                                   <Button className="bg-oxfordBlue text-white" type="submit">Cadastrar</Button>
                                )}
                                {isUpdate && (
                                    <Button className="bg-oxfordBlue text-white" type="submit">Atualizar
-                                       Médico</Button>
+                                       </Button>
                                )}                           </div>
                        </form>
                    </CardContent>
@@ -199,4 +203,4 @@ const RegisterPatient: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate
            </div>
    )
 }
-export default RegisterPatient;
+export default RegisterAdmin;

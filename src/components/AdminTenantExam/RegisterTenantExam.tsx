@@ -9,7 +9,7 @@ import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
-import {listDoctors} from "@/services/doctorsService.tsx";
+import {listDoctors} from "@/services/adminsService.tsx";
 import {IExam} from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";

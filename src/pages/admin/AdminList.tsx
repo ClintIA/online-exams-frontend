@@ -14,67 +14,64 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
 import {ModalType} from "@/types/ModalType.ts";
-import {deleteDoctor, listDoctors} from "@/services/adminsService.tsx";
+import {deleteDoctor, listAdmins} from "@/services/adminsService.tsx";
 import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
 
-const AdminDoctor: React.FC = () => {
+const AdminList: React.FC = () => {
 
     const [title,setTitle] = useState("");
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
-    const [doctors,setDoctors] = useState<IAdmin[]>([]);
+    const [admins,setAdmins] = useState<IAdmin[]>([]);
     const [filtroName, setFiltroName] = useState<string>('')
-    const [filtroCRM, setFiltroCRM] = useState<string>('')
     const [deleteId, setDeleteId] = useState<number>()
-    const [doctor, setDoctor] = useState<IAdmin>()
-    const [tenant, setTenant] = useState<number | undefined>()
-    const [doctorsPagination, setDoctorsPagination] = useState({ total: 0, page: 1, take: 1000, skip: 0, remaining: 0 })
-    const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
+    const [admin, setAdmin] = useState<IAdmin>()
+    const [tenantId, setTenantId] = useState<number | undefined>()
+    const [openModalNewAdmin, setOpenModalNewAdmin] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const [loading, setLoading] = useState<boolean>(false);
     const auth = useAuth()
 
 
-    const openFlexiveModal = (modalType: ModalType, doctor?: IAdmin) => {
-        if(doctor) {
-            setDoctor(doctor)
+    const openFlexiveModal = (modalType: ModalType, admin?: IAdmin) => {
+        if(admin) {
+            setAdmin(admin)
         }
 
         setType(modalType)
-        setOpenModalNewPatient(true)
+        setOpenModalNewAdmin(true)
     }
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
                 const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenant(decoded.tenantId)
+                setTenantId(decoded.tenantId)
             }
         }
         getTenant()
     },[auth.token])
-    const fetchDoctors = useCallback(async () => {
+    const fetchAdmins = useCallback(async () => {
         try {
-            if (tenant) {
+            if (tenantId) {
                 setLoading(true)
-                const result = await listDoctors(tenant, doctorsPagination.take)
+                const result = await listAdmins(tenantId)
                 setLoading(false)
                 if (result?.data.status === "success") {
-                    const doctorsList = result?.data?.data?.data as IAdmin[]
-                    setDoctors(doctorsList || [])
-                    setDoctorsPagination(result.data?.data?.pagination)
+                    const adminsList = result?.data?.data as IAdmin[]
+                    setAdmins(adminsList || [])
                 }
             }
         } catch (error) {
             console.error(error)
         }
-    },[doctorsPagination.take, tenant])
+    },[tenantId])
     useEffect(() => {
-        fetchDoctors().then()
-    }, [fetchDoctors]);
+        fetchAdmins().then()
+    }, [fetchAdmins]);
 
     const handleModalMessage = (message: string) => {
         setGeneralMessage(message)
@@ -84,7 +81,7 @@ const AdminDoctor: React.FC = () => {
         setIsGeneralModalOpen(true)
     }
     const handleConfirmationDelete = (id: number) => {
-        setGeneralMessage("Deseja deletar o médico selecionado?")
+        setGeneralMessage("Deseja deletar o administrador selecionado?")
         setTitle('Confirmação de Exclusão')
         setAction('Excluir')
         setDeleteId(id)
@@ -93,14 +90,14 @@ const AdminDoctor: React.FC = () => {
     }
     const handleDeletePatient = async () => {
         try {
-            if(deleteId && tenant) {
-            await deleteDoctor(deleteId,tenant).then(
+            if(deleteId && tenantId) {
+            await deleteDoctor(deleteId,tenantId).then(
                     (result) => {
                         if (result.message && result.message.includes('FK_')) {
-                            handleModalMessage('Não é possível deletar um médico com agendamento pendente')
+                            handleModalMessage('Não é possível deletar um administrador com agendamento pendente')
                             return
                         } else {
-                            return fetchDoctors().then()
+                            return fetchAdmins().then()
                         }
                     })
                 setIsGeneralModalOpen(false)
@@ -111,7 +108,7 @@ const AdminDoctor: React.FC = () => {
     }
     const handleClose = () => {
         setIsGeneralModalOpen(false)
-        fetchDoctors().then()
+        fetchAdmins().then()
     }
 
     if (loading) {
@@ -121,7 +118,6 @@ const AdminDoctor: React.FC = () => {
         <>
             <TableCell className="text-oxfordBlue font-bold">{doctor.fullName}</TableCell>
             <TableCell className="text-blue-900">{doctor.cpf}</TableCell>
-            <TableCell className="text-blue-900">{doctor.CRM}</TableCell>
             <TableCell className="text-blue-900">{doctor.email}</TableCell>
             <TableCell className="text-blue-900">{doctor.phone}</TableCell>
             <TableCell className="text-blue-900">{doctor.created_at ? format(doctor.created_at, "dd/MM/yyyy", { locale: ptBR }) : ''}</TableCell>
@@ -131,9 +127,9 @@ const AdminDoctor: React.FC = () => {
 
     return (
         <div className="w-full max-w-6xl p-4 mx-auto">
-            <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Listagem de Médicos</h1>
+            <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Listagem de Administradores</h1>
             <div className="flex flex-col md:flex-row gap-3 mb-6">
-                <Cards name='Total de Médicos' content={doctors?.length}/>
+                <Cards name='Total de Adminstradores' content={admins?.length}/>
             </div>
 
             <div className="flex flex-col md:flex-row gap-3 mb-5">
@@ -146,19 +142,11 @@ const AdminDoctor: React.FC = () => {
                         value={filtroName}
                         onChange={(e) => setFiltroName(e.target.value)}/>
                 </div>
-                <div className='p-2'>
-                    <Label htmlFor="filtroCPF" className="text-oxfordBlue">CRM</Label>
-                    <Input
-                        className="w-72"
-                        id="filtroCPF"
-                        placeholder="Filtrar por CRM"
-                        value={filtroCRM}
-                        onChange={(e) => setFiltroCRM(e.target.value)}/>
-                </div>
+
                 <div className="flex justify-end mt-7 p-1">
-                    <Button onClick={() => openFlexiveModal(ModalType.newDoctorAdmin)}
+                    <Button onClick={() => openFlexiveModal(ModalType.newAdmin)}
                             className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
-                        Médico</Button>
+                        Administradores</Button>
                 </div>
             </div>
 
@@ -169,25 +157,25 @@ const AdminDoctor: React.FC = () => {
                             <TableRow>
                                 <TableHead className="text-oxfordBlue">Nome</TableHead>
                                 <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                <TableHead className="text-oxfordBlue">CRM</TableHead>
                                 <TableHead className="text-oxfordBlue">Email</TableHead>
                                 <TableHead className="text-oxfordBlue">Contato</TableHead>
                                 <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
                             </TableRow>
                         </TableHeader>
                         <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={openFlexiveModal}
-                                   deleteData={handleConfirmationDelete} dataTable={doctors}></DataTable>
+                                   deleteData={handleConfirmationDelete} dataTable={admins}></DataTable>
                     </Table>
                 </CardContent>
             </Card>
 
-            {openModalNewPatient && <ModalRender
+            {openModalNewAdmin && <ModalRender
                 modalNewPatient={handleModalMessage}
-                isOpen={openModalNewPatient}
-                onClose={() => setOpenModalNewPatient(false)}
+                isOpen={openModalNewAdmin}
+                onClose={() => setOpenModalNewAdmin(false)}
                 type={type}
-                title="Gerenciamento de Médicos"
-                adminData={doctor}
+                title="Gerenciamento de Administradores"
+                adminData={admin}
+                isDoctor={false}
             />}
 
             <GeneralModal
@@ -202,4 +190,4 @@ const AdminDoctor: React.FC = () => {
     )
 }
 
-export default AdminDoctor;
+export default AdminList;

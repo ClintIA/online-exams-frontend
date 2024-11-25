@@ -19,7 +19,7 @@ interface ModalProps {
 
 }
 
-const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Editar Paciente",children  }: ModalProps) => {
+const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Gerenciamento de Funcionários",children  }: ModalProps) => {
 
     const [open, setOpen] = useState(isOpen)
 
