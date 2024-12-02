@@ -184,8 +184,8 @@ export default function AdminHome() {
   const totalPages = Math.ceil(doctorsPagination.total / doctorsPagination.take);
 
   return (
-      <div className="w-full max-w-6xl p-4 mx-auto">
-        <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-2">
+    <div className="w-full max-w-full min-h-screen overflow-x-hidden mx-auto">
+      <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-[2px]">
         <div className="flex items-center space-x-2">
           <Dialog>
             <DialogTrigger asChild>
@@ -203,8 +203,8 @@ export default function AdminHome() {
           </Dialog>
         </div>
       </header>
-      <main className="flex-1 p-4 md:p-6">
-        <div className="max-w-6xl mx-auto space-y-6">
+      <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
+        <div className="max-w-full mx-auto space-y-6">
           <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-1">
               <CardHeader className="flex flex-row items-center justify-between">

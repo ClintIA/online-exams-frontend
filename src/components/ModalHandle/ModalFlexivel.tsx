@@ -9,6 +9,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog.tsx"
 import {DialogClose} from "@radix-ui/react-dialog";
+import styles from './ModalFlexivel.module.css';
 
 interface ModalProps {
     isOpen: boolean;
@@ -40,22 +41,22 @@ const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Editar 
 
     return (
         <Dialog open={open} modal={true} onOpenChange={(handleOpenChange)}>
-            <DialogContent onCloseAutoFocus={handleClose} className="bg-white max-w-3xl">
+            <DialogContent onCloseAutoFocus={handleClose} className={styles.content}>
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <Users className="h-6 w-6"/>
+                    <DialogTitle className={styles.title}>
+                        <Users className={styles.icon}/>
                         {title}
                     </DialogTitle>
                 </DialogHeader>
                 {children}
                 <DialogDescription>
                 </DialogDescription>
-                <DialogFooter className="flex items-center gap-2">
-                    <DialogClose className="flex items-center gap-2" asChild>
+                <DialogFooter className={styles.footer}>
+                    {/* <DialogClose className="flex items-center gap-2" asChild>
                         <Button type="button" className="flex mx-auto w-52 bg-oxfordBlue text-white">
                             Close
                         </Button>
-                    </DialogClose>
+                    </DialogClose> */}
                 </DialogFooter>
             </DialogContent>
         </Dialog>
