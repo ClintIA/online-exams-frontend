@@ -1,25 +1,14 @@
+import { SidebarFooter, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarProvider } from "@/components/ui/sidebar.tsx";
+import { useAuth } from "@/hooks/auth.tsx";
 import {
-    SidebarFooter,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-    SidebarProvider
-} from "@/components/ui/sidebar.tsx";
-import {useAuth} from "@/hooks/auth.tsx";
-import {
-    Activity,
-    Calendar,
-    ChevronDown,
-    ChevronRight,
-    CircleUser,
-    Contact2,
-    Home,
-    LayoutDashboard,
-    Lightbulb,
-    Microscope,
-    MonitorCog,
-    User,
-    Users
+  Activity,
+  Calendar,
+  ChevronDown,
+  ChevronRight, CircleUser, Contact2,
+  Home, LayoutDashboard, Lightbulb, Microscope,
+  MonitorCog,
+  User,
+  Users
 } from "lucide-react";
 import {useNavigate} from "react-router-dom";
 import React, {useState} from "react";
@@ -28,6 +17,7 @@ import {Button} from "@/components/ui/button.tsx";
 import styles from "@/components/patient/Header.module.css";
 import clintiaLogo from "@/assets/logoClintia.png";
 import {List, SignOut} from "phosphor-react";
+
 
 const AdminSidebar: React.FC = () => {
 
@@ -64,61 +54,61 @@ const AdminSidebar: React.FC = () => {
               <SidebarMenuItem>
                 <SidebarMenuButton>
                   <a href="/admin/home">
-                    <Home className="w-4 h-4 inline-block"/> Início
+                    <Home className={styles.icon} /> Início
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>
                   <a href="/admin/agendamento">
-                    <Calendar size={32} className="w-4 h-4 inline-block"/> Agendamentos
+                    <Calendar size={32} className={styles.icon}/> Agendamentos
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>
-                  <a href="/admin/upload-exames">
-                    <Microscope size={32} className="w-4 h-4 inline-block"/> Portal de Exames
+                  <a href="/admin/exames">
+                    <Microscope size={32} className={styles.icon}/> Portal de Exames
                   </a>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <Collapsible
-                  className="ml-2 text-white"
+                  className={`${styles.cadastros} ml-2 text-white`}
                   open={isOpenRegister}
                   onOpenChange={setIsOpenRegister}>
                 <CollapsibleTrigger>
-                  <Button className="text-base" variant="ghost">
-                    <MonitorCog size={32} className="w-4 h-4 inline-block"/> Cadastros
-                    {isOpenRegister ? <ChevronDown size={32} className="w-4 h-4 inline-block mr-1"/> :
-                        <ChevronRight className="w-4 h-4 inline-block mr-1"/>}
+                  <Button className={`${styles.navLink}`} variant="ghost">
+                    <MonitorCog size={32} className={styles.icon}/> Cadastros
+                    {isOpenRegister ? <ChevronDown size={32} className={styles.icon}/> :
+                        <ChevronRight className={styles.icon}/>}
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/registrar-exames">
-                        <Microscope size={16} className="w-3 h-3 inline-block"/> Exames
+                      <a className="text-sm" href="/admin/config-exams">
+                        <Microscope size={16} className={styles.icon}/> Exames
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/registrar-pacientes">
-                        <Users size={16} className="w-3 h-3 inline-block"/> Pacientes
+                      <a href="/admin/pacientes">
+                        <Users size={16} className={styles.icon}/> Pacientes
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/registrar-medicos">
-                        <Contact2 size={16} className="w-3 h-3 inline-block"/> Médicos
+                      <a href="/admin/pacientes">
+                        <Contact2 size={16} className={styles.icon}/> Médicos
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/registrar-admin">
-                        <CircleUser size={16} className="w-3 h-3 inline-block"/> Administradores
+                      <a href="/admin/pacientes">
+                        <CircleUser size={16} className={styles.icon}/> Administradores
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -127,26 +117,26 @@ const AdminSidebar: React.FC = () => {
               <Collapsible
                   open={isOpenRelatorios}
                   onOpenChange={setIsOpenRelatorios}
-                  className="ml-2 text-white">
+                  className={`${styles.relatorios} ml-2 text-white`}>
                 <CollapsibleTrigger>
-                  <Button className="text-base" variant="ghost">
-                    <Activity size={32} className="w-5 h-5 inline-block"/> Relátorios
-                    {isOpenRelatorios ? <ChevronDown className="w-4 h-4 inline-block mr-1"/> :
-                        <ChevronRight className="w-5 h-5 inline-block mr-1"/>}
+                  <Button className={`${styles.navLink}`} variant="ghost">
+                    <Activity size={32} className={styles.icon}/> Relátorios
+                    {isOpenRelatorios ? <ChevronDown className={styles.icon}/> :
+                        <ChevronRight className={styles.icon}/>}
                   </Button>
                 </CollapsibleTrigger>
                 <CollapsibleContent>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="#">
-                        <LayoutDashboard size={16} className="w-3 h-3 inline-block mr-1"/> Marketing
+                      <a href="/admin/config-exams">
+                        <LayoutDashboard size={16} className={styles.icon}/> Marketing
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="#">
-                        <Lightbulb size={16} className="w-3 h-3 inline-block mr-1"/> Gestão
+                      <a href="/admin/pacientes">
+                        <Lightbulb size={16} className={styles.icon}/> Gestão
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
@@ -155,12 +145,12 @@ const AdminSidebar: React.FC = () => {
             <SidebarFooter className="flex flex-row justify-between">
               <div className="fixed bottom-16 md:bottom-2 md:left-2">
                 <button className="text-white">
-                  <User color="white" className="w-5 h-5"/>Perfil
+                  <User color="white" className={styles.icon}/>Perfil
                 </button>
               </div>
               <div className="fixed bottom-16 right-2 md:bottom-2  md:left-48">
                 <button className="text-white" onClick={handleLogout}>
-                  <SignOut color="white" className="w-5 h-5"/> Sair
+                  <SignOut color="white" className={styles.icon}/> Sair
                 </button>
               </div>
             </SidebarFooter>

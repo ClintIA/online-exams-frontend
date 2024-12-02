@@ -1,6 +1,5 @@
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Users} from 'lucide-react'
-import {Button} from "@/components/ui/button.tsx"
 import {
     Dialog,
     DialogContent,
@@ -9,7 +8,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog.tsx"
-import {DialogClose} from "@radix-ui/react-dialog";
+import styles from './ModalFlexivel.module.css';
 import Stepper from "@/components/Stepper.tsx";
 
 interface ModalProps {
@@ -17,8 +16,7 @@ interface ModalProps {
     onClose: () => void;
     title?: string;
     children: ReactNode
-    isStepper?: boolean
-
+    isStepper: boolean
 
 }
 const steps = ['CPF', 'Cadastro','Agendamento']
@@ -57,25 +55,20 @@ const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Gerenci
 
     return (
         <Dialog open={open} modal={true} onOpenChange={(handleOpenChange)}>
-            <DialogContent onCloseAutoFocus={handleClose} className="bg-white max-w-3xl">
+            <DialogContent onCloseAutoFocus={handleClose} className={styles.content}>
                 <DialogHeader>
-                    <DialogTitle className="flex items-center gap-2">
-                        <Users className="h-6 w-6"/>
+                    <DialogTitle className={styles.title}>
+                        <Users className={styles.icon}/>
                         {title}
                     </DialogTitle>
                 </DialogHeader>
                 <div className={isStepper? '' : 'hidden'}>
-                    <Stepper  steps={steps} currentStep={currentStep} />
+                    <Stepper steps={steps} currentStep={currentStep} />
                 </div>
                 {children}
                 <DialogDescription>
                 </DialogDescription>
-                <DialogFooter className="flex items-center gap-2">
-                    <DialogClose className="flex items-center gap-2" asChild>
-                        <Button type="button" className="flex mx-auto w-52 bg-oxfordBlue text-white">
-                            Close
-                        </Button>
-                    </DialogClose>
+                <DialogFooter className={styles.footer}>
                 </DialogFooter>
             </DialogContent>
         </Dialog>

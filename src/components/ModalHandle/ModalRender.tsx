@@ -23,10 +23,11 @@ interface ModalRegisterProps {
     adminData?: IAdmin
     type: ModalType
     isDoctor?: boolean
+    isStepper: boolean
 }
 
 
-const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title,modalNewPatient,modalNewBookingConfirmation,dadosPaciente, type, adminData }: ModalRegisterProps) => {
+const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, title,modalNewPatient,modalNewBookingConfirmation,dadosPaciente, type, adminData }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
     const [modalContent,setModalContent] = useState<ModalType>(ModalType.newPatient)
     const [patientData, setPatientData] = useState<BookingConfirmationState>({} as BookingConfirmationState)
@@ -138,6 +139,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title,moda
     return (
             <ModalFlexivel
                 isOpen={open}
+                isStepper={isStepper}
                 onClose={handleClose}
                 title={title}>
                 {renderModalContent()}
