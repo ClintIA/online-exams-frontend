@@ -5,11 +5,11 @@ import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
-import {IDoctor} from "@/pages/admin/AdminHome.tsx";
+import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
-import {listDoctors} from "@/services/doctorsSerivce.tsx";
+import {listDoctors} from "@/services/adminsService.tsx";
 import {IExam} from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
@@ -29,7 +29,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
     });
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [selectedDoctors, setSelectedDoctors] = useState<string[] | undefined>([]);
-    const [doctors, setDoctors] = useState<IDoctor[]>([])
+    const [doctors, setDoctors] = useState<IAdmin[]>([])
     const [erro, setErro] = useState<string | null>(null)
     const [doctorIDs, setDoctorsIDs] = useState<string[]>([])
     const auth = useAuth()

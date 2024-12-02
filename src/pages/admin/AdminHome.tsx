@@ -3,24 +3,27 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog.tsx"
 import {Input} from "@/components/ui/input.tsx"
 import {useAuth} from "@/hooks/auth.tsx"
-import {listDoctors} from "@/services/doctorsSerivce.tsx"
+import {listDoctors} from "@/services/adminsService.tsx"
 import {createNoticeCard, deleteNoticeCard, listNoticeCards} from "@/services/noticeCardService.tsx"
 import {listPatientExams} from "@/services/patientExamService.tsx"
 import {ITokenPayload} from "@/types/Auth.ts"
 import {format} from "date-fns"
 import {ptBR} from "date-fns/locale"
 import {jwtDecode} from "jwt-decode"
-import {ChevronLeft, ChevronRight, Plus, Search, X} from "lucide-react"
-import {useEffect, useState} from "react"
+import {ChevronLeft, ChevronRight, Plus, X} from "lucide-react"
+import React, {useCallback, useEffect, useState} from "react"
 import CardDoctor from "@/components/AdminHome/CardDoctor.tsx";
 import {createDate} from "@/lib/utils.ts";
 
-export interface IDoctor {
-  id: number
-  fullName: string
-  email: string
-  CRM: string
-  phone: string
+export interface IAdmin {
+  id?: number
+  fullName?: string
+  email?: string
+  CRM?: string
+  cpf?: string
+  phone?: string
+  isDoctor?: boolean
+  created_at?: string
 }
 
 export interface IPatientExam {
@@ -30,6 +33,7 @@ export interface IPatientExam {
   examDate: string
   uploadedAt: string | null
   status: string
+  attended: boolean
   exam: {
     id: number
     exam_name: string
@@ -57,7 +61,7 @@ interface INoticeCard {
   date: string
 }
 
-export default function AdminHome() {
+const AdminHome: React.FC = () => {
   const [notices, setNotices] = useState<INoticeCard[]>([])
   const [tenantId, setTenantID] = useState<number | undefined>()
   const [userId, setUserID] = useState<number | undefined>()
@@ -65,7 +69,7 @@ export default function AdminHome() {
   const [currentDoctorPage, setCurrentDoctorPage] = useState(1)
   const [currentExamPage, setCurrentExamPage] = useState(1)
   const examsPerPage = 12
-  const [doctors, setDoctors] = useState<IDoctor[]>([])
+  const [doctors, setDoctors] = useState<IAdmin[]>([])
   const [doctorsPagination, setDoctorsPagination] = useState({ total: 0, page: 1, take: 5, skip: 0, remaining: 0 })
   const [exams, setExams] = useState<IPatientExam[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -89,7 +93,7 @@ export default function AdminHome() {
         if (tenantId) {
           const result = await listDoctors(tenantId, page, doctorsPagination.take)
           if (result?.data.status === "success") {
-            const doctorsList = result?.data?.data?.data as IDoctor[]
+            const doctorsList = result?.data?.data?.data as IAdmin[]
             setDoctors(doctorsList || [])
             setDoctorsPagination(result.data?.data?.pagination)
           }
@@ -98,7 +102,7 @@ export default function AdminHome() {
         console.error(error)
       }
     }
-    fetchDoctors(currentDoctorPage)
+    fetchDoctors(currentDoctorPage).then()
   }, [tenantId, currentDoctorPage, doctorsPagination.take]);
 
   useEffect(() => {
@@ -121,24 +125,23 @@ export default function AdminHome() {
         console.error(error)
       }
     }
-    fetchPatientExams()
+    fetchPatientExams().then()
   }, [tenantId]);
-
-  useEffect(() => {
-    const fetchNotices = async () => {
-      try {
-        if (tenantId) {
-          const result = await listNoticeCards(tenantId, {})
-          if (result?.data?.status === "success") {
-            setNotices(result.data.data || [])
-          }
+  const fetchNotices = useCallback(async () => {
+    try {
+      if (tenantId) {
+        const result = await listNoticeCards(tenantId, {})
+        if (result?.data?.status === "success") {
+          setNotices(result.data.data || [])
         }
-      } catch (error) {
-        console.error(error)
       }
+    } catch (error) {
+      console.error(error)
     }
-    fetchNotices()
   }, [tenantId])
+  useEffect(() => {
+    fetchNotices().then()
+  }, [fetchNotices])
 
   const indexOfLastExam = currentExamPage * examsPerPage
 
@@ -160,6 +163,7 @@ export default function AdminHome() {
           setNotices(updatedNotices.data.data || [])
           setNewNotice("")
           setDialogOpen(false)
+          fetchNotices().then()
         }
       } catch (error) {
         console.error(error)
@@ -187,20 +191,9 @@ export default function AdminHome() {
     <div className="w-full max-w-full min-h-screen overflow-x-hidden mx-auto">
       <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-[2px]">
         <div className="flex items-center space-x-2">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Search className="h-4 w-4" />
-                <span className="sr-only">Buscar Paciente</span>
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] bg-white">
-              <DialogHeader>
-                <DialogTitle>Buscar Paciente</DialogTitle>
-              </DialogHeader>
-              <Input className="w-full" placeholder="Digite o nome ou CPF do paciente" />
-            </DialogContent>
-          </Dialog>
+          <Button
+                  className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Cadastrar
+            Paciente</Button>
         </div>
       </header>
       <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
@@ -208,7 +201,7 @@ export default function AdminHome() {
           <div className="grid gap-6 md:grid-cols-3">
             <Card className="md:col-span-1">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Corpo clínico</CardTitle>
+                <CardTitle>Médicos Atendendo Hoje</CardTitle>
                 <div className="flex items-center space-x-2">
                   <Button
                     variant="ghost"
@@ -233,10 +226,10 @@ export default function AdminHome() {
                 <div className="space-y-2">
                   {Array.isArray(doctors) ? (
                     doctors.map((doctor) => (
-                      <CardDoctor nome={doctor.fullName} crm={doctor.CRM} contato={doctor.phone} />
+                      <CardDoctor nome={doctor.fullName} crm={doctor?.CRM} contato={doctor.phone} />
                     ))
                   ) : (
-                    <p>Não há corpo clínico cadastrado</p>
+                    <p>Não há médicos agendados para hoje</p>
                   )}
                 </div>
               </CardContent>
@@ -283,7 +276,7 @@ export default function AdminHome() {
           </div>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Próximos Exames ({format(new Date(), "dd/MM/yyyy", { locale: ptBR })})</CardTitle>
+              <CardTitle>Próximos Agendamentos ({format(new Date(), "dd/MM/yyyy", { locale: ptBR })})</CardTitle>
               <div className="flex items-center space-x-2">
                 <Button
                   variant="ghost"
@@ -329,3 +322,4 @@ export default function AdminHome() {
     </div>
   )
 }
+export default AdminHome;

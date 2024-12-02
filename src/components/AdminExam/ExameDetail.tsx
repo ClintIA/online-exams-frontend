@@ -1,6 +1,6 @@
 import React from 'react';
-import { Exame } from '../../types/Exame.ts';
-import { Button } from '@mui/material';
+import {Exame} from '../../types/Exame.ts';
+import {Button} from '@mui/material';
 
 interface ExameDetailProps {
   exame: Exame | null;

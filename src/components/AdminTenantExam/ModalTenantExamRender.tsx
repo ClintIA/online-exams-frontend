@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
 import RegisterTenantExam from "@/components/AdminTenantExam/RegisterTenantExam.tsx";
-import { Exams} from "@/pages/admin/AdminTenantExams.tsx";
-import {ModalType} from "@/components/ModalHandle/ModalRender.tsx";
-import {createExam, updateExam} from "@/services/tenantExam.tsx";
+import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
+import {createExam, updateExam} from "@/services/tenantExamService.tsx";
+import {ModalType} from "@/types/ModalType.ts";
 
 interface ModalProps {
     isOpen: boolean;

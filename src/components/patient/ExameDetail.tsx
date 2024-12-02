@@ -1,5 +1,4 @@
-
-import { Exame } from './Post';
+import {Exame} from './Post';
 import styles from './ExameDetail.module.css';
 
 export interface ExameDetailProps {
