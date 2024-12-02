@@ -1,6 +1,5 @@
 import React, {ReactNode, useEffect, useState} from 'react'
 import {Users} from 'lucide-react'
-import {Button} from "@/components/ui/button.tsx"
 import {
     Dialog,
     DialogContent,
@@ -9,7 +8,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog.tsx"
-import {DialogClose} from "@radix-ui/react-dialog";
 import styles from './ModalFlexivel.module.css';
 
 interface ModalProps {
