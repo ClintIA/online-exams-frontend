@@ -11,7 +11,7 @@ import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {validarDataNascimento, validarEmail, validarTelefone} from "@/lib/utils.ts";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {canaisOptions} from "@/lib/canalOptions.ts";
+import {canaisOptions, genderOptions} from "@/lib/optionsFixed.ts";
 
 export interface DadosPaciente {
     id?: number
@@ -240,20 +240,34 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                    <Label htmlFor="gender" className="text-right text-blue-800">
                                        Genero
                                    </Label>
-                                   <Input
-                                       id="gender"
-                                       name="gender"
-                                       value={dadosPaciente.gender}
-                                       onChange={handleInputChange}
-                                       className="col-span-3"/>
+                                   <div className="flex flex-row gap-2">
+                                   {genderOptions.map((option) => (
+
+                                       <label
+                                           key={option.value}
+                                           className="flex items-center space-x-3 cursor-pointer"
+                                       >
+                                           <input
+                                               type="radio"
+                                               name="gender"
+                                               value={option.value}
+                                               checked={dadosPaciente.gender === option.value}
+                                               onChange={handleInputChange}
+                                               className="form-radio h-4 w-4 text-blue-800 focus:ring-blue-800 border-gray-300"
+                                           />
+                                           <span className="w-max text-sm text-blue-800">{option.label}</span>
+                                       </label>
+                                   ))}
+                                   </div>
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
                                    <Label htmlFor="health_card_number" className="text-right text-blue-800">
-                                       Numero do Plano de Saúde
+                                        Plano de Saúde
                                    </Label>
                                    <Input
                                        id="health_card_number"
                                        name="health_card_number"
+                                       placeholder="Particular"
                                        value={dadosPaciente.health_card_number}
                                        onChange={handleInputChange}
                                        className="col-span-3"/>

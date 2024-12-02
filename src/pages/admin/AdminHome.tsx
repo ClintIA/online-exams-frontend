@@ -192,14 +192,14 @@ const AdminHome: React.FC = () => {
         <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-2">
         <div className="flex items-center space-x-2">
           <Button
-                  className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Cadastrar
+                  className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Agendar
             Paciente</Button>
         </div>
       </header>
       <main className="flex-1 p-4 md:p-6">
         <div className="max-w-6xl mx-auto space-y-6">
-          <div className="grid gap-6 md:grid-cols-3">
-            <Card className="md:col-span-1">
+          <div className="grid gap-6 md:grid-cols-4">
+            <Card className="md:col-span-2">
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Médicos Atendendo Hoje</CardTitle>
                 <div className="flex items-center space-x-2">

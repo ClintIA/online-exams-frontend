@@ -1,18 +1,18 @@
 export const canaisOptions = [
     {
-        name: 'Achei no Google',
+        name: 'Google',
         id: 'google'
     },
     {
-        name: 'Achei pelo Instagram',
+        name: 'Instagram',
         id: 'instagram'
     },
     {
-        name: 'Achei pelo Facebook',
+        name: 'Facebook',
         id: 'facebook'
     },
     {
-        name: 'Li em uma matéria do Blog',
+        name: 'Matéria em Blog',
         id: 'blog'
     },
     {
@@ -44,6 +44,12 @@ export const canaisOptions = [
         id: 'plano'
     }
 ]
+export const genderOptions = [
+    { value: 'Masculino', label: 'Masculino' },
+    { value: 'Feminino', label: 'Feminino' },
+    { value: 'prefiro_nao_identificar', label: 'Prefiro não identificar' },
+    { value: 'outros', label: 'Outros' }
+];
 
 export const findCanalOptions = (canal?: string) => {
     if(canal) {
