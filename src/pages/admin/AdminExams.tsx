@@ -10,6 +10,7 @@ import {FileUp, Upload} from 'lucide-react'
 import React, {useEffect, useState} from 'react'
 import {toast} from 'react-toastify'
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
+import Cards from "@/components/Card.tsx";
 
 
 const s3Client = new S3Client({
@@ -125,78 +126,83 @@ const AdminExams: React.FC = () =>  {
 
   return (
       <div className="w-full max-w-6xl p-4 mx-auto">
-        <h1 className="text-2xl font-bold mb-5">Exames Pendentes</h1>
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Paciente</TableHead>
-            <TableHead>Tipo de Procedimento</TableHead>
-            <TableHead>Data de Criação</TableHead>
-            <TableHead>Data de Agendamento</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Ação</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {exams.map((exam) => (
-            <TableRow key={exam?.id}>
-              <TableCell>{exam?.patient?.full_name}</TableCell>
-              <TableCell>{exam?.exam?.exam_name}</TableCell>
-              <TableCell>{new Date(exam?.createdAt).toLocaleDateString()}</TableCell>
-              <TableCell>{new Date(exam?.examDate).toLocaleDateString()}</TableCell>
-              <TableCell>{translateStatus(exam?.status)}</TableCell>
-              <TableCell>
-                <Button 
-                  onClick={() => {
-                    setSelectedExamId(exam?.id);
-                    setIsDialogOpen(true);
-                  }}
-                  disabled={exam?.status === 'Completed'}
-                >
-                  <Upload className="mr-2 h-4 w-4" /> Upload
-                </Button>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
 
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="bg-white">
-          <DialogHeader>
-            <DialogTitle>Upload de Arquivo</DialogTitle>
-          </DialogHeader>
-          <div
-            className="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center cursor-pointer"
-            onDragOver={handleDragOver}
-            onDrop={handleDrop}
-            onClick={() => document.getElementById('fileInput')?.click()}
-          >
-            <input
-              id="fileInput"
-              type="file"
-              className="hidden"
-              onChange={handleFileChange}
-              accept=".pdf,.jpg,.jpeg,.png"
-            />
-            <div className="flex flex-col items-center gap-2">
-              <FileUp className="w-10 h-10 text-gray-400" />
-              {selectedFile ? (
-                <p>Arquivo selecionado: {selectedFile.name}</p>
-              ) : (
-                <p>Arraste um arquivo aqui ou clique para selecionar</p>
-              )}
+        <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Upload de Exames</h1>
+        <div className="flex flex-col md:flex-row gap-3 mb-6">
+          <Cards name='Agendamentos Pendentes' content={exams?.length}/>
+          <Cards name='Agendamentos Concluídos' content={exams?.length}/>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Paciente</TableHead>
+              <TableHead>Tipo de Procedimento</TableHead>
+              <TableHead>Data de Criação</TableHead>
+              <TableHead>Data de Agendamento</TableHead>
+              <TableHead>Status</TableHead>
+              <TableHead>Ação</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {exams.map((exam) => (
+                <TableRow key={exam?.id}>
+                  <TableCell>{exam?.patient?.full_name}</TableCell>
+                  <TableCell>{exam?.exam?.exam_name}</TableCell>
+                  <TableCell>{new Date(exam?.createdAt).toLocaleDateString()}</TableCell>
+                  <TableCell>{new Date(exam?.examDate).toLocaleDateString()}</TableCell>
+                  <TableCell>{translateStatus(exam?.status)}</TableCell>
+                  <TableCell>
+                    <Button
+                        onClick={() => {
+                          setSelectedExamId(exam?.id);
+                          setIsDialogOpen(true);
+                        }}
+                        disabled={exam?.status === 'Completed'}
+                    >
+                      <Upload className="mr-2 h-4 w-4"/> Upload
+                    </Button>
+                  </TableCell>
+                </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <DialogContent className="bg-white">
+            <DialogHeader>
+              <DialogTitle>Upload de Arquivo</DialogTitle>
+            </DialogHeader>
+            <div
+                className="border-2 border-dashed border-gray-300 rounded-lg p-10 text-center cursor-pointer"
+                onDragOver={handleDragOver}
+                onDrop={handleDrop}
+                onClick={() => document.getElementById('fileInput')?.click()}
+            >
+              <input
+                  id="fileInput"
+                  type="file"
+                  className="hidden"
+                  onChange={handleFileChange}
+                  accept=".pdf,.jpg,.jpeg,.png"
+              />
+              <div className="flex flex-col items-center gap-2">
+                <FileUp className="w-10 h-10 text-gray-400"/>
+                {selectedFile ? (
+                    <p>Arquivo selecionado: {selectedFile.name}</p>
+                ) : (
+                    <p>Arraste um arquivo aqui ou clique para selecionar</p>
+                )}
+              </div>
             </div>
-          </div>
-          <Button 
-            onClick={handleUpload}
-            disabled={!selectedFile || isUploading}
-          >
-            {isUploading ? "Enviando..." : "Enviar Arquivo"}
-          </Button>
-        </DialogContent>
-      </Dialog>
-    </div>
+            <Button
+                onClick={handleUpload}
+                disabled={!selectedFile || isUploading}
+            >
+              {isUploading ? "Enviando..." : "Enviar Arquivo"}
+            </Button>
+          </DialogContent>
+        </Dialog>
+      </div>
   )
 }
 export default AdminExams;

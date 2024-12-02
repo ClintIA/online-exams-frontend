@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dialog.tsx"
 import styles from './ModalFlexivel.module.css';
 import Stepper from "@/components/Stepper.tsx";
+import {steps} from "@/lib/optionsFixed.ts";
 
 interface ModalProps {
     isOpen: boolean;
@@ -17,25 +18,12 @@ interface ModalProps {
     title?: string;
     children: ReactNode
     isStepper: boolean
-
+    currentStep?: number
 }
-const steps = ['CPF', 'Cadastro','Agendamento']
 
-const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Gerenciamento de Funcionários",children,isStepper = false  }: ModalProps) => {
-    const [currentStep, setCurrentStep] = useState(0)
-
-    const nextStep = () => {
-        if (currentStep < steps.length - 1) {
-            setCurrentStep(currentStep + 1)
-        }
-    }
-
-    const prevStep = () => {
-        if (currentStep > 0) {
-            setCurrentStep(currentStep - 1)
-        }
-    }
+const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Gerenciamento de Funcionários", children, isStepper = false,currentStep  }: ModalProps) => {
     const [open, setOpen] = useState(isOpen)
+
 
     useEffect(() => {
         setOpen(isOpen)
@@ -62,7 +50,7 @@ const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Gerenci
                         {title}
                     </DialogTitle>
                 </DialogHeader>
-                <div className={isStepper? '' : 'hidden'}>
+                <div className={isStepper? 'flex items-center' : 'hidden'}>
                     <Stepper steps={steps} currentStep={currentStep} />
                 </div>
                 {children}

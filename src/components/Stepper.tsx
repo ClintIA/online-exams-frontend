@@ -3,10 +3,10 @@ import React from "react";
 
 interface StepperProps {
     steps: string[]
-    currentStep: number
+    currentStep?: number
 }
 
-const Stepper: React.FC<StepperProps> = ({ steps, currentStep }: StepperProps) => {
+const Stepper: React.FC<StepperProps> = ({ steps, currentStep = 0 }: StepperProps) => {
     return (
         <nav className="flex mx-auto" aria-label="Progress">
             <ol role="list" className="flex items-center">

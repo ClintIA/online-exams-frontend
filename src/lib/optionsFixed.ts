@@ -62,3 +62,4 @@ export const findCanalOptions = (canal?: string) => {
         return patientCanal
     }
 }
+export const steps = ['CPF', 'Cadastro','Agendamento']

@@ -42,9 +42,10 @@ interface Doctor {
 interface BookingModalProps {
     handleModalMessage?: (type: ModalType) => void
     submitBooking?: (bookingDados: DadosBooking, tenantId: number) => Promise<any>
+    setStep: (step: number) => void
 }
 
-const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking}: BookingModalProps) => {
+const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking, setStep }: BookingModalProps) => {
     const [tenant, setTenant] = useState<number | undefined>()
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
@@ -56,18 +57,32 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
     const [loading, setLoading] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [notFoundCpf, setNotFoundCpf] = useState<boolean>(false)
+    const [showForm, setShowForm] = useState<boolean>(false)
     const auth = useAuth()
     const navigate = useNavigate()
     const [patientData, setPatientData] = useState<DadosPaciente>()
     const [userId, setUserId] = useState<number | undefined>(undefined)
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setPatientData(prev => ({ ...prev, [name]: value }))
     }
     const clearCpf = () => {
-        setPatientData(undefined)
+        setPatientData({
+            full_name: '',
+            email: '',
+            phone: '',
+            dob: '',
+            cpf: '',
+            canal:'',
+            cep:'',
+            gender: '',
+            health_card_number: '',
+        })
         setNotFoundCpf(false)
+        setShowForm(false)
         setCpf('')
+        setStep(0)
     }
 
     useEffect(() => {
@@ -165,7 +180,9 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                 const result = await getPatientByCpfAndTenant(numericCPF, tenant)
 
                 if(result?.message?.includes("não encontrado")) {
-                    setPatientData({} as DadosPaciente)
+                   setStep(1)
+                    setShowForm(true)
+                    setNotFoundCpf(true)
                     return
                 }
                 const data = result?.data.data
@@ -173,8 +190,10 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                     setErro('Cadastro não encontrado, realizar o cadastro do paciente')
                     return
                 } else {
+                    setShowForm(true)
                     setNotFoundCpf(true)
                     setPatientData(data)
+                    setStep(2)
                 }
             }
         } catch (error) {
@@ -187,7 +206,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
     }
    const handleSubmit = async (e: React.FormEvent) => {
        e.preventDefault()
-       if(!patientData) {
+       if(!dadosBooking.examDate) {
            return
        }
        setErro(null)
@@ -266,9 +285,10 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                         value={cpf}
                                         onChange={handleInputCpf}
                                         className="col-span-3"
+                                       disabled={notFoundCpf}
                                     />
                                 </div>
-                                {patientData ? (
+                                {showForm ? (
                                     <div className="flex justify-end mt-1">
                                         <Button className="bg-oxfordBlue text-white"
                                                 onClick={clearCpf}>Limpar</Button>
@@ -281,7 +301,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                 )
                                 }
                             </div>
-                            <div className={patientData ? 'grid gap-2' : 'hidden'}>
+                            <div className={showForm ? 'grid gap-2' : 'hidden'}>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="full_name" className="text-right text-blue-800">
                                         Nome
@@ -292,7 +312,6 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                         value={patientData?.full_name}
                                         className="col-span-3"
                                         onChange={handleInputChange}
-                                        disabled={notFoundCpf}
                                     />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
@@ -305,7 +324,18 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                         value={patientData?.phone}
                                         onChange={handleInputChange}
                                         className="col-span-3"
-                                        disabled={notFoundCpf}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="email" className="text-right text-blue-800">
+                                        Email
+                                    </Label>
+                                    <Input
+                                        id="email"
+                                        name="email"
+                                        value={patientData?.email}
+                                        className="col-span-3"
+                                        onChange={handleInputChange}
                                     />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
@@ -319,7 +349,6 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                         onChange={handleInputChange}
                                         value={patientData?.health_card_number}
                                         className="col-span-3"
-                                        disabled={notFoundCpf}
                                     />
 
                                 </div>
@@ -334,7 +363,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                         value={patientData?.dob}
                                         onChange={handleInputChange}
                                         className="col-span-3"
-                                        disabled={notFoundCpf}/>
+                                    />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="cep" className="text-right text-blue-800">
@@ -347,7 +376,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                         value={patientData?.cep}
                                         onChange={handleInputChange}
                                         className="col-span-3"
-                                        disabled={notFoundCpf}/>
+                                    />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="gender" className="text-right text-blue-800">

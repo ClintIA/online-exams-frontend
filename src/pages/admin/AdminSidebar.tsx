@@ -67,7 +67,7 @@ const AdminSidebar: React.FC = () => {
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>
-                  <a href="/admin/exames">
+                  <a href="/admin/upload-exames">
                     <Microscope size={32} className={styles.icon}/> Portal de Exames
                   </a>
                 </SidebarMenuButton>
@@ -86,28 +86,28 @@ const AdminSidebar: React.FC = () => {
                 <CollapsibleContent>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a className="text-sm" href="/admin/config-exams">
+                      <a className="text-sm" href="/admin/registrar-exames">
                         <Microscope size={16} className={styles.icon}/> Exames
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/pacientes">
+                      <a href="/admin/registrar-pacientes">
                         <Users size={16} className={styles.icon}/> Pacientes
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/pacientes">
+                      <a href="/admin/registrar-medicos">
                         <Contact2 size={16} className={styles.icon}/> Médicos
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/pacientes">
+                      <a href="/admin/registrar-admin">
                         <CircleUser size={16} className={styles.icon}/> Administradores
                       </a>
                     </SidebarMenuButton>
@@ -128,14 +128,14 @@ const AdminSidebar: React.FC = () => {
                 <CollapsibleContent>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/config-exams">
+                      <a href="/admin/registrar-exames">
                         <LayoutDashboard size={16} className={styles.icon}/> Marketing
                       </a>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/pacientes">
+                      <a href="/admin/registrar-pacientes">
                         <Lightbulb size={16} className={styles.icon}/> Gestão
                       </a>
                     </SidebarMenuButton>

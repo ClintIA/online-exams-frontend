@@ -42,6 +42,7 @@ const AdminBooking: React.FC = () =>  {
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const auth = useAuth()
+
     const openFlexiveModal = (title: string, modalType: ModalType, paciente?: DadosPaciente) => {
         if(paciente) {
             setDadosPaciente(paciente)
@@ -118,7 +119,7 @@ const AdminBooking: React.FC = () =>  {
 
     return (
         <div className="w-full max-w-6xl p-4 mx-auto">
-            <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Listagem de Agendamentos</h1>
+            <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Agendamentos</h1>
             <div className="flex flex-col md:flex-row gap-3 mb-6">
                 <Cards name='Total de Agendamentos' content={exams?.length}/>
             </div>
@@ -143,6 +144,7 @@ const AdminBooking: React.FC = () =>  {
                                     name="examDate"
                                     type="date"
                                     className="col-span-3 w-48 h-10 font-semibold text-base text-oxfordBlue"
+                                    value={new Date().toISOString().slice(0, 10)}
                                     onChange={handleInputChange}
                                 />
                             </div>
