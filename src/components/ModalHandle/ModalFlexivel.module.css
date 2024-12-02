@@ -1,0 +1,87 @@
+.overlay {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    z-index: 1000; /* Garante que a sobreposição fique acima de outros elementos */
+}
+
+.content {
+    min-width: 90%; /* Reduz a largura mínima */
+    max-width: 500px; /* Limita a largura máxima */
+    max-height: 90vh; /* Garante que o modal não ultrapasse a altura da viewport */
+    border-radius: 6px;
+    padding: 2rem; /* Ajuste para telas pequenas */
+    background: var(--white);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    box-sizing: border-box;
+    overflow-y: auto; /* Adiciona rolagem se o conteúdo for maior que a altura */
+}
+
+@media (max-width: 768px) {
+    .content {
+        min-width: 90%;
+        padding: 1.5rem; /* Ajusta o padding para telas menores */
+    }
+}
+
+@media (max-width: 375px) {
+    .content {
+        padding: 1rem; /* Ajuste adicional para telas extremamente pequenas */
+    }
+}
+
+.button {
+    height: 50px;
+    border: 0;
+    background: var(--blue-100);
+    color: var(--white);
+    font-weight: bold;
+    padding: 0 1.25rem;
+    border-radius: 6px;
+    margin-top: 1.25rem;
+    cursor: pointer;
+    margin-right: 0.5rem;
+}
+
+.button:hover {
+    background: var(--blue-700);
+}
+
+.close {
+    position: absolute;
+    background: transparent;
+    border: 0;
+    top: 1.5rem;
+    right: 1.5rem;
+    line-height: 0;
+    cursor: pointer;
+    color: var(--gray-500);
+}
+
+.title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--gray-400);
+}
+
+.footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.icon {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
