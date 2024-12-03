@@ -23,14 +23,19 @@ interface ModalRegisterProps {
     adminData?: IAdmin
     type: ModalType
     isDoctor?: boolean
+    isStepper?: boolean
 }
 
 
-const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title,modalNewPatient,modalNewBookingConfirmation,dadosPaciente, type, adminData }: ModalRegisterProps) => {
+const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, title,modalNewPatient,modalNewBookingConfirmation,dadosPaciente, type, adminData }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
     const [modalContent,setModalContent] = useState<ModalType>(ModalType.newPatient)
     const [patientData, setPatientData] = useState<BookingConfirmationState>({} as BookingConfirmationState)
+    const [currentStep, setCurrentStep] = useState(0)
 
+    const setStep = (step: number) => {
+        setCurrentStep(step)
+    }
         useEffect(() => {
         openModal(type)
     }, [type])
@@ -120,7 +125,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title,moda
                 return(<RegisterPatient dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
                 )
             case 'newBookingPatient':
-                return(<BookingPatient  submitBooking={submitBookintExam}  handleModalMessage={openModal} />)
+                return(<BookingPatient setStep={setStep} submitBooking={submitBookintExam}  handleModalMessage={openModal} />)
             case 'bookingConfirmation':
                 return(<BookingConfirmation dadosBooking={patientData} onNewBooking={openModal} />)
             case 'newDoctorAdmin':
@@ -138,6 +143,8 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isOpen, onClose, title,moda
     return (
             <ModalFlexivel
                 isOpen={open}
+                isStepper={isStepper}
+                currentStep={currentStep}
                 onClose={handleClose}
                 title={title}>
                 {renderModalContent()}

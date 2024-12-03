@@ -15,7 +15,7 @@ import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
-import {findCanalOptions} from "@/lib/canalOptions.ts";
+import {findCanalOptions} from "@/lib/optionsFixed.ts";
 import {ModalType} from "@/types/ModalType.ts";
 
 const AdminPatient: React.FC = () => {
@@ -173,7 +173,7 @@ const AdminPatient: React.FC = () => {
 
     return (
             <div className="w-full max-w-6xl p-4 mx-auto">
-                <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Listagem de Pacientes</h1>
+                <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Pacientes</h1>
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
                     <Cards name='Total de Pacientes' content={pacientes?.length}/>
                 </div>

@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx"
-import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs.tsx"
+import {Tabs, TabsContent} from "@/components/ui/tabs.tsx"
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
@@ -14,6 +14,7 @@ import {Input} from "@/components/ui/input.tsx";
 import {formatDate} from "@/lib/utils.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {ModalType} from "@/types/ModalType.ts";
+import Cards from "@/components/Card.tsx";
 
 const AdminBooking: React.FC = () =>  {
 
@@ -41,6 +42,7 @@ const AdminBooking: React.FC = () =>  {
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const auth = useAuth()
+
     const openFlexiveModal = (title: string, modalType: ModalType, paciente?: DadosPaciente) => {
         if(paciente) {
             setDadosPaciente(paciente)
@@ -117,31 +119,33 @@ const AdminBooking: React.FC = () =>  {
 
     return (
         <div className="w-full max-w-6xl p-4 mx-auto">
-            <h1 className="text-2xl font-bold mb-4 text-oxfordBlue">Gerenciamento de Agendamentos</h1>
+            <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Agendamentos</h1>
+            <div className="flex flex-col md:flex-row gap-3 mb-6">
+                <Cards name='Total de Agendamentos' content={exams?.length}/>
+            </div>
             <Tabs defaultValue="lista" className="space-y-4">
-                <TabsList className="p-5 h-12 gap-2">
-                    <TabsTrigger className="p-1 text-base text-oxfordBlue" value="lista">Exames&nbsp;<span className="hidden sm:flex">Agendados</span></TabsTrigger>
-                </TabsList>
                 <TabsContent value="lista">
                     <Card className="p-4">
                         <CardTitle className="ml-8 text-oxfordBlue text-xl">
                             {`Agendamentos do ${formatDate(date)}`}
                         </CardTitle>
-                        <CardHeader className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">
+                        <CardHeader
+                            className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">
                             <div className="mt-1.5 flex gap-2">
-                                <Button onClick={() => openFlexiveModal('Agendamento de Exame', ModalType.newBookingPatient)}
-                                        className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Realizar
+                                <Button
+                                    onClick={() => openFlexiveModal('Agendamento de Exame', ModalType.newBookingPatient)}
+                                    className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Realizar
                                     Agendamento
                                 </Button>
                             </div>
                             <div>
-                                    <Input
-                                        id="examDate"
-                                        name="examDate"
-                                        type="date"
-                                        className="col-span-3 w-48 h-10 font-semibold text-base text-oxfordBlue"
-                                        onChange={handleInputChange}
-                                    />
+                                <Input
+                                    id="examDate"
+                                    name="examDate"
+                                    type="date"
+                                    className="col-span-3 w-48 h-10 font-semibold text-base text-oxfordBlue"
+                                    onChange={handleInputChange}
+                                />
                             </div>
                         </CardHeader>
                         <CardContent>
@@ -156,15 +160,16 @@ const AdminBooking: React.FC = () =>  {
                     </Card>
                 </TabsContent>
             </Tabs>
-        {openModalNewPatient && <ModalRender
-            isOpen={openModalNewPatient}
-            title={title}
-            type={type}
-            dadosPaciente={dadosPaciente}
-            onClose={handleClose}
-            modalNewPatient={handleModalMessage}
-            modalNewBookingConfirmation={handleConfirmationBooking}
-        />}
+            {openModalNewPatient && <ModalRender
+                isOpen={openModalNewPatient}
+                title={title}
+                type={type}
+                isStepper={true}
+                dadosPaciente={dadosPaciente}
+                onClose={handleClose}
+                modalNewPatient={handleModalMessage}
+                modalNewBookingConfirmation={handleConfirmationBooking}
+            />}
             <GeneralModal
                 title={titleModal}
                 action={action}

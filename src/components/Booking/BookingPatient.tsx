@@ -16,6 +16,8 @@ import {useNavigate} from "react-router-dom";
 import {validarCPF} from "@/lib/utils.ts";
 import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
 import {ModalType} from "@/types/ModalType.ts";
+import {Spinner} from "@/components/ui/Spinner.tsx";
+import {genderOptions} from "@/lib/optionsFixed.ts";
 
 export interface DadosBooking {
     patientId: number | undefined
@@ -40,12 +42,12 @@ interface Doctor {
 interface BookingModalProps {
     handleModalMessage?: (type: ModalType) => void
     submitBooking?: (bookingDados: DadosBooking, tenantId: number) => Promise<any>
+    setStep: (step: number) => void
 }
 
-const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking}: BookingModalProps) => {
+const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking, setStep }: BookingModalProps) => {
     const [tenant, setTenant] = useState<number | undefined>()
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
-    const [patientData, setPatientData] = useState<DadosPaciente>()
     const [selectedExame, setSelectedExame] = useState<string>('')
     const [selectedDoctor, setSelectedDoctor] = useState<string>('')
     const [exames, setExames] = useState<Exams[]>([])
@@ -53,9 +55,35 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
     const [erro, setErro] = useState<string | null>(null)
     const [doctors, setDoctors] = useState<Doctor[] | undefined>(undefined)
     const [loading, setLoading] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [notFoundCpf, setNotFoundCpf] = useState<boolean>(false)
+    const [showForm, setShowForm] = useState<boolean>(false)
     const auth = useAuth()
     const navigate = useNavigate()
+    const [patientData, setPatientData] = useState<DadosPaciente>()
     const [userId, setUserId] = useState<number | undefined>(undefined)
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target
+        setPatientData(prev => ({ ...prev, [name]: value }))
+    }
+    const clearCpf = () => {
+        setPatientData({
+            full_name: '',
+            email: '',
+            phone: '',
+            dob: '',
+            cpf: '',
+            canal:'',
+            cep:'',
+            gender: '',
+            health_card_number: '',
+        })
+        setNotFoundCpf(false)
+        setShowForm(false)
+        setCpf('')
+        setStep(0)
+    }
 
     useEffect(() => {
         const getTenant = () => {
@@ -102,7 +130,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
         const fetchDoctors = async () => {
             try {
                 if(tenant && selectedExame) {
-                    setLoading(true)
+                    setIsLoading(true)
                     const exam = exames.find((exam) => exam.id === parseInt(selectedExame))
                     if(exam) {
                         const result = await listDoctorByExam(tenant,exam.exam_name)
@@ -110,7 +138,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                             if(result?.data.data.length === 0) {
                                 setDoctors(undefined)
                                 setErro('Não possui médico cadastrado para esse exame')
-                                setLoading(false)
+                                setIsLoading(false)
                                 return
                             } else {
                                 setDoctors(result?.data.data)
@@ -118,8 +146,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                             }
                         }
                     }
-                    setLoading(false)
-
+                    setIsLoading(false)
                 }
 
             } catch (error) {
@@ -131,7 +158,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
     }, [exames, selectedExame, tenant]);
 
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputCpf = (e: React.ChangeEvent<HTMLInputElement>) => {
         setCpf(e.target.value)
     }
 
@@ -153,7 +180,9 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                 const result = await getPatientByCpfAndTenant(numericCPF, tenant)
 
                 if(result?.message?.includes("não encontrado")) {
-                    setErro(result.message)
+                   setStep(1)
+                    setShowForm(true)
+                    setNotFoundCpf(true)
                     return
                 }
                 const data = result?.data.data
@@ -161,7 +190,10 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                     setErro('Cadastro não encontrado, realizar o cadastro do paciente')
                     return
                 } else {
+                    setShowForm(true)
+                    setNotFoundCpf(true)
                     setPatientData(data)
+                    setStep(2)
                 }
             }
         } catch (error) {
@@ -174,6 +206,9 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
     }
    const handleSubmit = async (e: React.FormEvent) => {
        e.preventDefault()
+       if(!dadosBooking.examDate) {
+           return
+       }
        setErro(null)
        dadosBooking.examId = parseInt(selectedExame)
        dadosBooking.patientId = patientData?.id;
@@ -248,76 +283,136 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                         id="cpf"
                                         name="cpf"
                                         value={cpf}
-                                        onChange={handleInputChange}
+                                        onChange={handleInputCpf}
                                         className="col-span-3"
+                                       disabled={notFoundCpf}
                                     />
                                 </div>
+                                {showForm ? (
+                                    <div className="flex justify-end mt-1">
+                                        <Button className="bg-oxfordBlue text-white"
+                                                onClick={clearCpf}>Limpar</Button>
+                                    </div>
+                                ) : (
                                     <div className="flex justify-end mt-1">
                                         <Button className="bg-oxfordBlue text-white"
                                                 onClick={handleCPFSubmit}>Verificar</Button>
                                     </div>
+                                )
+                                }
                             </div>
-                            <div className={patientData? '' : 'hidden'}>
+                            <div className={showForm ? 'grid gap-2' : 'hidden'}>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="full_name" className="text-right text-blue-800">
+                                        Nome
+                                    </Label>
+                                    <Input
+                                        id="full_name"
+                                        name="full_name"
+                                        value={patientData?.full_name}
+                                        className="col-span-3"
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="full_name" className="text-right text-blue-800">
+                                        Contato
+                                    </Label>
+                                    <Input
+                                        id="full_name"
+                                        name="full_name"
+                                        value={patientData?.phone}
+                                        onChange={handleInputChange}
+                                        className="col-span-3"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="email" className="text-right text-blue-800">
+                                        Email
+                                    </Label>
+                                    <Input
+                                        id="email"
+                                        name="email"
+                                        value={patientData?.email}
+                                        className="col-span-3"
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="health_card_number" className="text-right text-blue-800">
+                                        Plano de Saúde
+                                    </Label>
+                                    <Input
+                                        id="health_card_number"
+                                        name="health_card_number"
+                                        type="tel"
+                                        onChange={handleInputChange}
+                                        value={patientData?.health_card_number}
+                                        className="col-span-3"
+                                    />
+
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="dob" className="text-right text-blue-800">
+                                        Data de Nascimento
+                                    </Label>
+                                    <Input
+                                        id="dob"
+                                        name="dob"
+                                        type="date"
+                                        value={patientData?.dob}
+                                        onChange={handleInputChange}
+                                        className="col-span-3"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="cep" className="text-right text-blue-800">
+                                        CEP
+                                    </Label>
+                                    <Input
+                                        id="cep"
+                                        name="cep"
+                                        type="number"
+                                        value={patientData?.cep}
+                                        onChange={handleInputChange}
+                                        className="col-span-3"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="gender" className="text-right text-blue-800">
+                                        Genero
+                                    </Label>
+                                    <div className="flex flex-row gap-2">
+                                        {genderOptions.map((option) => (
+
+                                            <label
+                                                key={option.value}
+                                                className="flex items-center space-x-3 cursor-pointer"
+                                            >
+                                                <input
+                                                    disabled={notFoundCpf}
+                                                    type="radio"
+                                                    name="gender"
+                                                    value={option.value}
+                                                    checked={patientData?.gender === option.value}
+                                                    onChange={handleInputChange}
+                                                    className="form-radio h-4 w-4 text-blue-800 focus:ring-blue-800 border-gray-300"
+                                                />
+                                                <span className="w-max text-sm text-blue-800">{option.label}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="full_name" className="text-right text-blue-800">
-                                    Nome
-                                </Label>
-                                <Input
-                                    id="full_name"
-                                    name="full_name"
-                                    value={patientData?.full_name}
-                                    className="col-span-3"
-                                    disabled={true}
-                                />
-                            </div>
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="full_name" className="text-right text-blue-800">
-                                    Contato
-                                </Label>
-                                <Input
-                                    id="full_name"
-                                    name="full_name"
-                                value={patientData?.phone}
-                                className="col-span-3"
-                                disabled={true}
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="phone" className="text-right text-blue-800">
-                                Plano de Saúde
-                            </Label>
-                            <Input
-                                id="phone"
-                                name="phone"
-                                type="tel"
-                                value={patientData?.health_card_number}
-                                className="col-span-3"
-                                disabled={true}
-                            />
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="phone" className="text-right text-blue-800">
-                                Clinica
-                            </Label>
-                            <Input
-                                id="phone"
-                                name="phone"
-                                type="tel"
-                                value={patientData?.tenants ? patientData?.tenants[0].name : 'Não selecionado'}
-                                className="col-span-3"
-                                disabled={true}
-                            />
-                        </div>
-                            </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label className="text-right text-blue-800" htmlFor="examId">Selecione o Exame</Label>
-                            <Select disabled={!patientData} value={selectedExame} onValueChange={setSelectedExame}>
-                                <SelectTrigger className="col-span-3" id="examId">
-                                    <SelectValue placeholder="Selecione o Exame"/>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {exames.map((exam) => (
-                                        <SelectItem key={exam.id} value={exam.id.toString()}>
+                                <Label className="text-right text-blue-800" htmlFor="examId">Selecione o Exame</Label>
+                                <Select disabled={!patientData} value={selectedExame} onValueChange={setSelectedExame}>
+                                    <SelectTrigger className="col-span-3" id="examId">
+                                        <SelectValue placeholder="Selecione o Exame"/>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {exames.map((exam) => (
+                                            <SelectItem key={exam.id} value={exam.id.toString()}>
                                             {exam.exam_name}
                                         </SelectItem>
                                     ))}
@@ -328,18 +423,24 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                             <Label htmlFor="doctor" className="text-right text-blue-800">
                                 Selecione o Médico
                             </Label>
-                            <Select disabled={!doctors} value={selectedDoctor} onValueChange={setSelectedDoctor}>
-                                <SelectTrigger className="col-span-3" id="doctor">
-                                    <SelectValue placeholder="Selecione o Médico"/>
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {doctors?.map((doctor) => (
-                                        <SelectItem key={doctor.id} value={doctor.id.toString()}>
-                                            {doctor.fullName}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
+                            {isLoading  ? (
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Spinner size={16} className="text-muted-foreground" />
+                                </div>
+                            ) : (
+                                <Select disabled={!doctors} value={selectedDoctor} onValueChange={setSelectedDoctor}>
+                                    <SelectTrigger className="col-span-3" id="doctor">
+                                        <SelectValue placeholder="Selecione o Médico"/>
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {doctors?.map((doctor) => (
+                                            <SelectItem key={doctor.id} value={doctor.id.toString()}>
+                                                {doctor.fullName}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            )}
                         </div>
 
                             <div className="grid grid-cols-4 items-center gap-4">

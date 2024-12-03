@@ -9,18 +9,21 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog.tsx"
 import styles from './ModalFlexivel.module.css';
+import Stepper from "@/components/Stepper.tsx";
+import {steps} from "@/lib/optionsFixed.ts";
 
 interface ModalProps {
     isOpen: boolean;
     onClose: () => void;
     title?: string;
     children: ReactNode
-
+    isStepper: boolean
+    currentStep?: number
 }
 
-const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Gerenciamento de Funcionários",children  }: ModalProps) => {
-
+const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Gerenciamento de Funcionários", children, isStepper = false,currentStep  }: ModalProps) => {
     const [open, setOpen] = useState(isOpen)
+
 
     useEffect(() => {
         setOpen(isOpen)
@@ -47,15 +50,13 @@ const ModalFlexivel: React.FC<ModalProps> = ({ isOpen, onClose, title = "Gerenci
                         {title}
                     </DialogTitle>
                 </DialogHeader>
+                <div className={isStepper? 'flex items-center' : 'hidden'}>
+                    <Stepper steps={steps} currentStep={currentStep} />
+                </div>
                 {children}
                 <DialogDescription>
                 </DialogDescription>
                 <DialogFooter className={styles.footer}>
-                    {/* <DialogClose className="flex items-center gap-2" asChild>
-                        <Button type="button" className="flex mx-auto w-52 bg-oxfordBlue text-white">
-                            Close
-                        </Button>
-                    </DialogClose> */}
                 </DialogFooter>
             </DialogContent>
         </Dialog>

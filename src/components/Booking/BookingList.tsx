@@ -1,9 +1,8 @@
 import React from 'react'
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
-import {Button} from "@/components/ui/button.tsx";
-import {CheckCircle} from "lucide-react";
 import Loading from "@/components/Loading.tsx";
+import AppointmentConfirmation from "@/components/ConfirmButtons.tsx";
 
 interface ListaAgendamentosProps {
     agendamentos: IPatientExam[]
@@ -35,50 +34,35 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos ,loading, 
         }
     }
      return (
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Paciente</TableHead>
-                    <TableHead>Hora</TableHead>
-                    <TableHead>Procedimento</TableHead>
-                    <TableHead>Médico</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Ação</TableHead>
-                </TableRow>
-            </TableHeader>
-            <TableBody>
-                {agendamentos?.map((agendamento) => (
-                    <TableRow key={agendamento?.id}>
-                        <TableCell>{agendamento?.patient?.full_name}</TableCell>
-                        <TableCell>{new Date(agendamento?.examDate).toISOString().substring(11, 16)}</TableCell>
-                        <TableCell>{agendamento?.exam.exam_name}</TableCell>
-                        <TableCell>{agendamento?.doctor?.fullName}</TableCell>
-                        <TableCell>
-                                <span className={agendamento.attended ? `text-green-700 font-semibold` : `text-yellow-600 font-semibold`}>{handlePresence(agendamento.attended)}</span>
-                        </TableCell>
-                        <TableCell>
-                            <Button
-                                className={!agendamento.attended ? 'hidden': `hidden sm:flex`}
-                                size="sm"
-                                variant="outline"
-                            >
-                                <CheckCircle className="mr-1 h-4 w-4 bg-green-500 rounded-full text-white" />
-                            </Button>
-                            <Button
-                                className={agendamento.attended ? 'hidden': `hidden sm:flex`}
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleConfirmarPresenca(agendamento?.id)}
-                            >
-                                <CheckCircle className="mr-1 h-4 w-4 bg-green-500 rounded-full text-white" />
-                                <span className={agendamento.attended ? 'hidden': `hidden sm:flex`}>Confirmar Presença</span>
-                            </Button>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    )
+             <Table>
+                 <TableHeader>
+                     <TableRow>
+                         <TableHead>Paciente</TableHead>
+                         <TableHead>Hora</TableHead>
+                         <TableHead>Procedimento</TableHead>
+                         <TableHead>Médico</TableHead>
+                         <TableHead>Status</TableHead>
+                         <TableHead>Ação</TableHead>
+                     </TableRow>
+                 </TableHeader>
+                 <TableBody>
+                     {agendamentos?.map((agendamento) => (
+                         <TableRow key={agendamento?.id}>
+                             <TableCell>{agendamento?.patient?.full_name}</TableCell>
+                             <TableCell>{new Date(agendamento?.examDate).toISOString().substring(11, 16)}</TableCell>
+                             <TableCell>{agendamento?.exam.exam_name}</TableCell>
+                             <TableCell>{agendamento?.doctor?.fullName}</TableCell>
+                             <TableCell>
+                                 <span className={agendamento.attended ? `text-green-700 font-semibold` : `text-yellow-600 font-semibold`}>{handlePresence(agendamento.attended)}</span>
+                             </TableCell>
+                             <TableCell>
+                                 <AppointmentConfirmation onConfirm={() => handleConfirmarPresenca(agendamento?.id)} onDecline={() => handleConfirmarPresenca(agendamento?.id)} status={'pending'} />
+                             </TableCell>
+                         </TableRow>
+                     ))}
+                 </TableBody>
+             </Table>
+     )
 }
 
 export default BookingList;
