@@ -128,7 +128,7 @@ const AdminSidebar: React.FC = () => {
                 <CollapsibleContent>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/registrar-exames">
+                      <a href="/admin/dashboard">
                         <LayoutDashboard size={16} className={styles.icon}/> Marketing
                       </a>
                     </SidebarMenuButton>
