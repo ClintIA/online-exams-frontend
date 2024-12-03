@@ -144,7 +144,6 @@ const AdminBooking: React.FC = () =>  {
                                     name="examDate"
                                     type="date"
                                     className="col-span-3 w-48 h-10 font-semibold text-base text-oxfordBlue"
-                                    value={new Date().toISOString().slice(0, 10)}
                                     onChange={handleInputChange}
                                 />
                             </div>
