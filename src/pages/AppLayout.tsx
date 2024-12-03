@@ -1,10 +1,10 @@
-import {Outlet, useNavigate} from "react-router-dom";
-import React, {useEffect, useState} from "react";
+import { Header } from "@/components/patient/Header.tsx";
+import { useAuth } from "@/hooks/auth.tsx";
 import AdminSidebar from "@/pages/admin/AdminSidebar.tsx";
-import {useAuth} from "@/hooks/auth.tsx";
-import {jwtDecode} from "jwt-decode";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {Header} from "@/components/patient/Header.tsx";
+import { ITokenPayload } from "@/types/Auth.ts";
+import { jwtDecode } from "jwt-decode";
+import React, { useEffect, useState } from "react";
+import { Outlet, useNavigate } from "react-router-dom";
 
 
 const AppLayout: React.FC = () => {
@@ -30,7 +30,7 @@ const AppLayout: React.FC = () => {
     }
 
     return (
-        <div className="flex h-screen mt-14">
+        <div className="flex h-screen">
             <div>
                 <HandleSideBar isAdmin={isAdmin}/>
             </div>
