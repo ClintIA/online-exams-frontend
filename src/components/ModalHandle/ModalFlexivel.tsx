@@ -17,7 +17,7 @@ interface ModalProps {
     onClose: () => void;
     title?: string;
     children: ReactNode
-    isStepper: boolean
+    isStepper?: boolean
     currentStep?: number
 }
 
