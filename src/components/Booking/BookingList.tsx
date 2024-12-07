@@ -6,7 +6,7 @@ import AppointmentConfirmation from "@/components/ConfirmButtons.tsx";
 
 interface ListaAgendamentosProps {
     agendamentos: IPatientExam[]
-    onConfirmarPresenca?: (id: number) => void
+    onConfirmarPresenca?: (id: number, presence: boolean) => void
     loading: boolean
 }
 
@@ -18,9 +18,9 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos ,loading, 
         return (<p className="text-base font-semibold">Não possuí exames para o dia selecionado</p>)
     }
 
-    const handleConfirmarPresenca = (id: number) => {
+    const handleConfirmarPresenca = (id: number, presence: boolean) => {
         if (onConfirmarPresenca) {
-            onConfirmarPresenca(id);
+            onConfirmarPresenca(id,presence);
         }
     }
     const handlePresence = (attended: boolean) => {
@@ -56,7 +56,7 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos ,loading, 
                                  <span className={agendamento.attended ? `text-green-700 font-semibold` : `text-yellow-600 font-semibold`}>{handlePresence(agendamento.attended)}</span>
                              </TableCell>
                              <TableCell>
-                                 <AppointmentConfirmation onConfirm={() => handleConfirmarPresenca(agendamento?.id)} onDecline={() => handleConfirmarPresenca(agendamento?.id)} status={'pending'} />
+                                 <AppointmentConfirmation onConfirm={() => handleConfirmarPresenca(agendamento?.id, true)} onDecline={() => handleConfirmarPresenca(agendamento?.id, false)} status={'pending'} />
                              </TableCell>
                          </TableRow>
                      ))}

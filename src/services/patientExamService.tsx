@@ -69,10 +69,10 @@ export const updatePatientExam = async (tenantId: number, examId: number, data: 
     }
 }
 
-export const confirmPatientExam = async (tenantId: number, examId: number) => {
+export const confirmPatientExam = async (tenantId: number, examId: number, presence: boolean) => {
     try {
         return await apiClient.put(`admin/patientexams/attendance/${examId}`, {
-            attended: true
+            attended: presence
         }, {
             headers: {
                 'x-tenant-id': tenantId
