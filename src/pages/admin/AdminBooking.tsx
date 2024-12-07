@@ -11,7 +11,7 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import BookingList from "@/components/Booking/BookingList.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {formatDate} from "@/lib/utils.ts";
+import { formatDate} from "@/lib/utils.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import Cards from "@/components/Card.tsx";
@@ -23,7 +23,7 @@ const AdminBooking: React.FC = () =>  {
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [exams, setExams] = useState<IPatientExam[]>([])
     const [title, setTitle] = useState<string>("")
-    const [date, setDate] = useState(new Date().toLocaleDateString())
+    const [date, setDate] = useState(new Date().toISOString())
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',
         email: '',
@@ -86,6 +86,7 @@ const AdminBooking: React.FC = () =>  {
         setDate(value)
     }
     useEffect(() => {
+
         fetchPatientExams(date).then()
     }, [date, fetchPatientExams]);
     const handleConfirmationBooking = () => {
@@ -127,7 +128,7 @@ const AdminBooking: React.FC = () =>  {
                 <TabsContent value="lista">
                     <Card className="p-4">
                         <CardTitle className="ml-8 text-oxfordBlue text-xl">
-                            {`Agendamentos do ${formatDate(date)}`}
+                            {`Agendamentos do ${formatDate(date.split('T')[0])}`}
                         </CardTitle>
                         <CardHeader
                             className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">

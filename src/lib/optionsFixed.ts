@@ -47,8 +47,8 @@ export const canaisOptions = [
 export const genderOptions = [
     { value: 'Masculino', label: 'Masculino' },
     { value: 'Feminino', label: 'Feminino' },
-    { value: 'prefiro_nao_identificar', label: 'Prefiro não identificar' },
-    { value: 'outros', label: 'Outros' }
+    { value: 'Prefiro não informar', label: 'Prefiro não identificar' },
+    { value: 'Outros', label: 'Outros' }
 ];
 
 export const findCanalOptions = (canal?: string) => {

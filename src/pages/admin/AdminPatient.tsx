@@ -120,7 +120,7 @@ const AdminPatient: React.FC = () => {
             <TableCell className="text-oxfordBlue font-bold">{paciente.full_name}</TableCell>
             <TableCell className="text-blue-900">{paciente.cpf}</TableCell>
             <TableCell className="text-blue-900">{paciente.phone}</TableCell>
-            <TableCell className="text-blue-900">{formatDate(paciente?.dob)}</TableCell>
+            <TableCell className="text-blue-900">{formatDate(paciente.dob)}</TableCell>
             <TableCell className="text-blue-900">{paciente.health_card_number}</TableCell>
             <TableCell className="text-blue-900 capitalize">{findCanalOptions(paciente.canal)}</TableCell>
         </>

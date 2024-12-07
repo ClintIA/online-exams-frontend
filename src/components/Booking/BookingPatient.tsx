@@ -17,12 +17,13 @@ import {validarCPF} from "@/lib/utils.ts";
 import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {Spinner} from "@/components/ui/Spinner.tsx";
-import {genderOptions} from "@/lib/optionsFixed.ts";
+import {canaisOptions, genderOptions} from "@/lib/optionsFixed.ts";
+import {isAxiosError} from "axios";
 
 export interface DadosBooking {
     patientId: number | undefined
     examId: number | undefined
-    examDate: string
+    examDate?: string
     doctorId: number | undefined
     userId: number | undefined
     doctor?: Doctor
@@ -39,13 +40,21 @@ interface Doctor {
     fullName: string
     exams: any[]
 }
+export interface BookingWithPatient {
+    patientData: DadosPaciente,
+    examId: number
+    userId: number
+    doctorId: number,
+    examDate?: string
+}
 interface BookingModalProps {
     handleModalMessage?: (type: ModalType) => void
     submitBooking?: (bookingDados: DadosBooking, tenantId: number) => Promise<any>
     setStep: (step: number) => void
+    submitBookingWithPatient?: (data: BookingWithPatient, tenant: number) => Promise<any>
 }
 
-const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking, setStep }: BookingModalProps) => {
+const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking, submitBookingWithPatient, setStep }: BookingModalProps) => {
     const [tenant, setTenant] = useState<number | undefined>()
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
@@ -58,11 +67,12 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [notFoundCpf, setNotFoundCpf] = useState<boolean>(false)
     const [showForm, setShowForm] = useState<boolean>(false)
-    const auth = useAuth()
-    const navigate = useNavigate()
     const [patientData, setPatientData] = useState<DadosPaciente>()
     const [userId, setUserId] = useState<number | undefined>(undefined)
-
+    const [selectedCanal, setSelectedCanal] = useState<string | undefined>('')
+    const [isNewPatient, setIsNewPatient] = useState<boolean>(false)
+    const auth = useAuth()
+    const navigate = useNavigate()
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setPatientData(prev => ({ ...prev, [name]: value }))
@@ -84,7 +94,6 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
         setCpf('')
         setStep(0)
     }
-
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
@@ -100,7 +109,6 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
         }
         getTenant()
     },[auth.token, navigate])
-
     useEffect( () => {
         const fetchExams = async () => {
             try {
@@ -170,7 +178,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
             setErro('Por favor, insira um CPF')
             return
         }
-        if (!checkCPF) {
+         if (!checkCPF) {
             setErro('CPF Inválido')
             return
         }
@@ -181,6 +189,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
 
                 if(result?.message?.includes("não encontrado")) {
                    setStep(1)
+                    setIsNewPatient(true)
                     setShowForm(true)
                     setNotFoundCpf(true)
                     return
@@ -190,9 +199,10 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                     setErro('Cadastro não encontrado, realizar o cadastro do paciente')
                     return
                 } else {
+                    setSelectedCanal(data.canal)
+                    setPatientData(data)
                     setShowForm(true)
                     setNotFoundCpf(true)
-                    setPatientData(data)
                     setStep(2)
                 }
             }
@@ -209,6 +219,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
        if(!dadosBooking.examDate) {
            return
        }
+
        setErro(null)
        dadosBooking.examId = parseInt(selectedExame)
        dadosBooking.patientId = patientData?.id;
@@ -220,14 +231,39 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
            setErro('Por favor, preencha todos os campos')
            return
        }
-       const createDate = (date: string) => {
-           const dateArray = date.split('-')
-           return dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2]
+       const createDate = (date?: string) => {
+           if(date) {
+               const dateArray = date.split('-')
+               return dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2]
+           }
        }
        const doctorSelected = doctors?.find(e => e.id === dadosBooking.doctorId);
-
        try {
-           if (tenant) {
+           if (tenant && userId) {
+               if(isNewPatient && submitBookingWithPatient) {
+                   if(patientData) {
+
+                       patientData.cpf = cpf;
+                       patientData.canal = selectedCanal
+
+                       const bookingWithPatient: BookingWithPatient = {
+                           patientData: {...patientData, dob: createDate(patientData.dob)},
+                           examId: parseInt(selectedExame),
+                           userId: userId,
+                           doctorId: parseInt(selectedDoctor),
+                           examDate: createDate(dadosBooking.examDate),
+                       }
+                       console.log(bookingWithPatient)
+                      await submitBookingWithPatient(bookingWithPatient, tenant)
+                           .catch((error) =>  {
+                               if(isAxiosError(error)) {
+                                   setErro('Erro ao Cadastrar Paciente')
+                               }
+                               console.log(error)
+                           })
+                       return
+                   }
+               }
                const bookingDados = {
                    ...dadosBooking,
                    examDate: createDate(dadosBooking.examDate),
@@ -315,12 +351,12 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                     />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
-                                    <Label htmlFor="full_name" className="text-right text-blue-800">
+                                    <Label htmlFor="phone" className="text-right text-blue-800">
                                         Contato
                                     </Label>
                                     <Input
-                                        id="full_name"
-                                        name="full_name"
+                                        id="phone"
+                                        name="phone"
                                         value={patientData?.phone}
                                         onChange={handleInputChange}
                                         className="col-span-3"
@@ -350,7 +386,6 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                         value={patientData?.health_card_number}
                                         className="col-span-3"
                                     />
-
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="dob" className="text-right text-blue-800">
@@ -372,7 +407,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                     <Input
                                         id="cep"
                                         name="cep"
-                                        type="number"
+                                        type="text"
                                         value={patientData?.cep}
                                         onChange={handleInputChange}
                                         className="col-span-3"
@@ -390,7 +425,6 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                                 className="flex items-center space-x-3 cursor-pointer"
                                             >
                                                 <input
-                                                    disabled={notFoundCpf}
                                                     type="radio"
                                                     name="gender"
                                                     value={option.value}
@@ -403,6 +437,22 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                         ))}
                                     </div>
                                 </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label className="text-right text-blue-800" htmlFor="examId">Selecione o
+                                        Canal de Captação</Label>
+                                    <Select value={selectedCanal} onValueChange={setSelectedCanal}>
+                                        <SelectTrigger className="col-span-3" id="canal">
+                                            <SelectValue placeholder="Selecione o Canal de Captação"/>
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            {canaisOptions.map((canal) => (
+                                                <SelectItem key={canal.id} value={canal.id}>
+                                                    {canal.name}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label className="text-right text-blue-800" htmlFor="examId">Selecione o Exame</Label>
@@ -413,13 +463,13 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                                     <SelectContent>
                                         {exames.map((exam) => (
                                             <SelectItem key={exam.id} value={exam.id.toString()}>
-                                            {exam.exam_name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
+                                                {exam.exam_name}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="doctor" className="text-right text-blue-800">
                                 Selecione o Médico
                             </Label>
