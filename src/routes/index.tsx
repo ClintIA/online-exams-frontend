@@ -11,7 +11,7 @@ import LoginPatient from "@/pages/patient/LoginPatient.tsx";
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
-import LoginAdmin from "../pages/admin/LoginAdmin.tsx";
+import AdminLogin from "../pages/admin/AdminLogin.tsx";
 import { DadosCadastrais } from '../pages/patient/DadosCadastrais';
 import { Exames } from "../pages/patient/Exames.tsx";
 
@@ -37,7 +37,7 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'admin',
-                element:<LoginAdmin />,
+                element:<AdminLogin />,
             },
             {
                 path:'paciente',
