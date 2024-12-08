@@ -64,6 +64,8 @@ const AdminLogin: React.FC = () => {
                     <div className="max-w-[400px] w-full space-y-6">
                         <img
                             src={logoClintia}
+                            width={500}
+                            height={400}
                             alt="Clintia Logo"
                             className="mx-auto"
                         />
@@ -118,6 +120,15 @@ const AdminLogin: React.FC = () => {
                         </div>
 
                         <div className="flex items-center justify-between">
+                            <div className="flex items-center">
+                                <Checkbox id="remember"/>
+                                <label
+                                    htmlFor="remember"
+                                    className="text-xs font-light text-black leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Lembrar de mim
+                                </label>
+                            </div>
                             <a
                                 href="#"
                                 className="text-xs font-light text-black hover:underline"
