@@ -117,7 +117,6 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         if (modalNewPatient) {
             await updateAdmin(adminData,tenantId,isDoctor)
                 .then(result => {
-                    console.log(result)
                     if (result.status === 200) {
                         modalNewPatient('Dados Atualizados com sucesso')
                         onClose()

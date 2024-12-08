@@ -245,7 +245,6 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                            doctorId: parseInt(selectedDoctor),
                            examDate: createDate(dadosBooking.examDate),
                        }
-                       console.log(bookingWithPatient)
                       await submitBookingWithPatient(bookingWithPatient, tenant)
                            .catch((error) =>  {
                                if(isAxiosError(error)) {
