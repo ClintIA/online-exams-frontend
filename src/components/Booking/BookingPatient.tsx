@@ -19,15 +19,7 @@ import {ModalType} from "@/types/ModalType.ts";
 import {Spinner} from "@/components/ui/Spinner.tsx";
 import {canaisOptions, genderOptions} from "@/lib/optionsFixed.ts";
 import {isAxiosError} from "axios";
-
-export interface DadosBooking {
-    patientId: number | undefined
-    examId: number | undefined
-    examDate?: string
-    doctorId: number | undefined
-    userId: number | undefined
-    doctor?: Doctor
-}
+import {DadosBooking} from "@/components/Booking/Booking.tsx";
 
 export interface Exams {
     id: number

@@ -18,7 +18,7 @@ import {useNavigate} from "react-router-dom";
 export interface DadosBooking {
     patientId: number | undefined
     examId: number | undefined
-    examDate: string
+    examDate: string | undefined
     doctorId: number | undefined
     userId: number | undefined
     doctor?: Doctor
