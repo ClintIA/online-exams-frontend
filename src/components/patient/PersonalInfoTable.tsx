@@ -19,10 +19,7 @@ export function PersonalInfoTable() {
   const { cpf } = useCpf(); // Obtém o CPF do contexto
   const { userId } = useAuth();
 
-  // console.log(cpf)
-
   useEffect(() => {
-    // Chama a API patient-dados ao montar o componente
     const fetchPatientData = async () => {
       try {
         const response = await getPatientData(Number(userId),cpf);

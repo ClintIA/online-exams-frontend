@@ -11,7 +11,7 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import BookingList from "@/components/Booking/BookingList.tsx";
 import {Input} from "@/components/ui/input.tsx";
-import {formatDate} from "@/lib/utils.ts";
+import { formatDate} from "@/lib/utils.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import Cards from "@/components/Card.tsx";
@@ -23,7 +23,7 @@ const AdminBooking: React.FC = () =>  {
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [exams, setExams] = useState<IPatientExam[]>([])
     const [title, setTitle] = useState<string>("")
-    const [date, setDate] = useState(new Date().toLocaleDateString())
+    const [date, setDate] = useState(new Date().toISOString())
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',
         email: '',
@@ -86,6 +86,7 @@ const AdminBooking: React.FC = () =>  {
         setDate(value)
     }
     useEffect(() => {
+
         fetchPatientExams(date).then()
     }, [date, fetchPatientExams]);
     const handleConfirmationBooking = () => {
@@ -102,13 +103,18 @@ const AdminBooking: React.FC = () =>  {
         fetchPatientExams(date).then()
         setOpenModalNewPatient(false)
     }
-    const handlePresence  = async (examId: number) => {
+    const handlePresence  = async (examId: number, presence: boolean | null) => {
         try {
             if(tenantId) {
-
-                const result = await confirmPatientExam(tenantId, examId)
+                const result = await confirmPatientExam(tenantId, examId, presence)
                 if(result) {
-                    handleModalMessage('Paciente Confirmado')
+                    if(presence === null) {
+                        handleModalMessage('Paciente Cancelado')
+                    } else if(presence) {
+                        handleModalMessage('Paciente Confirmado')
+                    } else {
+                        handleModalMessage('Paciente Não Compareceu')
+                    }
                     fetchPatientExams(date).then()
                 }
             }
@@ -116,7 +122,6 @@ const AdminBooking: React.FC = () =>  {
             console.log(error)
         }
     }
-
     return (
         <div className="w-full max-w-6xl p-4 mx-auto">
             <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Agendamentos</h1>
@@ -127,7 +132,7 @@ const AdminBooking: React.FC = () =>  {
                 <TabsContent value="lista">
                     <Card className="p-4">
                         <CardTitle className="ml-8 text-oxfordBlue text-xl">
-                            {`Agendamentos do ${formatDate(date)}`}
+                            {`Agendamentos do ${formatDate(date.split('T')[0])}`}
                         </CardTitle>
                         <CardHeader
                             className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">

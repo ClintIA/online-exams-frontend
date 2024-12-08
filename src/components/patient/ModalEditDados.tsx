@@ -19,8 +19,7 @@ export function ModalEditDados({ info, isOpen, onClose }: ModalEditDadosProps) {
 
   const handleSave = () => {
     console.log("Salvar nova informação:", newValue);
-    // Lógica para salvar a nova informação pode ser inserida aqui.
-    onClose(); // Fechar modal após salvar
+    onClose();
   };
 
   return (

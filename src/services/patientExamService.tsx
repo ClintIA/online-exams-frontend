@@ -1,6 +1,7 @@
 import {DadosBooking} from "@/components/Booking/Booking.tsx";
 import apiClient from "@/lib/interceptor.ts";
 import {isAxiosError} from 'axios';
+import {BookingWithPatient} from "@/components/Booking/BookingPatient.tsx";
 
 interface ListPatientExamsFilters {
     startDate?: string
@@ -14,6 +15,20 @@ export const registerPatientExam = async (dadosBooking: DadosBooking, tenantId: 
 
     try {
         return await apiClient.post('admin/patientExams', dadosBooking, {
+            headers: {
+                'x-tenant-id': tenantId
+            }
+        })
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+}
+export const registerBookingWithPatient = async (bookingDataWithPatient: BookingWithPatient, tenantId: number) => {
+
+    try {
+        return await apiClient.post('admin/patientExams/newpatient', bookingDataWithPatient, {
             headers: {
                 'x-tenant-id': tenantId
             }
@@ -54,10 +69,10 @@ export const updatePatientExam = async (tenantId: number, examId: number, data: 
     }
 }
 
-export const confirmPatientExam = async (tenantId: number, examId: number) => {
+export const confirmPatientExam = async (tenantId: number, examId: number, presence: boolean | null) => {
     try {
         return await apiClient.put(`admin/patientexams/attendance/${examId}`, {
-            attended: true
+            attended: presence
         }, {
             headers: {
                 'x-tenant-id': tenantId

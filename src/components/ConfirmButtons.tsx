@@ -5,40 +5,47 @@ import { Button } from "@/components/ui/button"
 interface AppointmentConfirmationProps {
     onConfirm: () => void
     onDecline: () => void
-    status: 'pending' | 'confirmed' | 'declined'
+    onCancel: () => void
+    status: 'Aguardando' | 'Confirmado' | 'Não Compareceu'
 }
 
 const AppointmentConfirmation: React.FC<AppointmentConfirmationProps> = ({
-                                                    onConfirm,
-                                                    onDecline,
-                                                    status
+                                                    onConfirm, onDecline, status , onCancel
                                                 }: AppointmentConfirmationProps) => {
     return (
-        <div className="flex space-x-2">
-            <Button
-                onClick={onConfirm}
-                variant={status === 'confirmed' ? 'default' : 'outline'}
-                size="sm"
-                className={`${
-                    status === 'confirmed' ? 'bg-green-600 hover:bg-green-600' : 'text-green-600 hover:text-green-600'
-                }`}
-                disabled={status === 'confirmed'}
-            >
-                <Check className="w-4 h-4 mr-1" />
-                Confirmar
-            </Button>
-            <Button
-                onClick={onDecline}
-                variant={status === 'declined' ? 'default' : 'outline'}
-                size="sm"
-                className={`${
-                    status === 'declined' ? 'bg-red-500 hover:bg-red-800' : 'text-red-600 hover:text-red-800'
-                }`}
-                disabled={status === 'declined'}
-            >
-                <X className="w-4 h-4 mr-1" />
-                Ausente
-            </Button>
+        <div>
+            {status === 'Não Compareceu' || status === 'Confirmado' ?
+                (            <Button
+                    onClick={onCancel}
+                    variant={'default'}
+                    size="sm"
+                    className='bg-red-500 hover:bg-red-800'
+                >
+                    <Check className="w-4 h-4 mr-1"/>
+                    Desfazer
+                </Button>) :
+                (
+                    <div className="flex space-x-2">
+                        <Button
+                            onClick={onConfirm}
+                            variant={'default'}
+                            size="sm"
+                            className='bg-green-500 hover:bg-green-800'
+                        >
+                            <Check className="w-4 h-4 mr-1"/>
+                            Confirmar
+                        </Button>
+                        <Button
+                            onClick={onDecline}
+                            variant={'default'}
+                            size="sm"
+                            className='bg-red-500 hover:bg-red-800'
+                        >
+                            <X className="w-4 h-4 mr-1"/>
+                            Ausente
+                        </Button>
+                    </div> )
+            }
         </div>
     )
 }

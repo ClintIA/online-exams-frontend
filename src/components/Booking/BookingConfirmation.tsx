@@ -11,11 +11,11 @@ export interface BookingConfirmationProps {
     onNewBooking?: (type: ModalType) => void
 }
 export interface BookingConfirmationState {
-    exam_name: string
-    exameDate: string
-    doctor: string
-    patientName: string
-    patientPhone: string
+    exam_name?: string
+    exameDate?: string
+    doctor?: string
+    patientName?: string
+    patientPhone?: string
 }
 const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking, onNewBooking}: BookingConfirmationProps) => {
 
@@ -25,7 +25,6 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking,
             onNewBooking(ModalType.newBookingPatient);
         }
     }
-    console.log(dadosBooking)
     const createDate = (date: string) => {
         const dateArray = date.split('-')
         return dateArray[2] + "/" + dateArray[1] + "/" + dateArray[0]
@@ -54,12 +53,12 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking,
                         <div className="flex items-center">
                             <CalendarDays className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Data:</span>
-                            <span className="ml-2">{createDate(dadosBooking.exameDate.split('T')[0])}</span>
+                            <span className="ml-2">{dadosBooking.exameDate? createDate(dadosBooking.exameDate.split('T')[0]) : ''}</span>
                         </div>
                         <div className="flex items-center">
                             <Clock className="mr-2 h-4 w-4 opacity-70"/>
                             <span className="font-semibold">Hora:</span>
-                            <span className="ml-2">{new Date(dadosBooking.exameDate).toISOString().substring(11, 16)}</span>
+                            <span className="ml-2">{dadosBooking.exameDate ? new Date(dadosBooking.exameDate).toISOString().substring(11, 16) : ''}</span>
                         </div>
                         <div className="flex items-center">
                             <FileText className="mr-2 h-4 w-4 opacity-70"/>
