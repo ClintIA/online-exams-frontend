@@ -103,12 +103,18 @@ const AdminBooking: React.FC = () =>  {
         fetchPatientExams(date).then()
         setOpenModalNewPatient(false)
     }
-    const handlePresence  = async (examId: number, presence: boolean) => {
+    const handlePresence  = async (examId: number, presence: boolean | null) => {
         try {
             if(tenantId) {
                 const result = await confirmPatientExam(tenantId, examId, presence)
                 if(result) {
-                    handleModalMessage('Paciente Confirmado')
+                    if(presence === null) {
+                        handleModalMessage('Paciente Cancelado')
+                    } else if(presence) {
+                        handleModalMessage('Paciente Confirmado')
+                    } else {
+                        handleModalMessage('Paciente Não Compareceu')
+                    }
                     fetchPatientExams(date).then()
                 }
             }
