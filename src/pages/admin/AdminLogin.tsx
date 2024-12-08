@@ -118,18 +118,9 @@ const AdminLogin: React.FC = () => {
                         </div>
 
                         <div className="flex items-center justify-between">
-                            <div className="flex items-center space-x-2">
-                                <Checkbox id="remember"/>
-                                <label
-                                    htmlFor="remember"
-                                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                                >
-                                    Lembrar de mim
-                                </label>
-                            </div>
                             <a
                                 href="#"
-                                className="text-sm font-medium text-[#0B1A2B] hover:underline"
+                                className="text-xs font-light text-black hover:underline"
                             >
                                 Esqueci a senha
                             </a>
