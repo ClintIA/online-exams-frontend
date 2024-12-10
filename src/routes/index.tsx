@@ -14,6 +14,7 @@ import Error404 from "../error/Error404.tsx";
 import AdminLogin from "../pages/admin/AdminLogin.tsx";
 import { DadosCadastrais } from '../pages/patient/DadosCadastrais';
 import { Exames } from "../pages/patient/Exames.tsx";
+import {ProtectedRoute} from "@/components/ProtectedRoute/ProtectedRoute.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -65,35 +66,35 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:<AdminHome />,
+                element:(<ProtectedRoute> <AdminHome /> </ProtectedRoute>),
             },
             {
                 path:'agendamento',
-                element:<AdminBooking />,
+                element:(<ProtectedRoute> <AdminBooking /> </ProtectedRoute>),
             },
             {
                 path:'registrar-pacientes',
-                element:<AdminPatient />,
+                element:(<ProtectedRoute> <AdminPatient /> </ProtectedRoute>),
             },
             {
                 path:'upload-exames',
-                element:<AdminExams />,
+                element:(<ProtectedRoute> <AdminExams /> </ProtectedRoute>),
             },
             {
                 path:'registrar-exames',
-                element:<AdminTenantExams />,
+                element:(<ProtectedRoute> <AdminTenantExams /> </ProtectedRoute>),
             },
             {
                 path:'registrar-medicos',
-                element:<AdminDoctor />,
+                element:(<ProtectedRoute> <AdminDoctor /> </ProtectedRoute>),
             },
             {
                 path:'registrar-admin',
-                element:<AdminList />,
+                element:(<ProtectedRoute> <AdminList /> </ProtectedRoute>),
             },
             {
                 path: 'dashboard',
-                element: <AdminDashboard />,
+                element: (<ProtectedRoute> <AdminDashboard /> </ProtectedRoute>),
             }
         ]
     },

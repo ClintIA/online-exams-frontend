@@ -1,4 +1,4 @@
-import {createContext, useEffect, useState} from "react";
+import React, {createContext, useEffect, useState} from "react";
 import {IAuthContextType, ILoginAdmin, ITokenPayload, Props} from "../types/Auth.ts";
 import {loginAdmin, loginPatient} from "../services/loginService.tsx";
 import {jwtDecode} from "jwt-decode";
@@ -14,30 +14,26 @@ const saveStorage =  (user: ITokenPayload, token: string) => {
 }
 
 const AuthProvider = ({ children }: Props) => {
-    const [ isAuthenticated, setAuthenticated ] = useState<boolean>(false)
+    const [ isAuthenticated, setIsAuthenticated ] = React.useState<boolean>(false)
     const [token, setToken] = useState<string>('');
     const [userId, setUserId] = useState<number>();
 
     useEffect(() => {
-        const checkToken = () => {
+        const checkToken = async () => {
+            console.log('authcontext')
             const tokenFromStorage = Cookies.get('token');
             const user = Cookies.get('user');
             if (tokenFromStorage && user) {
                 setToken(tokenFromStorage);
-                const decoded: ITokenPayload = jwtDecode(tokenFromStorage);
-                setAuthenticated(decoded.isAdmin);
+                const decoded: ITokenPayload = await jwtDecode(tokenFromStorage);
+                setIsAuthenticated(true);
+                console.log(isAuthenticated)
+                console.log(decoded.isAdmin)
                 setUserId(decoded.userId);
-                const timeNow = new Date();
-                const timeExp = new Date(decoded.exp)
-                if(!(timeNow > timeExp)) {
-                    Cookies.remove('token');
-                    Cookies.remove('user');
-
-                }
             }
         }
-        checkToken()
-    },[token])
+        checkToken().then()
+    },[])
     const adminLogin = async (email: string,password: string): Promise<ILoginAdmin | undefined> => {
            const res = await loginAdmin(email, password);
            if(res?.status === 'success') {

@@ -10,7 +10,7 @@ import {
   User,
   Users
 } from "lucide-react";
-import {useNavigate} from "react-router-dom";
+import {useNavigate, Link} from "react-router-dom";
 import React, {useState} from "react";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@radix-ui/react-collapsible";
 import {Button} from "@/components/ui/button.tsx";
@@ -38,7 +38,7 @@ const AdminSidebar: React.FC = () => {
 
   return (
       <aside className={`${styles.sidebar} ${menuOpen ? styles.mobileSidebar : ''}`}>
-        <div className="flex justify-end ml-10">
+        <div className="flex justify-center">
           <img src={clintiaLogo} className="w-32 h-auto md:w-64 md:h-auto"
                alt="Logo ClintIA"/>
         </div>
@@ -53,27 +53,27 @@ const AdminSidebar: React.FC = () => {
             <SidebarMenu>
               <SidebarMenuItem>
                 <SidebarMenuButton>
-                  <a href="/admin/home">
+                  <Link to="/admin/home">
                     <Home className={styles.icon} /> Início
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>
-                  <a href="/admin/agendamento">
+                  <Link to="/admin/agendamento">
                     <Calendar size={32} className={styles.icon}/> Agendamentos
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton>
-                  <a href="/admin/upload-exames">
+                  <Link to="/admin/upload-exames">
                     <Microscope size={32} className={styles.icon}/> Portal de Exames
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <Collapsible
-                  className={`${styles.cadastros} ml-2 text-white`}
+                  className={`${styles.cadastros}`}
                   open={isOpenRegister}
                   onOpenChange={setIsOpenRegister}>
                 <CollapsibleTrigger>
@@ -86,30 +86,30 @@ const AdminSidebar: React.FC = () => {
                 <CollapsibleContent>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a className="text-sm" href="/admin/registrar-exames">
+                      <Link to="/admin/registrar-exames">
                         <Microscope size={16} className={styles.icon}/> Exames
-                      </a>
+                    </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/registrar-pacientes">
+                      <Link to="/admin/registrar-pacientes">
                         <Users size={16} className={styles.icon}/> Pacientes
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/registrar-medicos">
+                      <Link to="/admin/registrar-medicos">
                         <Contact2 size={16} className={styles.icon}/> Médicos
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/registrar-admin">
+                      <Link to="/admin/registrar-admin">
                         <CircleUser size={16} className={styles.icon}/> Administradores
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </CollapsibleContent>
@@ -117,7 +117,7 @@ const AdminSidebar: React.FC = () => {
               <Collapsible
                   open={isOpenRelatorios}
                   onOpenChange={setIsOpenRelatorios}
-                  className={`${styles.relatorios} ml-2 text-white`}>
+                  className={`${styles.relatorios}`}>
                 <CollapsibleTrigger>
                   <Button className={`${styles.navLink}`} variant="ghost">
                     <Activity size={32} className={styles.icon}/> Relátorios
@@ -128,16 +128,16 @@ const AdminSidebar: React.FC = () => {
                 <CollapsibleContent>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/dashboard">
+                      <Link to="/admin/dashboard">
                         <LayoutDashboard size={16} className={styles.icon}/> Marketing
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                   <SidebarMenuItem>
                     <SidebarMenuButton>
-                      <a href="/admin/registrar-pacientes">
+                      <Link to="/admin/registrar-pacientes">
                         <Lightbulb size={16} className={styles.icon}/> Gestão
-                      </a>
+                      </Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </CollapsibleContent>
