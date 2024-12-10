@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import logoClintia from '../../assets/logoLoginGrande.png.png';
+import logoClintia from '../../assets/ClintIA-MarcaRGB-Verti-Cor-FundoOxford.png';
 import {useAuth} from "../../hooks/auth.tsx";
 import {Button} from "@/components/ui/button.tsx"
 import {jwtDecode} from "jwt-decode";
@@ -67,7 +67,7 @@ const AdminLogin: React.FC = () => {
                             width={500}
                             height={400}
                             alt="Clintia Logo"
-                            className="mx-auto"
+                            className="mx-auto rounded-full"
                         />
                         <h1 className="text-sm text-white md:text-3xl font-bold text-center">
                             Bem vindo a ClintIA.
