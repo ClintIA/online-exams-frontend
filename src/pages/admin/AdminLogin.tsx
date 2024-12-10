@@ -1,50 +1,61 @@
-import React, {useState} from 'react';
-import logoClintia from '../../assets/logoClintia.png';
+import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import {useAuth} from "@/hooks/auth.tsx";
-import {Button} from "@/components/ui/button.tsx";
+import logoClintia from '../../assets/logoLoginGrande.png';
+import {useAuth} from "../../hooks/auth.tsx";
+import {Button} from "@/components/ui/button.tsx"
+import {jwtDecode} from "jwt-decode";
+import {ITokenPayload} from "@/types/Auth.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
-import {useCpf} from "@/hooks/useCpf.tsx";
+import {Checkbox} from "@mui/material";
 import {Input} from "@/components/ui/input.tsx";
 import {EyeIcon, EyeOff} from "lucide-react";
-import {Checkbox} from "@mui/material";
 
 
-const LoginPatient: React.FC = () => {
-    const [patientCpf, setPatientCpf] = useState("");
-    const [showPassword, setShowPassword] = useState(false);
-    const [password, setPassword] = useState('');
+const AdminLogin: React.FC = () => {
+
     const navigate = useNavigate();
     const auth = useAuth();
-    const { setCpf } = useCpf();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    useEffect(() => {
+        const getTenant = () => {
+            if(auth?.token) {
+                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
+                if(decoded.isAdmin) {
+                    navigate('/admin/home')
+                }
+            }
+        }
+        getTenant()
+    },[auth.token, navigate])
 
     const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()
-        if (!patientCpf) {
-            setErrorMessage('Preencha seu CPF')
+        if (!email || !password) {
+            setErrorMessage('Preencha seu email e senha')
             setIsErrorModalOpen(true)
+            return
         }
-        if (patientCpf) {
-            const result = await auth.patientLogin(patientCpf, password)
+        if (email && password) {
+            const result = await auth.adminLogin(email, password)
             if(!result) {
                 setErrorMessage('Erro ao Realizar login')
                 setIsErrorModalOpen(true)
                 return
             }
-            if(result?.status === "error") {
-                setErrorMessage(result.message)
-                setIsErrorModalOpen(true)
-                return
-            }
-            if(result?.status === "success" && result?.data !== null) {
-                setCpf(patientCpf); // Armazena o CPF no contexto
-                return  navigate('/paciente/home');
-            }
+                if(result?.status === "error") {
+                    setErrorMessage(result.message)
+                    setIsErrorModalOpen(true)
+                    return
+                }
+                if(result?.status === "success" && result?.data !== null) {
+                    return  navigate('/admin/home')
+                }
         }
     }
-
     return (
         <div>
             <main className="min-h-screen flex">
@@ -70,14 +81,14 @@ const LoginPatient: React.FC = () => {
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <label htmlFor="email" className="block text-sm text-black font-medium">
-                                    CPF
+                                    E-mail
                                 </label>
                                 <Input
-                                    id="patientCpf"
-                                    type="patientCpf"
-                                    placeholder="Digite seu CPF"
+                                    id="email"
+                                    type="email"
+                                    placeholder="Digite seu e-mail"
                                     className="w-full p-5 rounded-full text-oxfordBlue placeholder:text-xs placeholder-gray-200 border-oxfordBlue"
-                                    onChange={(e) => setPatientCpf(e.target?.value)}
+                                    onChange={(e) => setEmail(e.target?.value)}
                                 />
                             </div>
 
@@ -146,4 +157,4 @@ const LoginPatient: React.FC = () => {
     );
 };
 
-export default LoginPatient;
+export default AdminLogin;

@@ -56,3 +56,4 @@ export const formatDate = (date: string) => {
   }
   return dateArray[2] + "/" + dateArray[1] + "/" + dateArray[0]
 }
+
