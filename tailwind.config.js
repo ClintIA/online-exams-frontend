@@ -12,6 +12,25 @@ module.exports = {
     		fontFamily: {
     			sans: ['Red Hat Display', 'sans-serif']
     		},
+			screens: {
+				'xxsm': '250px',
+				'xsm': '340px',
+				'ssm':'440px',
+				'sm': '640px',
+				// => @media (min-width: 640px) { ... }
+
+				'md': '768px',
+				// => @media (min-width: 768px) { ... }
+
+				'lg': '1024px',
+				// => @media (min-width: 1024px) { ... }
+
+				'xl': '1280px',
+				// => @media (min-width: 1280px) { ... }
+
+				'2xl': '1536px',
+				// => @media (min-width: 1536px) { ... }
+			},
     		colors: {
     			skyBlue: '#05D2FF',
     			celticBlue: '#055AAA',

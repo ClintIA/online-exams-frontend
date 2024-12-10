@@ -26,6 +26,7 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
         phone: '',
         cpf: '',
         CRM:'',
+        occupation: '',
     })
     const [tenant, setTenant] = useState<number | undefined>(undefined)
     const [erro, setErro] = useState<string | null>(null)
@@ -129,7 +130,7 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
                                        onChange={handleInputChange}
                                        className="col-span-3"/>
                                </div>
-                               <div className={isDoctor ? "" : "hidden"}>
+                               <div className={isDoctor ? "grid gap-4" : "hidden"}>
                                    <div className="grid grid-cols-4 items-center gap-4">
                                        <Label htmlFor="CRM" className="text-right text-blue-800">
                                            CRM
@@ -139,6 +140,18 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
                                            name="CRM"
                                            type="text"
                                            value={doctorData?.CRM}
+                                           onChange={handleInputChange}
+                                           className="col-span-3"/>
+                                   </div>
+                                   <div className="grid grid-cols-4 items-center gap-4">
+                                       <Label htmlFor="occupation" className="text-right text-blue-800">
+                                           Ocupação
+                                       </Label>
+                                       <Input
+                                           id="occupation"
+                                           name="occupation"
+                                           type="text"
+                                           value={doctorData?.occupation}
                                            onChange={handleInputChange}
                                            className="col-span-3"/>
                                    </div>

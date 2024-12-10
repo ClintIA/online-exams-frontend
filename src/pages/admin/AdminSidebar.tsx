@@ -143,12 +143,12 @@ const AdminSidebar: React.FC = () => {
                 </CollapsibleContent>
               </Collapsible>
             <SidebarFooter className="flex flex-row justify-between">
-              <div className="fixed bottom-16 md:bottom-2 md:left-2">
+              <div className="pl-4  fixed bottom-16 md:bottom-2 md:left-2">
                 <button className="text-white">
                   <User color="white" className={styles.icon}/>Perfil
                 </button>
               </div>
-              <div className="fixed bottom-16 right-2 md:bottom-2  md:left-48">
+              <div className="pr-4 fixed bottom-16 right-2 md:bottom-2  md:left-48">
                 <button className="text-white" onClick={handleLogout}>
                   <SignOut color="white" className={styles.icon}/> Sair
                 </button>
