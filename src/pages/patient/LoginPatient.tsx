@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import logoClintia from '../../assets/logoClintia.png';
+import logoClintia from '../../assets/logoClintia.png.png';
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "@/hooks/auth.tsx";
 import {Button} from "@/components/ui/button.tsx";
