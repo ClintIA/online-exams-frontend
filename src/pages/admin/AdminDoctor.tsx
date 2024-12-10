@@ -122,6 +122,7 @@ const AdminDoctor: React.FC = () => {
             <TableCell className="text-oxfordBlue font-bold">{doctor.fullName}</TableCell>
             <TableCell className="text-blue-900">{doctor.cpf}</TableCell>
             <TableCell className="text-blue-900">{doctor.CRM}</TableCell>
+            <TableCell className="text-blue-900">{doctor.occupation}</TableCell>
             <TableCell className="text-blue-900">{doctor.email}</TableCell>
             <TableCell className="text-blue-900">{doctor.phone}</TableCell>
             <TableCell className="text-blue-900">{doctor.created_at ? format(doctor.created_at, "dd/MM/yyyy", { locale: ptBR }) : ''}</TableCell>
@@ -170,6 +171,7 @@ const AdminDoctor: React.FC = () => {
                                 <TableHead className="text-oxfordBlue">Nome</TableHead>
                                 <TableHead className="text-oxfordBlue">CPF</TableHead>
                                 <TableHead className="text-oxfordBlue">CRM</TableHead>
+                                <TableHead className="text-oxfordBlue">Ocupação</TableHead>
                                 <TableHead className="text-oxfordBlue">Email</TableHead>
                                 <TableHead className="text-oxfordBlue">Contato</TableHead>
                                 <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>

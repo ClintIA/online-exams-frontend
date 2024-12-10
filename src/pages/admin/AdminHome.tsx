@@ -24,6 +24,7 @@ export interface IAdmin {
   phone?: string
   isDoctor?: boolean
   created_at?: string
+  occupation?: string
 }
 
 export interface IPatientExam {
@@ -198,11 +199,11 @@ const AdminHome: React.FC = () => {
       </header>
       <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
         <div className="max-w-full mx-auto space-y-6">
-          <div className="grid gap-6 md:grid-cols-3">
-            <Card className="md:col-span-1">
+          <div className="grid gap-6 grid-cols-1 lg:grid-cols-4">
+            <Card className="md:col-span-2">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Médicos Atendendo Hoje</CardTitle>
-                <div className="flex items-center space-x-2">
+                <CardTitle>MÉDICOS ATENDENDO HOJE</CardTitle>
+                <div className="flex items-center">
                   <Button
                     variant="ghost"
                     size="icon"
@@ -223,10 +224,10 @@ const AdminHome: React.FC = () => {
                 </div>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {Array.isArray(doctors) ? (
                     doctors.map((doctor) => (
-                      <CardDoctor nome={doctor.fullName} crm={doctor?.CRM} contato={doctor.phone} />
+                      <CardDoctor especialidade={doctor.occupation} nome={doctor.fullName} crm={doctor?.CRM} contato={doctor.phone} />
                     ))
                   ) : (
                     <p>Não há médicos agendados para hoje</p>
@@ -236,7 +237,7 @@ const AdminHome: React.FC = () => {
             </Card>
             <Card className="md:col-span-2">
               <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle>Mural de Avisos</CardTitle>
+                <CardTitle>MURAL DE AVISOS</CardTitle>
                 <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
                   <DialogTrigger asChild>
                     <Button variant="ghost" size="icon" onClick={() => setDialogOpen(true)}>
@@ -276,7 +277,7 @@ const AdminHome: React.FC = () => {
           </div>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Próximos Agendamentos ({format(new Date(), "dd/MM/yyyy", { locale: ptBR })})</CardTitle>
+              <CardTitle>PRÓXIMOS AGENDAMENTOS ({format(new Date(), "dd/MM/yyyy", { locale: ptBR })})</CardTitle>
               <div className="flex items-center space-x-2">
                 <Button
                   variant="ghost"
