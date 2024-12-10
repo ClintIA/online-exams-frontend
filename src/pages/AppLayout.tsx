@@ -37,9 +37,9 @@ const AppLayout: React.FC = () => {
             <div className="flex-1 overflow-y-auto md:ml-64">
                 <Outlet/>
             </div>
-            <footer className={`w-full fixed bottom-0 h-10 bg-oxfordBlue`}>
+            <footer className={`w-full fixed bottom-0 h-10`}>
                 <div className="flex flex-col items-center p-2 justify-center">
-                    <p className="text-white text-base font-semibold">Clint IA - Soluções Tecnológicas &copy; 2024</p>
+                    <p className="text-gray-400 text-base font-semibold">Clint IA - Soluções Tecnológicas &copy; 2024</p>
                 </div>
             </footer>
         </div>

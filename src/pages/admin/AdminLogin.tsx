@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import logoClintia from '../../assets/logoClintia.png';
+import logoClintia from '../../assets/logoLoginGrande.png';
 import {useAuth} from "../../hooks/auth.tsx";
 import {Button} from "@/components/ui/button.tsx"
 import {jwtDecode} from "jwt-decode";
@@ -60,7 +60,7 @@ const AdminLogin: React.FC = () => {
         <div>
             <main className="min-h-screen flex">
                 {/* Left side with background and logo */}
-                <div className="flex-1 bg-[#0B1A2B] flex flex-col items-center justify-center p-8">
+                <div className="flex-1 bg-oxfordBlue flex flex-col items-center justify-center p-8">
                     <div className="max-w-[400px] w-full space-y-6">
                         <img
                             src={logoClintia}
@@ -69,7 +69,7 @@ const AdminLogin: React.FC = () => {
                             alt="Clintia Logo"
                             className="mx-auto"
                         />
-                        <h1 className="text-white text-3xl font-medium text-center">
+                        <h1 className="text-sm text-white md:text-3xl font-bold text-center">
                             Bem vindo a ClintIA.
                         </h1>
                     </div>
@@ -77,7 +77,7 @@ const AdminLogin: React.FC = () => {
 
                 {/* Right side with login form */}
                 <div className="flex-1 flex items-center justify-center p-8">
-                    <div className="max-w-[400px] w-full space-y-6">
+                    <div className="max-w-[500px] w-full space-y-6">
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <label htmlFor="email" className="block text-sm text-black font-medium">
@@ -87,7 +87,7 @@ const AdminLogin: React.FC = () => {
                                     id="email"
                                     type="email"
                                     placeholder="Digite seu e-mail"
-                                    className="w-full p-5 rounded-full text-oxfordBlue placeholder-gray-200 border-oxfordBlue"
+                                    className="w-full p-5 rounded-full text-oxfordBlue placeholder:text-xs placeholder-gray-200 border-oxfordBlue"
                                     onChange={(e) => setEmail(e.target?.value)}
                                 />
                             </div>
@@ -101,7 +101,7 @@ const AdminLogin: React.FC = () => {
                                         id="password"
                                         type={showPassword ? "text" : "password"}
                                         placeholder="Digite sua senha"
-                                        className="w-full p-5 rounded-full text-oxfordBlue placeholder-gray-200 border-oxfordBlue"
+                                        className="w-full p-5 rounded-full text-oxfordBlue placeholder:text-xs placeholder-gray-200 border-oxfordBlue"
                                         onChange={(e) => setPassword(e.target?.value)}
                                     />
                                     <button
@@ -119,7 +119,7 @@ const AdminLogin: React.FC = () => {
                             </div>
                         </div>
 
-                        <div className="flex items-center justify-between">
+                        <div className="flex flex-col items-start sm:items-center sm:flex-row justify-between">
                             <div className="flex items-center">
                                 <Checkbox id="remember"/>
                                 <label
@@ -131,13 +131,14 @@ const AdminLogin: React.FC = () => {
                             </div>
                             <a
                                 href="#"
-                                className="text-xs font-light text-black hover:underline"
+                                className="ml-12 sm:ml-0 text-xs font-light text-black hover:underline"
                             >
                                 Esqueci a senha
                             </a>
                         </div>
                         <div className="flex justify-end">
-                            <Button onClick={handleLogin} className="w-1/2 rounded-full bg-[#0B1A2B] hover:bg-[#152942]">
+                            <Button onClick={handleLogin}
+                                    className="w-1/2 rounded-full bg-[#0B1A2B] hover:bg-[#152942]">
                                 Acessar
                             </Button>
                         </div>

@@ -5,10 +5,14 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {useCpf} from "@/hooks/useCpf.tsx";
+import {Input} from "@/components/ui/input.tsx";
+import {EyeIcon, EyeOff} from "lucide-react";
+import {Checkbox} from "@mui/material";
 
 
 const LoginPatient: React.FC = () => {
     const [patientCpf, setPatientCpf] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
     const auth = useAuth();
@@ -42,71 +46,103 @@ const LoginPatient: React.FC = () => {
     }
 
     return (
-        <div className="gradient-form bg-oxfordBlue w-full h-screen m-auto">
-            <div
-                className="flex h-full items-center justify-center">
-                <div className="w-3/4 md:w-2/4">
-                    <div
-                        className="block rounded-lg bg-oxfordBlue shadow-lg shadow-amber-100 dark:bg-neutral-800">
-                        <div className="p-5 text-center">
-
-                            <div className="flex flex-col items-center md:mx-6 md:px-12">
-                                <div className="">
-
-                                    <div className="p-4">
-                                        <img src={logoClintia} alt="Logo"
-                                             className="w-full h-auto shadow shadow-amber-50"/>
-                                    </div>
-                                    <h3 className="mt-1 text-sm sm:text-base tracking-widest text-white font-semibold">
-                                        Bem vindo a ClintIA.
-                                    </h3>
-                                </div>
-                                <h4
-                                    className="p-3 text-base sm:text-xl md:text-xl tracking-widest text-white font-semibold">
-                                    Login
-                                </h4>
-                                <form className="sm:w-3/4 md:w-3/5" id="login-form">
-                                    {/* Username Input */}
-                                    <div className="flex flex-col relative">
-                                        <div className="mb-4">
-                                            <input autoComplete="true" placeholder="Digite seu CPF"
-                                                   className='!text-oxfordBlue rounded-xl p-3 focus:text-white w-full'
-                                                   type='text' value={patientCpf}
-                                                   name="patientCpf"
-                                                   onChange={(e) => setPatientCpf(e.target?.value)}/>
-
-                                        </div>
-                                        <div className='mb-4'>
-                                            <input autoComplete="true" placeholder="Digite sua Senha"
-                                                   className='!text-oxfordBlue rounded-xl p-3 focus:text-white w-full'
-                                                   type='password' value={password}
-                                                   onChange={(e) => setPassword(e.target.value)}/>
-
-                                        </div>
-                                    </div>
-                                    {/* Submit Button */}
-                                    <div className="mb-12 pb-1 pt-1 text-center">
-                                        <Button
-                                            variant="outline"
-                                            onClick={(e) => handleLogin(e)}
-                                            className="mb-3 inline-block w-3/4 bg-amber-50 hover:bg-amber-500 hover:text-oxfordBlue rounded-xl px-6 pb-2 pt-2.5 text-sm font-semibold uppercase leading-normal text-oxfordBlue shadow-dark-3 transition duration-150 ease-in-out hover:shadow-dark-2 focus:shadow-dark-2 focus:outline-none focus:ring-0 active:shadow-dark-2 dark:shadow-black/30 dark:hover:shadow-dark-strong dark:focus:shadow-dark-strong dark:active:shadow-dark-strong"
-                                        >
-                                            Acessar
-                                        </Button>
-                                        <GeneralModal
-                                            error={true}
-                                            action={'Close'}
-                                            isOpen={isErrorModalOpen}
-                                            onClose={() => setIsErrorModalOpen(false)}
-                                            message={errorMessage}/>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
+        <div>
+            <main className="min-h-screen flex">
+                {/* Left side with background and logo */}
+                <div className="flex-1 bg-oxfordBlue flex flex-col items-center justify-center p-8">
+                    <div className="max-w-[400px] w-full space-y-6">
+                        <img
+                            src={logoClintia}
+                            width={500}
+                            height={400}
+                            alt="Clintia Logo"
+                            className="mx-auto"
+                        />
+                        <h1 className="text-sm text-white md:text-3xl font-bold text-center">
+                            Bem vindo a ClintIA.
+                        </h1>
                     </div>
                 </div>
-            </div>
+
+                {/* Right side with login form */}
+                <div className="flex-1 flex items-center justify-center p-8">
+                    <div className="max-w-[500px] w-full space-y-6">
+                        <div className="space-y-4">
+                            <div className="space-y-2">
+                                <label htmlFor="email" className="block text-sm text-black font-medium">
+                                    CPF
+                                </label>
+                                <Input
+                                    id="patientCpf"
+                                    type="patientCpf"
+                                    placeholder="Digite seu CPF"
+                                    className="w-full p-5 rounded-full text-oxfordBlue placeholder:text-xs placeholder-gray-200 border-oxfordBlue"
+                                    onChange={(e) => setPatientCpf(e.target?.value)}
+                                />
+                            </div>
+
+                            <div className="space-y-2">
+                                <label htmlFor="password" className="block text-sm text-black font-medium">
+                                    Senha
+                                </label>
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        type={showPassword ? "text" : "password"}
+                                        placeholder="Digite sua senha"
+                                        className="w-full p-5 rounded-full text-oxfordBlue placeholder:text-xs placeholder-gray-200 border-oxfordBlue"
+                                        onChange={(e) => setPassword(e.target?.value)}
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 hover:text-gray-700"
+                                    >
+                                        {showPassword ? (
+                                            <EyeOff className="h-5 w-5"/>
+                                        ) : (
+                                            <EyeIcon className="h-5 w-5"/>
+                                        )}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex flex-col items-start sm:items-center sm:flex-row justify-between">
+                            <div className="flex items-center">
+                                <Checkbox id="remember"/>
+                                <label
+                                    htmlFor="remember"
+                                    className="text-xs font-light text-black leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                >
+                                    Lembrar de mim
+                                </label>
+                            </div>
+                            <a
+                                href="#"
+                                className="ml-12 sm:ml-0 text-xs font-light text-black hover:underline"
+                            >
+                                Esqueci a senha
+                            </a>
+                        </div>
+                        <div className="flex justify-end">
+                            <Button onClick={handleLogin}
+                                    className="w-1/2 rounded-full bg-[#0B1A2B] hover:bg-[#152942]">
+                                Acessar
+                            </Button>
+                        </div>
+
+                    </div>
+                </div>
+            </main>
+            <GeneralModal
+                error={true}
+                action={'Close'}
+                isOpen={isErrorModalOpen}
+                onClose={() => setIsErrorModalOpen(false)}
+                message={errorMessage}/>
         </div>
+
     );
 };
 
