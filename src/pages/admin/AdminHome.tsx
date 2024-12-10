@@ -277,7 +277,7 @@ const AdminHome: React.FC = () => {
           </div>
           <Card>
             <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle>Próximos Agendamentos ({format(new Date(), "dd/MM/yyyy", { locale: ptBR })})</CardTitle>
+              <CardTitle>PRÓXIMOS AGENDAMENTOS ({format(new Date(), "dd/MM/yyyy", { locale: ptBR })})</CardTitle>
               <div className="flex items-center space-x-2">
                 <Button
                   variant="ghost"
