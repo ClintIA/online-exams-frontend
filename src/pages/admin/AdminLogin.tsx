@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useNavigate} from "react-router-dom";
-import logoClintia from '../../assets/logoLoginGrande.png';
+import logoClintia from '../../assets/logoLoginGrande.png.png';
 import {useAuth} from "../../hooks/auth.tsx";
 import {Button} from "@/components/ui/button.tsx"
 import {jwtDecode} from "jwt-decode";
