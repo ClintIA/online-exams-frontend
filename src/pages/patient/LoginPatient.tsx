@@ -125,7 +125,7 @@ const LoginPatient: React.FC = () => {
                                 Esqueci a senha
                             </a>
                         </div>
-                        <div className="flex justify-end">
+                        <div className="flex justify-center sm:justify-end">
                             <Button onClick={handleLogin}
                                     className="w-1/2 rounded-full bg-[#0B1A2B] hover:bg-[#152942]">
                                 Acessar

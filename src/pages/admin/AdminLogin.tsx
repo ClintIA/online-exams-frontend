@@ -60,7 +60,7 @@ const AdminLogin: React.FC = () => {
         <div>
             <main className="min-h-screen flex">
                 {/* Left side with background and logo */}
-                <div className="flex-1 bg-oxfordBlue flex flex-col items-center justify-center p-8">
+                <div className="hidden sm:flex-1 bg-oxfordBlue sm:flex flex-col items-center justify-center p-8">
                     <div className="max-w-[400px] w-full space-y-6">
                         <img
                             src={logoClintia}
@@ -75,9 +75,19 @@ const AdminLogin: React.FC = () => {
                     </div>
                 </div>
 
+
                 {/* Right side with login form */}
-                <div className="flex-1 flex items-center justify-center p-8">
+                <div className="flex-1 flex mt-10 sm:items-center justify-center p-8">
                     <div className="max-w-[500px] w-full space-y-6">
+                        <div className="flex justify-center sm:hidden">
+                            <img
+                                src={logoClintia}
+                                width={250}
+                                height={200}
+                                alt="Clintia Logo"
+                                className="mx-auto rounded-full"
+                            />
+                        </div>
                         <div className="space-y-4">
                             <div className="space-y-2">
                                 <label htmlFor="email" className="block text-sm text-black font-medium">
@@ -136,7 +146,7 @@ const AdminLogin: React.FC = () => {
                                 Esqueci a senha
                             </a>
                         </div>
-                        <div className="flex justify-end">
+                        <div className="flex justify-center sm:justify-end">
                             <Button onClick={handleLogin}
                                     className="w-1/2 rounded-full bg-[#0B1A2B] hover:bg-[#152942]">
                                 Acessar
