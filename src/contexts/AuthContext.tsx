@@ -15,6 +15,8 @@ const saveStorage =  (user: ITokenPayload, token: string) => {
 
 const AuthProvider = ({ children }: Props) => {
     const [ isAuthenticated, setIsAuthenticated ] = React.useState<boolean>(false)
+    const [ isAdmin, setIsAdmin ] = React.useState<boolean>(false)
+    const [ isPatient, setIsPatient] = React.useState<boolean>(false)
     const [ token, setToken] = useState<string>('');
     const [ userId, setUserId] = useState<number>();
 
@@ -26,6 +28,8 @@ const AuthProvider = ({ children }: Props) => {
                 setToken(tokenFromStorage);
                 const decoded: ITokenPayload = await jwtDecode(tokenFromStorage);
                 setIsAuthenticated(true);
+                setIsAdmin(decoded.isAdmin)
+                setIsPatient(!decoded.isAdmin)
                 setUserId(decoded.userId)
             }
         }
@@ -39,6 +43,7 @@ const AuthProvider = ({ children }: Props) => {
                    saveStorage(decoded, res.data.token)
                    setToken(res.data.token);
                    setIsAuthenticated(true)
+                   setIsAdmin(true)
                }
            }
            return res
@@ -51,6 +56,7 @@ const AuthProvider = ({ children }: Props) => {
                 saveStorage(decoded, res.data.token)
                 setToken(res.data.token);
                 setIsAuthenticated(true)
+                setIsPatient(true)
                 setUserId(decoded.userId);
             }
         }
@@ -60,11 +66,13 @@ const AuthProvider = ({ children }: Props) => {
             Cookies.remove("token")
             Cookies.remove("user")
             setToken('')
-            setIsAuthenticated(false)
+        setIsAdmin(false)
+        setIsPatient(false)
+        setIsAuthenticated(false)
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, token, adminLogin, patientLogin, logOut, userId }}>
+        <AuthContext.Provider value={{ isAuthenticated, isAdmin, isPatient, token, adminLogin, patientLogin, logOut, userId }}>
             {children}
         </AuthContext.Provider>
     );
