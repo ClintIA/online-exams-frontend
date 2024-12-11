@@ -52,11 +52,11 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:<Exames />,
+                element:(<ProtectedRoute role={'patient'}><Exames /> </ProtectedRoute>),
             },
             {
                 path:'dadoscadastrais',
-                element:<DadosCadastrais />,
+                element:(<ProtectedRoute role={'patient'}><DadosCadastrais /> </ProtectedRoute>),
             },
         ]
     },
@@ -66,35 +66,35 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:(<ProtectedRoute> <AdminHome /> </ProtectedRoute>),
+                element:(<ProtectedRoute role='admin'> <AdminHome /> </ProtectedRoute>),
             },
             {
                 path:'agendamento',
-                element:(<ProtectedRoute> <AdminBooking /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role='admin'> <AdminBooking /> </ProtectedRoute>),
             },
             {
                 path:'registrar-pacientes',
-                element:(<ProtectedRoute> <AdminPatient /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role='admin'> <AdminPatient /> </ProtectedRoute>),
             },
             {
                 path:'upload-exames',
-                element:(<ProtectedRoute> <AdminExams /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role='admin'> <AdminExams /> </ProtectedRoute>),
             },
             {
                 path:'registrar-exames',
-                element:(<ProtectedRoute> <AdminTenantExams /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role='admin'> <AdminTenantExams /> </ProtectedRoute>),
             },
             {
                 path:'registrar-medicos',
-                element:(<ProtectedRoute> <AdminDoctor /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role='admin'> <AdminDoctor /> </ProtectedRoute>),
             },
             {
                 path:'registrar-admin',
-                element:(<ProtectedRoute> <AdminList /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role='admin'> <AdminList /> </ProtectedRoute>),
             },
             {
                 path: 'dashboard',
-                element: (<ProtectedRoute> <AdminDashboard /> </ProtectedRoute>),
+                element: (<ProtectedRoute  role='admin'> <AdminDashboard /> </ProtectedRoute>),
             }
         ]
     },

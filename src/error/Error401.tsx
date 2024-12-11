@@ -26,7 +26,7 @@ const Error401: React.FC = () => {
         </div>
 
         <div className="space-y-4">
-          <Link href="/">
+          <Link to="/login/paciente">
             <Button className="w-full flex items-center justify-center space-x-2">
               <Home className="h-5 w-5" />
               <span>Home</span>

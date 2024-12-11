@@ -15,7 +15,7 @@ export interface PatientData {
   dob: string;
   email: string;
   phone: string;
-  address: string;
+  cep: string;
   gender: string;
   health_card_number: string;
   exams: string | null;

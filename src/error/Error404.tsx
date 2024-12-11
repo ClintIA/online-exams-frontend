@@ -24,7 +24,7 @@ const Error404: React.FC = () => {
           <p className="mb-4">Nossa equipe está trabalhando duro para trazer a você uma ótima experiência. Enquanto isso, você pode retornar à nossa página inicial ou entrar em contato conosco para obter assistência.</p>
         </div>
 
-        <Link href="/public">
+        <Link to="/login/paciente">
           <Button className="flex items-center space-x-2">
             <Home className="h-5 w-5" />
             <span>Home</span>

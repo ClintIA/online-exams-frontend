@@ -15,21 +15,22 @@ const saveStorage =  (user: ITokenPayload, token: string) => {
 
 const AuthProvider = ({ children }: Props) => {
     const [ isAuthenticated, setIsAuthenticated ] = React.useState<boolean>(false)
-    const [token, setToken] = useState<string>('');
-    const [userId, setUserId] = useState<number>();
+    const [ isAdmin, setIsAdmin ] = React.useState<boolean>(false)
+    const [ isPatient, setIsPatient] = React.useState<boolean>(false)
+    const [ token, setToken] = useState<string>('');
+    const [ userId, setUserId] = useState<number>();
 
     useEffect(() => {
         const checkToken = async () => {
-            console.log('authcontext')
             const tokenFromStorage = Cookies.get('token');
             const user = Cookies.get('user');
             if (tokenFromStorage && user) {
                 setToken(tokenFromStorage);
                 const decoded: ITokenPayload = await jwtDecode(tokenFromStorage);
                 setIsAuthenticated(true);
-                console.log(isAuthenticated)
-                console.log(decoded.isAdmin)
-                setUserId(decoded.userId);
+                setIsAdmin(decoded.isAdmin)
+                setIsPatient(!decoded.isAdmin)
+                setUserId(decoded.userId)
             }
         }
         checkToken().then()
@@ -41,6 +42,8 @@ const AuthProvider = ({ children }: Props) => {
                    const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
                    saveStorage(decoded, res.data.token)
                    setToken(res.data.token);
+                   setIsAuthenticated(true)
+                   setIsAdmin(true)
                }
            }
            return res
@@ -52,6 +55,8 @@ const AuthProvider = ({ children }: Props) => {
                 const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
                 saveStorage(decoded, res.data.token)
                 setToken(res.data.token);
+                setIsAuthenticated(true)
+                setIsPatient(true)
                 setUserId(decoded.userId);
             }
         }
@@ -61,10 +66,13 @@ const AuthProvider = ({ children }: Props) => {
             Cookies.remove("token")
             Cookies.remove("user")
             setToken('')
+        setIsAdmin(false)
+        setIsPatient(false)
+        setIsAuthenticated(false)
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, token, adminLogin, patientLogin, logOut, userId }}>
+        <AuthContext.Provider value={{ isAuthenticated, isAdmin, isPatient, token, adminLogin, patientLogin, logOut, userId }}>
             {children}
         </AuthContext.Provider>
     );
