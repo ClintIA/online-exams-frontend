@@ -14,6 +14,7 @@ import Error404 from "../error/Error404.tsx";
 import AdminLogin from "../pages/admin/AdminLogin.tsx";
 import { DadosCadastrais } from '../pages/patient/DadosCadastrais';
 import { Exames } from "../pages/patient/Exames.tsx";
+import {ProtectedRoute} from "@/components/ProtectedRoute/ProtectedRoute.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -51,11 +52,11 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:<Exames />,
+                element:(<ProtectedRoute role={'patient'}><Exames /> </ProtectedRoute>),
             },
             {
                 path:'dadoscadastrais',
-                element:<DadosCadastrais />,
+                element:(<ProtectedRoute role={'patient'}><DadosCadastrais /> </ProtectedRoute>),
             },
         ]
     },
@@ -65,35 +66,35 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:<AdminHome />,
+                element:(<ProtectedRoute role='admin'> <AdminHome /> </ProtectedRoute>),
             },
             {
                 path:'agendamento',
-                element:<AdminBooking />,
+                element:(<ProtectedRoute  role='admin'> <AdminBooking /> </ProtectedRoute>),
             },
             {
                 path:'registrar-pacientes',
-                element:<AdminPatient />,
+                element:(<ProtectedRoute  role='admin'> <AdminPatient /> </ProtectedRoute>),
             },
             {
                 path:'upload-exames',
-                element:<AdminExams />,
+                element:(<ProtectedRoute  role='admin'> <AdminExams /> </ProtectedRoute>),
             },
             {
                 path:'registrar-exames',
-                element:<AdminTenantExams />,
+                element:(<ProtectedRoute  role='admin'> <AdminTenantExams /> </ProtectedRoute>),
             },
             {
                 path:'registrar-medicos',
-                element:<AdminDoctor />,
+                element:(<ProtectedRoute  role='admin'> <AdminDoctor /> </ProtectedRoute>),
             },
             {
                 path:'registrar-admin',
-                element:<AdminList />,
+                element:(<ProtectedRoute  role='admin'> <AdminList /> </ProtectedRoute>),
             },
             {
                 path: 'dashboard',
-                element: <AdminDashboard />,
+                element: (<ProtectedRoute  role='admin'> <AdminDashboard /> </ProtectedRoute>),
             }
         ]
     },

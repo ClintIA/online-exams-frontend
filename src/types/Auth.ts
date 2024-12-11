@@ -14,6 +14,8 @@ export type IAuthContextType = {
     logOut: () => void;
     isAuthenticated: boolean;
     userId?: number;
+    isAdmin?: boolean;
+    isPatient?: boolean;
 
 }
 export interface ITokenPayload {

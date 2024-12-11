@@ -1,10 +1,8 @@
-import React, {useEffect, useState} from 'react';
+import React, { useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import logoClintia from '../../assets/ClintIA-MarcaRGB-Verti-Cor-FundoOxford.png';
 import {useAuth} from "../../hooks/auth.tsx";
 import {Button} from "@/components/ui/button.tsx"
-import {jwtDecode} from "jwt-decode";
-import {ITokenPayload} from "@/types/Auth.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {Checkbox} from "@mui/material";
 import {Input} from "@/components/ui/input.tsx";
@@ -20,17 +18,6 @@ const AdminLogin: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                if(decoded.isAdmin) {
-                    navigate('/admin/home')
-                }
-            }
-        }
-        getTenant()
-    },[auth.token, navigate])
 
     const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.preventDefault()

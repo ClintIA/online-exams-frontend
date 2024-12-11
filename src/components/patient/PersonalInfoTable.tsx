@@ -33,7 +33,7 @@ export function PersonalInfoTable() {
           { label: 'Sexo Biológico', value: data.gender, editable: false },
           { label: 'Telefone', value: data.phone, editable: false },
           { label: 'Email', value: data.email, editable: false },
-          { label: 'Endereço', value: data.address, editable: false },
+          { label: 'Endereço', value: data.cep, editable: false },
           { label: 'Cartão do Plano de Saúde', value: data.health_card_number, editable: false },
         ];
 
@@ -43,7 +43,7 @@ export function PersonalInfoTable() {
       }
     };
 
-    fetchPatientData();
+    fetchPatientData().then();
   }, [userId,cpf]);
 
   const handleOpenModal = (info: PersonalInfo) => {
