@@ -89,6 +89,7 @@ interface MultiSelectProps
      * Optional, can be used to add custom styles.
      */
     className?: string;
+    atribbute: string;
 }
 
 export const MultiSelect = React.forwardRef<
@@ -106,6 +107,7 @@ export const MultiSelect = React.forwardRef<
             maxCount = 3,
             modalPopover = false,
             className,
+            atribbute,
             ...props
         },
         ref
@@ -167,7 +169,7 @@ export const MultiSelect = React.forwardRef<
                                                 )}
                                                 style={{ animationDuration: `${animation}s` }}
                                             >
-                                                {option?.fullName}
+                                                {option?.[atribbute]}
                                             </Badge>
                                         );
                                     })}
@@ -218,7 +220,7 @@ export const MultiSelect = React.forwardRef<
                                             >
                                                 <CheckIcon className="h-4 w-4" />
                                             </div>
-                                            <span>{option.fullName}</span>
+                                            <span>{option?.[atribbute]}</span>
                                         </CommandItem>
                                     );
                                 })}
