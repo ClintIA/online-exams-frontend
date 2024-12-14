@@ -20,11 +20,14 @@ export const listDoctors = async (tenantId: number, page?: number, perPage?: num
     }
 }
 export const registerAdmin = async (adminData: IAdmin, tenantId:  number,isDoctor: boolean) => {
-    const newAdmin = {...adminData, isDoctor: isDoctor}
-
+    const data = {
+        adminData: {...adminData, isDoctor: isDoctor},
+        exams: adminData.examsIDs
+    }
+    delete data.adminData.examsIDs
 
     try {
-        return await apiClient.post('admin/register', newAdmin, {
+        return await apiClient.post('admin/register', data, {
             headers: {
                 'x-tenant-id': tenantId
             }

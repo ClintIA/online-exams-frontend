@@ -25,6 +25,7 @@ export interface IAdmin {
   isDoctor?: boolean
   created_at?: string
   occupation?: string
+  examsIDs?: string[]
 }
 
 export interface IPatientExam {

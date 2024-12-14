@@ -64,7 +64,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
             ...prevDados,
             ...newDados
         }))
-    }, [dadosIniciais, doctorIDs])
+    }, [dadosIniciais, doctorIDs, examData])
     const fetchDoctors = useCallback(async () => {
         try {
             if(tenantId)  {
@@ -153,6 +153,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                                     Médico(s)</Label>
                                 <MultiSelect
                                     options={doctors}
+                                    atribbute="fullName"
                                     onValueChange={handleSelectedDoctors}
                                     defaultValue={doctorIDs}
                                     placeholder="Selecione o(s) médico(s)"

@@ -10,11 +10,15 @@ import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {validarEmail, validarTelefone} from "@/lib/utils.ts";
 import {IAdmin} from "@/pages/admin/AdminHome.tsx";
+import {Exams} from "@/components/Booking/BookingPatient.tsx";
+import {listTenantExam} from "@/services/tenantExamService.tsx";
+import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
+import {Switch} from "@/components/ui/switch.tsx";
 
 interface RegisterDoctorProps {
     dadosIniciais?: Partial<IAdmin>
-    isUpdate?: (pacienteDados: IAdmin, tenant: number,isDoctor: boolean) => Promise<any>
-    isAdmin?: (pacienteDados: IAdmin, tenant: number,isDoctor: boolean) => Promise<any>
+    isUpdate?: (adminData: IAdmin, tenant: number,isDoctor: boolean) => Promise<any>
+    isAdmin?: (adminData: IAdmin, tenant: number,isDoctor: boolean) => Promise<any>
     isDoctor: boolean
 }
 
@@ -27,7 +31,13 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
         cpf: '',
         CRM:'',
         occupation: '',
+        examsIDs: []
+
     })
+    const [exames,  setExames] = useState<Exams[]>([])
+    const [selectedExame, setSelectedExame] = useState<string[] | undefined>([]);
+    const [examesIDs, setExamesIDs] = useState<string[]>([])
+    const [addExam, setAddExam] = useState<boolean>(false)
     const [tenant, setTenant] = useState<number | undefined>(undefined)
     const [erro, setErro] = useState<string | null>(null)
     const auth = useAuth()
@@ -36,6 +46,7 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
         const { name, value } = e.target
         setDoctorData(prev => ({ ...prev, [name]: value }))
     }
+
 
     useEffect(() => {
         const getTenant = () => {
@@ -48,14 +59,37 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
     },[auth.token])
     useEffect(() => {
         if(dadosIniciais) {
+
             setDoctorData(prevDados => ({
                 ...prevDados,
                 ...dadosIniciais
             }))
         }
     }, [dadosIniciais])
-
-
+    useEffect( () => {
+        const fetchExams = async () => {
+            try {
+                if(tenant) {
+                    const result = await listTenantExam(tenant)
+                    if(result?.data.data.length === 0 ) {
+                        setErro('Não possui exames cadastrados')
+                        return
+                    }
+                    if(result?.data.status === "success") {
+                        setExames(result?.data.data)
+                        setErro(null)
+                    }
+                }
+            } catch (error) {
+                setErro("Não possível carregar os exames")
+                console.error(error)
+            }
+        }
+        fetchExams().then()
+    }, [tenant]);
+    const handleSelectedExames = (exames: string[]) => {
+        setSelectedExame(exames)
+    }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
@@ -84,7 +118,7 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
                     return
                 }
                 if(isAdmin) {
-                        await isAdmin(doctorData, tenant, isDoctor)
+                        await isAdmin({...doctorData, examsIDs: selectedExame}, tenant, isDoctor)
                             .catch((error) => console.log(error))
                 }
 
@@ -94,7 +128,12 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
                     phone: '',
                     CRM: '',
                     cpf: '',
+                    examsIDs: [],
+                    occupation: ''
                 })
+                setSelectedExame([])
+                setAddExam(false)
+                setExamesIDs([])
             }
         } catch (error) {
             setErro('Falha ao cadastrar médico')
@@ -107,9 +146,7 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
 
                <Card className="w-full max-w-2xl mx-auto">
                    <CardHeader>
-                       <CardTitle className={isDoctor? `text-blue-900 text-xl` : 'hidden'}>Cadastro de Médicos</CardTitle>
-                       <CardTitle className={isDoctor? 'hidden' : `text-blue-900 text-xl`}>Cadastro de Administradores</CardTitle>
-
+                       <CardTitle className='text-blue-900 text-xl'>{isDoctor ? 'Cadastro de Médicos' : 'Cadastro de Adminstradores'}</CardTitle>
                        <CardDescription>
                            Preencha os dados abaixo. Clique em salvar para finalizar o cadastro.
                        </CardDescription>
@@ -130,32 +167,34 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
                                        onChange={handleInputChange}
                                        className="col-span-3"/>
                                </div>
-                               <div className={isDoctor ? "grid gap-4" : "hidden"}>
-                                   <div className="grid grid-cols-4 items-center gap-4">
-                                       <Label htmlFor="CRM" className="text-right text-blue-800">
-                                           CRM
-                                       </Label>
-                                       <Input
-                                           id="CRM"
-                                           name="CRM"
-                                           type="text"
-                                           value={doctorData?.CRM}
-                                           onChange={handleInputChange}
-                                           className="col-span-3"/>
+                               {isDoctor && (
+                                   <div>
+                                       <div className="grid grid-cols-4 items-center gap-4">
+                                           <Label htmlFor="CRM" className="text-right text-blue-800">
+                                               CRM
+                                           </Label>
+                                           <Input
+                                       id="CRM"
+                                       name="CRM"
+                                       type="text"
+                                       value={doctorData?.CRM}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                                       </div>
+                                       <div className="grid grid-cols-4 items-center gap-4">
+                                           <Label htmlFor="occupation" className="text-right text-blue-800">
+                                               Ocupação
+                                           </Label>
+                                           <Input
+                                               id="occupation"
+                                               name="occupation"
+                                               type="text"
+                                               value={doctorData?.occupation}
+                                               onChange={handleInputChange}
+                                               className="col-span-3"/>
+                                       </div>
                                    </div>
-                                   <div className="grid grid-cols-4 items-center gap-4">
-                                       <Label htmlFor="occupation" className="text-right text-blue-800">
-                                           Ocupação
-                                       </Label>
-                                       <Input
-                                           id="occupation"
-                                           name="occupation"
-                                           type="text"
-                                           value={doctorData?.occupation}
-                                           onChange={handleInputChange}
-                                           className="col-span-3"/>
-                                   </div>
-                               </div>
+                               )}
                                <div className="grid grid-cols-4 items-center gap-4">
                                    <Label htmlFor="cpf" className="text-right text-blue-800">
                                        CPF
@@ -192,6 +231,32 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
                                        onChange={handleInputChange}
                                        className="col-span-3"/>
                                </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="gender" className="text-right text-blue-800">
+                                       Deseja adicionar exame(s) ?
+                                   </Label>
+                                   <div className="flex flex-row gap-2">
+                                       <Switch
+                                           id="toggle-select"
+                                           checked={addExam}
+                                           onCheckedChange={setAddExam}
+                                       />
+                                   </div>
+                               </div>
+                               {addExam && (
+                                   <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label className="text-right text-blue-800" htmlFor="examId">
+                                       Exame(s)</Label>
+                                   <MultiSelect
+                                       options={exames}
+                                       atribbute="exam_name"
+                                       onValueChange={handleSelectedExames}
+                                       defaultValue={examesIDs}
+                                       placeholder="Selecione o(s) exame(s)"
+                                       variant="inverted"
+                                   />
+                                   </div>
+                               )}
                            </div>
                            <div className="flex justify-end mt-6">
                                {isAdmin && (
@@ -199,7 +264,7 @@ const RegisterAdmin: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, 
                                )}
                                {isUpdate && (
                                    <Button className="bg-oxfordBlue text-white" type="submit">Atualizar
-                                       </Button>
+                                   </Button>
                                )}                           </div>
                        </form>
                    </CardContent>
