@@ -33,7 +33,7 @@ const AdminSidebar: React.FC = () => {
 
   const handleLogout = async () => {
     auth.logOut()
-    navigate('/admin')
+    navigate('/')
   }
 
   return (

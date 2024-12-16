@@ -30,7 +30,7 @@ export function Header() {
             <UserCircleGear className={styles.icon}  />
             Dados Cadastrais
           </NavLink>
-          <NavLink to="/login/paciente" title="Sair" onClick={() => setMenuOpen(false)}>
+          <NavLink to="/login" title="Sair" onClick={() => setMenuOpen(false)}>
             <SignOut className={styles.icon}  />
             Sair
           </NavLink>
