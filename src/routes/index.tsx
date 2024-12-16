@@ -21,10 +21,6 @@ export const router = createBrowserRouter([
         element: <Navigate to='/login'/>
     },
     {
-        path: "/admin",
-        element: <Navigate to='/login'/>
-    },
-    {
         path: "/error-401",
         element: <Error401 />,
     },

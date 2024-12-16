@@ -20,11 +20,11 @@ const Login: React.FC = () => {
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleLogin = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (!identifier || !password) {
-            setErrorMessage('Preencha seu identificador e senha.');
+            setErrorMessage('Preencha seu usuário e senha.');
             setIsErrorModalOpen(true);
             return;
         }
@@ -89,7 +89,7 @@ const Login: React.FC = () => {
                                 className="mx-auto rounded-full"
                             />
                         </div>
-                        <div className="space-y-4">
+                        <form onSubmit={handleLogin} className="space-y-4">
                             <div className="space-y-2">
                                 <label htmlFor="identifier" className="block text-sm text-black font-medium">
                                     Usuário
@@ -128,41 +128,44 @@ const Login: React.FC = () => {
                                     </button>
                                 </div>
                             </div>
-                        </div>
 
-                        <div className="flex flex-col items-start sm:items-center sm:flex-row justify-between">
-                            <div className="flex items-center">
-                                <Checkbox id="remember"/>
-                                <label
-                                    htmlFor="remember"
-                                    className="text-xs font-light text-black leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                            <div className="flex flex-col items-start sm:items-center sm:flex-row justify-between">
+                                <div className="flex items-center">
+                                    <Checkbox id="remember"/>
+                                    <label
+                                        htmlFor="remember"
+                                        className="text-xs font-light text-black leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                                    >
+                                        Lembrar de mim
+                                    </label>
+                                </div>
+                                <a
+                                    href="#"
+                                    className="ml-12 sm:ml-0 text-xs font-light text-black hover:underline"
                                 >
-                                    Lembrar de mim
-                                </label>
+                                    Esqueci a senha
+                                </a>
                             </div>
-                            <a
-                                href="#"
-                                className="ml-12 sm:ml-0 text-xs font-light text-black hover:underline"
-                            >
-                                Esqueci a senha
-                            </a>
-                        </div>
-                        <div className="flex justify-center sm:justify-end">
-                            <Button onClick={handleLogin}
-                                    className="w-1/2 rounded-full bg-[#0B1A2B] hover:bg-[#152942]">
-                                Acessar
-                            </Button>
-                        </div>
-
+                            <div className="flex justify-center sm:justify-end">
+                                <Button
+                                    type="submit"
+                                    className="w-1/2 rounded-full bg-[#0B1A2B] hover:bg-[#152942]"
+                                >
+                                    Acessar
+                                </Button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </main>
             <GeneralModal
-                error={true}
-                action={'Close'}
                 isOpen={isErrorModalOpen}
                 onClose={() => setIsErrorModalOpen(false)}
-                message={errorMessage}/>
+                title="Erro ao realizar seu Login"
+                message={errorMessage}
+                action="Fechar"
+                error={true}
+            />
         </div>
     );
 };
