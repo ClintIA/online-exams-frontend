@@ -1,3 +1,4 @@
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import AppLayout from "@/pages/AppLayout.tsx";
 import AdminBooking from "@/pages/admin/AdminBooking.tsx";
 import AdminDashboard from "@/pages/admin/AdminDashboard.tsx";
@@ -7,23 +8,17 @@ import AdminHome from "@/pages/admin/AdminHome.tsx";
 import AdminList from "@/pages/admin/AdminList.tsx";
 import AdminPatient from "@/pages/admin/AdminPatient.tsx";
 import AdminTenantExams from "@/pages/admin/AdminTenantExams.tsx";
-import LoginPatient from "@/pages/patient/LoginPatient.tsx";
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import { DadosCadastrais } from "@/pages/patient/DadosCadastrais";
+import { Exames } from "@/pages/patient/Exames.tsx";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
-import AdminLogin from "../pages/admin/AdminLogin.tsx";
-import { DadosCadastrais } from '../pages/patient/DadosCadastrais';
-import { Exames } from "../pages/patient/Exames.tsx";
-import {ProtectedRoute} from "@/components/ProtectedRoute/ProtectedRoute.tsx";
+import { ProtectedRoute } from "@/components/ProtectedRoute/ProtectedRoute.tsx";
+import Login from "@/pages/auth/Login.tsx";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <Navigate to='/login/paciente'/>
-    },
-    {
-        path: "/admin",
-        element: <Navigate to='/login/admin'/>
+        element: <Navigate to='/login'/>
     },
     {
         path: "/error-401",
@@ -35,16 +30,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/login",
-        children: [
-            {
-                path:'admin',
-                element:<AdminLogin />,
-            },
-            {
-                path:'paciente',
-                element:<LoginPatient />,
-            },
-        ]
+        element: <Login />,
     },
     {
         path: "/paciente",
@@ -99,4 +85,3 @@ export const router = createBrowserRouter([
         ]
     },
 ]);
-

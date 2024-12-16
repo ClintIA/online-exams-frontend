@@ -26,17 +26,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }
         }
     }
 
-    if(!auth.isAuthenticated && role === 'patient') {
-        return <Navigate to="/login/paciente" state={{ from: location }} replace />;
+    if (!auth.isAuthenticated) {
+        return <Navigate to="/login" />;
     }
-    if(!auth.isAuthenticated && role === 'admin') {
-        return <Navigate to="/login/admin" state={{ from: location }} replace />;
-    }
-    if(!auth.isAdmin && role === 'admin') {
-        return <Navigate to="/login/admin" state={{ from: location }} replace />;
-    }
-    if(auth.isAdmin && role === 'patient') {
-        return <Navigate to="/login/paciente" state={{ from: location }} replace />;
-    }
+
+    return <Navigate to="/login" />;
 
 };
