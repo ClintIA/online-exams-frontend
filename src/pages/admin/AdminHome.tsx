@@ -6,10 +6,8 @@ import {useAuth} from "@/hooks/auth.tsx"
 import {listDoctors} from "@/services/adminsService.tsx"
 import {createNoticeCard, deleteNoticeCard, listNoticeCards} from "@/services/noticeCardService.tsx"
 import {listPatientExams} from "@/services/patientExamService.tsx"
-import {ITokenPayload} from "@/types/Auth.ts"
 import {format} from "date-fns"
 import {ptBR} from "date-fns/locale"
-import {jwtDecode} from "jwt-decode"
 import {ChevronLeft, ChevronRight, Plus, X} from "lucide-react"
 import React, {useCallback, useEffect, useState} from "react"
 import CardDoctor from "@/components/AdminHome/CardDoctor.tsx";
@@ -65,8 +63,6 @@ interface INoticeCard {
 
 const AdminHome: React.FC = () => {
   const [notices, setNotices] = useState<INoticeCard[]>([])
-  const [tenantId, setTenantID] = useState<number | undefined>()
-  const [userId, setUserID] = useState<number | undefined>()
   const [newNotice, setNewNotice] = useState("")
   const [currentDoctorPage, setCurrentDoctorPage] = useState(1)
   const [currentExamPage, setCurrentExamPage] = useState(1)
@@ -78,22 +74,12 @@ const AdminHome: React.FC = () => {
 
   const auth = useAuth()
 
-  useEffect(() => {
-    const getTenant = () => {
-      if (auth?.token) {
-        const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-        setTenantID(decoded.tenantId)
-        setUserID(decoded.userId)
-      }
-    }
-    getTenant()
-  }, [auth.token])
   
   useEffect(() => {
     const fetchDoctors = async (page: number) => {
       try {
-        if (tenantId) {
-          const result = await listDoctors(tenantId, page, doctorsPagination.take)
+        if (auth.tenantId) {
+          const result = await listDoctors(auth.tenantId, page, doctorsPagination.take)
           if (result?.data.status === "success") {
             const doctorsList = result?.data?.data?.data as IAdmin[]
             setDoctors(doctorsList || [])
@@ -105,14 +91,14 @@ const AdminHome: React.FC = () => {
       }
     }
     fetchDoctors(currentDoctorPage).then()
-  }, [tenantId, currentDoctorPage, doctorsPagination.take]);
+  }, [auth.tenantId, currentDoctorPage, doctorsPagination.take]);
 
   useEffect(() => {
     const fetchPatientExams = async () => {
       try {
-        if (tenantId) {
+        if (auth.tenantId) {
           const today = new Date().toLocaleDateString()
-          const result = await listPatientExams(tenantId, {
+          const result = await listPatientExams(auth.tenantId, {
             startDate: createDate(today),
             endDate: createDate(today),
             status: 'Scheduled'
@@ -128,11 +114,11 @@ const AdminHome: React.FC = () => {
       }
     }
     fetchPatientExams().then()
-  }, [tenantId]);
+  }, [auth.tenantId]);
   const fetchNotices = useCallback(async () => {
     try {
-      if (tenantId) {
-        const result = await listNoticeCards(tenantId, {})
+      if (auth.tenantId) {
+        const result = await listNoticeCards(auth.tenantId, {})
         if (result?.data?.status === "success") {
           setNotices(result.data.data || [])
         }
@@ -140,7 +126,7 @@ const AdminHome: React.FC = () => {
     } catch (error) {
       console.error(error)
     }
-  }, [tenantId])
+  }, [auth.tenantId])
   useEffect(() => {
     fetchNotices().then()
   }, [fetchNotices])
@@ -148,20 +134,20 @@ const AdminHome: React.FC = () => {
   const indexOfLastExam = currentExamPage * examsPerPage
 
   const addNotice = async () => {
-    if (newNotice.trim() && tenantId && userId) {
+    if (newNotice.trim() && auth.tenantId && auth.userId) {
       try {
         const noticeData = {
           message: newNotice,
-          createdBy: userId,
+          createdBy: auth.userId,
           date: new Date().toISOString()
         }
         const filters = {
           startDate: new Date().toISOString(),
           endDate: new Date().toISOString()
         }
-        const result = await createNoticeCard(noticeData, tenantId)
+        const result = await createNoticeCard(noticeData, auth.tenantId)
         if (result?.data?.status === "success") {
-          const updatedNotices = await listNoticeCards(tenantId, filters)
+          const updatedNotices = await listNoticeCards(auth.tenantId, filters)
           setNotices(updatedNotices.data.data || [])
           setNewNotice("")
           setDialogOpen(false)
@@ -175,10 +161,10 @@ const AdminHome: React.FC = () => {
 
   const removeNotice = async (id: number) => {
     try {
-      if (tenantId) {
-        const result = await deleteNoticeCard(tenantId, id)
+      if (auth.tenantId) {
+        const result = await deleteNoticeCard(auth.tenantId, id)
         if (result?.data?.status === "success") {
-          const updatedNotices = await listNoticeCards(tenantId, {})
+          const updatedNotices = await listNoticeCards(auth.tenantId, {})
           setNotices(updatedNotices.data.data || [])
         }
       }
@@ -264,7 +250,7 @@ const AdminHome: React.FC = () => {
                   {notices.map((notice) => (
                     <li key={notice.id} className="flex justify-between items-center bg-muted p-3 rounded-lg">
                       <span className="flex-1">{notice.message}</span>
-                      {notice.createdBy.id !== userId && (
+                      {notice.createdBy.id !== auth.userId && (
                         <Button variant="ghost" size="icon" onClick={() => removeNotice(notice.id)} className="h-3">
                           <X className="h-4 w-4" />
                           <span className="sr-only">Remover Aviso</span>

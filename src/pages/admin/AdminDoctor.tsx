@@ -8,8 +8,6 @@ import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import React, {useCallback, useEffect, useState} from "react";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
@@ -31,7 +29,6 @@ const AdminDoctor: React.FC = () => {
     const [filtroCRM, setFiltroCRM] = useState<string>('')
     const [deleteId, setDeleteId] = useState<number>()
     const [doctor, setDoctor] = useState<IAdmin>()
-    const [tenant, setTenant] = useState<number | undefined>()
     const [doctorsPagination, setDoctorsPagination] = useState({ total: 0, page: 1, take: 1000, skip: 0, remaining: 0 })
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
@@ -47,20 +44,12 @@ const AdminDoctor: React.FC = () => {
         setType(modalType)
         setOpenModalNewPatient(true)
     }
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenant(decoded.tenantId)
-            }
-        }
-        getTenant()
-    },[auth.token])
+
     const fetchDoctors = useCallback(async () => {
         try {
-            if (tenant) {
+            if (auth.tenantId) {
                 setLoading(true)
-                const result = await listDoctors(tenant, doctorsPagination.take)
+                const result = await listDoctors(auth.tenantId, doctorsPagination.take)
                 setLoading(false)
                 if (result?.data.status === "success") {
                     const doctorsList = result?.data?.data?.data as IAdmin[]
@@ -71,7 +60,7 @@ const AdminDoctor: React.FC = () => {
         } catch (error) {
             console.error(error)
         }
-    },[doctorsPagination.take, tenant])
+    },[auth.tenantId, doctorsPagination.take])
     useEffect(() => {
         fetchDoctors().then()
     }, [fetchDoctors]);
@@ -93,8 +82,8 @@ const AdminDoctor: React.FC = () => {
     }
     const handleDeletePatient = async () => {
         try {
-            if(deleteId && tenant) {
-            await deleteDoctor(deleteId,tenant).then(
+            if(deleteId && auth.tenantId) {
+            await deleteDoctor(deleteId,auth.tenantId).then(
                     (result) => {
                         if (result.message && result.message.includes('FK_')) {
                             handleModalMessage('Não é possível deletar um médico com agendamento pendente')

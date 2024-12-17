@@ -6,8 +6,6 @@ import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx
 import Cards from "@/components/Card.tsx";
 import {deletePatient, listPatientsByTenant, PatientFilters} from "@/services/patientService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import Loading from "@/components/Loading.tsx";
@@ -25,7 +23,6 @@ const AdminPatient: React.FC = () => {
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
-    const [tenant, setTenant] = useState<number | undefined>()
     const [deleteId, setDeleteId] = useState<number>()
     const [pacientes, setPacientes] = useState<DadosPaciente[]>([])
     const [filtroName, setFiltroName] = useState<string>('')
@@ -39,8 +36,8 @@ const AdminPatient: React.FC = () => {
     const fetchPatients = useCallback(async () => {
         setLoading(true)
         try {
-            if(tenant) {
-                const result = await listPatientsByTenant(tenant)
+            if(auth.tenantId) {
+                const result = await listPatientsByTenant(auth.tenantId)
                 if(result?.data.data.length !== 0) {
                     setLoading(false);
                     setPacientes(result?.data.data)
@@ -59,28 +56,18 @@ const AdminPatient: React.FC = () => {
             setIsGeneralModalOpen(true)
 
         }
-    }, [tenant])
-
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenant(decoded.tenantId)
-            }
-        }
-        getTenant()
-    },[auth.token])
+    }, [auth.tenantId])
 
     useEffect( () => {
         const fetchFilters =  async () => {
-            if (tenant) {
+            if (auth.tenantId) {
                 if (filtroCPF.length > 0 || filtroName.length > 0) {
                     const filters: PatientFilters = {
                         patientCpf: filtroCPF,
                         patientName: filtroName
                     }
                     try {
-                        const result = await listPatientsByTenant(tenant, filters)
+                        const result = await listPatientsByTenant(auth.tenantId, filters)
                         if (result?.data.data.length !== 0) {
                             setPacientes(result?.data.data)
                         } else {
@@ -93,7 +80,7 @@ const AdminPatient: React.FC = () => {
             }
         }
     fetchFilters().then()
-    }, [fetchPatients, filtroCPF, filtroName, tenant]);
+    }, [fetchPatients, filtroCPF, filtroName, auth.tenantId]);
 
     useEffect(() => {
 
@@ -127,9 +114,9 @@ const AdminPatient: React.FC = () => {
     );
     const handleDeletePatient = async () => {
         try {
-            if (tenant && deleteId) {
+            if (auth.tenantId && deleteId) {
                 setIsGeneralModalOpen(false)
-                await deletePatient(deleteId.toString(),tenant).then(
+                await deletePatient(deleteId.toString(),auth.tenantId).then(
                     (result) => {
                         if(result.message && result.message.includes('FK_')){
                             handleModalMessage('Não é possível deletar um paciente com agendamento ou exame realizado')

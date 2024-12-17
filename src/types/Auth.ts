@@ -19,6 +19,7 @@ export type IAuthContextType = {
     isPatient?: boolean;
     isDoctor: boolean;
     isDefault: boolean;
+    isMarketing: boolean;
     tenantId: number | undefined;
 
 }

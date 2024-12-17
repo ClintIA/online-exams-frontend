@@ -8,8 +8,6 @@ import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import React, {useCallback, useEffect, useState} from "react";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
@@ -30,7 +28,6 @@ const AdminList: React.FC = () => {
     const [filtroName, setFiltroName] = useState<string>('')
     const [deleteId, setDeleteId] = useState<number>()
     const [admin, setAdmin] = useState<IAdmin>()
-    const [tenantId, setTenantId] = useState<number | undefined>()
     const [openModalNewAdmin, setOpenModalNewAdmin] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const [loading, setLoading] = useState<boolean>(false);
@@ -45,20 +42,12 @@ const AdminList: React.FC = () => {
         setType(modalType)
         setOpenModalNewAdmin(true)
     }
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenantId(decoded.tenantId)
-            }
-        }
-        getTenant()
-    },[auth.token])
+
     const fetchAdmins = useCallback(async () => {
         try {
-            if (tenantId) {
+            if (auth.tenantId) {
                 setLoading(true)
-                const result = await listAdmins(tenantId)
+                const result = await listAdmins(auth.tenantId)
                 setLoading(false)
                 if (result?.data.status === "success") {
                     const adminsList = result?.data?.data as IAdmin[]
@@ -68,7 +57,7 @@ const AdminList: React.FC = () => {
         } catch (error) {
             console.error(error)
         }
-    },[tenantId])
+    },[auth.tenantId])
     useEffect(() => {
         fetchAdmins().then()
     }, [fetchAdmins]);
@@ -90,8 +79,8 @@ const AdminList: React.FC = () => {
     }
     const handleDeletePatient = async () => {
         try {
-            if(deleteId && tenantId) {
-            await deleteDoctor(deleteId,tenantId).then(
+            if(deleteId && auth.tenantId) {
+            await deleteDoctor(deleteId,auth.tenantId).then(
                     (result) => {
                         if (result.message && result.message.includes('FK_')) {
                             handleModalMessage('Não é possível deletar um administrador com agendamento pendente')

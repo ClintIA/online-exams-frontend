@@ -23,7 +23,6 @@ import {
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
-// Dados simulados
 const patientChannels = [
   { name: 'Indicação', total: 1230 },
   { name: 'Site', total: 751 },

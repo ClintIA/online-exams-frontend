@@ -19,10 +19,12 @@ const AuthProvider = ({ children }: Props) => {
     const [ isAdmin, setIsAdmin ] = React.useState<boolean>(false)
     const [ isPatient, setIsPatient] = React.useState<boolean>(false)
     const [ isDoctor, setIsDoctor] = React.useState<boolean>(false)
+    const [ isMarketing, setIsMarketing] = React.useState<boolean>(false)
+
     const [ isDefault, setIsDefault] = React.useState<boolean>(false);
     const [ token, setToken] = useState<string>('');
     const [ userId, setUserId] = useState<number>();
-    const [ tenantId, setTenantID] = useState<number | undefined>()
+    const [ tenantId, setTenantID] = useState<number>()
 
     useEffect(() => {
         const checkToken = async () => {
@@ -37,14 +39,17 @@ const AuthProvider = ({ children }: Props) => {
                 switch (decoded.role) {
                     case ProfileRole.admin:
                         setIsAdmin(true)
-                        break;
+                        break
                     case ProfileRole.patient:
                         setIsPatient(true)
-                        break;
+                        break
                     case ProfileRole.doctor:
                         setIsDoctor(true)
                         break
-                    case ProfileRole.default:
+                    case ProfileRole.marketing:
+                        setIsMarketing(true)
+                        break
+                    default:
                         setIsDefault(true)
                         break
                 }
@@ -93,7 +98,7 @@ const AuthProvider = ({ children }: Props) => {
     }
 
     return (
-        <AuthContext.Provider value={{ tenantId,isDoctor, isDefault, isAuthenticated, isAdmin, isPatient, token, adminLogin, patientLogin, logOut, userId }}>
+        <AuthContext.Provider value={{ tenantId, isMarketing,isDoctor, isDefault, isAuthenticated, isAdmin, isPatient, token, adminLogin, patientLogin, logOut, userId }}>
             {children}
         </AuthContext.Provider>
     );

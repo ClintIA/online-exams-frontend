@@ -17,4 +17,4 @@ export const CpfProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default CpfContext; // Exporta o contexto padrão
+export default CpfContext;

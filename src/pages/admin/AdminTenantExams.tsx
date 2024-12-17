@@ -8,8 +8,6 @@ import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx
 import DataTable from "@/components/DataTable.tsx";
 import {deleteExam, listTenantExam} from "@/services/tenantExamService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import Loading from "@/components/Loading.tsx";
 import {TableCell} from "@mui/material";
 import ModalTenantExamRender from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
@@ -34,7 +32,6 @@ const AdminTenantExams: React.FC = () => {
     const [exame, setExame] = useState<Exams>()
     const [filterName, setFilterName] = useState<string>()
     const [openModalNewExam, setOpenModalNewExam] = useState<boolean>(false)
-    const [tenantId, setTenantID] = useState<number | undefined>()
     const [filterDoctor, setFilterDoctor] = useState<string>()
     const [loading, setLoading] = useState<boolean>(false);
     const [type,setType] = useState<ModalType>(ModalType.newExam)
@@ -47,20 +44,11 @@ const AdminTenantExams: React.FC = () => {
 
     const auth = useAuth()
 
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenantID(decoded.tenantId)
-            }
-        }
-        getTenant()
-    },[auth.token])
     const fetchExams = useCallback(async () => {
         try {
-            if(tenantId) {
+            if(auth.tenantId) {
                 setLoading(true)
-                await listTenantExam(tenantId).then(
+                await listTenantExam(auth.tenantId).then(
                     (result) => {
                         if(result.status === 200) {
                             setLoading(false)
@@ -73,11 +61,11 @@ const AdminTenantExams: React.FC = () => {
         } catch (error) {
             console.error(error)
         }
-    },[tenantId])
+    },[auth.tenantId])
 
     useEffect( () => {
         fetchExams().then()
-    }, [fetchExams, tenantId]);
+    }, [fetchExams, auth.tenantId]);
     const renderRow = (exame: Exams) => (
         <>
             <TableCell className="text-oxfordBlue font-bold">{exame.exam_name}</TableCell>
@@ -116,8 +104,8 @@ const AdminTenantExams: React.FC = () => {
     }
     const deletePatient = async () => {
         try {
-            if (tenantId && deleteId) {
-                await deleteExam(deleteId,tenantId).then(
+            if (auth.tenantId && deleteId) {
+                await deleteExam(deleteId,auth.tenantId).then(
                     (result) => {
                         if(result.message && result.message.includes('FK_')){
                             handleModalMessage('Não é possível deletar o exame que está relacionado com um médico')
