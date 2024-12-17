@@ -58,13 +58,8 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
         const getTenant = () => {
             if(auth?.token) {
                 const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                if(!decoded.isAdmin) {
-                    navigate('/admin')
-                }
                 setTenantID(decoded.tenantId)
                 setUserId(decoded.userId)
-            } else {
-                navigate('/admin')
             }
         }
         getTenant()

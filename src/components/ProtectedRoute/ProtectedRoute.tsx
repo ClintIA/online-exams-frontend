@@ -4,10 +4,11 @@ import {useAuth} from "@/hooks/auth.tsx";
 import Cookies from "js-cookie";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
+import {ProfileRole} from "@/types/ProfileRole.ts";
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
-    role: 'admin' | 'patient';
+    role: ProfileRole;
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }) => {
@@ -17,9 +18,7 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }
     const user = Cookies.get('user');
     if (tokenFromStorage && user) {
         const decoded: ITokenPayload =  jwtDecode(tokenFromStorage);
-        if(decoded.isAdmin && role === 'admin') {
-            return <>{children}</>;
-        } else if (!decoded.isAdmin && role === 'patient') {
+        if(decoded.role === role) {
             return <>{children}</>;
         } else {
             return <Navigate to="/error-401" state={{ from: location }} replace />;
@@ -29,7 +28,5 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }
     if (!auth.isAuthenticated) {
         return <Navigate to="/login" />;
     }
-
-    return <Navigate to="/login" />;
 
 };

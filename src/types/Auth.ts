@@ -1,4 +1,5 @@
 import React from "react";
+import {ProfileRole} from "@/types/ProfileRole.ts";
 
 export interface ILoginAdmin {
     status: string;
@@ -16,12 +17,15 @@ export type IAuthContextType = {
     userId?: number;
     isAdmin?: boolean;
     isPatient?: boolean;
+    isDoctor: boolean;
+    isDefault: boolean;
+    tenantId: number | undefined;
 
 }
 export interface ITokenPayload {
     userId: number;
     tenantId?: number;
-    isAdmin: boolean;
+    role: ProfileRole;
     exp: number;
     iat: number;
 }

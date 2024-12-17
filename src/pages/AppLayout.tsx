@@ -1,8 +1,6 @@
 import { Header } from "@/components/patient/Header.tsx";
 import { useAuth } from "@/hooks/auth.tsx";
 import AdminSidebar from "@/pages/admin/AdminSidebar.tsx";
-import { ITokenPayload } from "@/types/Auth.ts";
-import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 
@@ -14,9 +12,8 @@ const AppLayout: React.FC = () => {
 
     useEffect(() => {
         const getAccess = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setIsAdmin(decoded.isAdmin)
+            if(auth) {
+                setIsAdmin(auth.isAdmin)
             }
         }
         getAccess()

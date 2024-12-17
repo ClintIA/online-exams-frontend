@@ -3,6 +3,7 @@ import {IAuthContextType, ILoginAdmin, ITokenPayload, Props} from "../types/Auth
 import {loginAdmin, loginPatient} from "../services/loginService.tsx";
 import {jwtDecode} from "jwt-decode";
 import Cookies from 'js-cookie';
+import {ProfileRole} from "@/types/ProfileRole.ts";
 
 
 export const AuthContext = createContext<IAuthContextType>({} as IAuthContextType);
@@ -17,8 +18,11 @@ const AuthProvider = ({ children }: Props) => {
     const [ isAuthenticated, setIsAuthenticated ] = React.useState<boolean>(false)
     const [ isAdmin, setIsAdmin ] = React.useState<boolean>(false)
     const [ isPatient, setIsPatient] = React.useState<boolean>(false)
+    const [ isDoctor, setIsDoctor] = React.useState<boolean>(false)
+    const [ isDefault, setIsDefault] = React.useState<boolean>(false);
     const [ token, setToken] = useState<string>('');
     const [ userId, setUserId] = useState<number>();
+    const [ tenantId, setTenantID] = useState<number | undefined>()
 
     useEffect(() => {
         const checkToken = async () => {
@@ -28,9 +32,22 @@ const AuthProvider = ({ children }: Props) => {
                 setToken(tokenFromStorage);
                 const decoded: ITokenPayload = await jwtDecode(tokenFromStorage);
                 setIsAuthenticated(true);
-                setIsAdmin(decoded.isAdmin)
-                setIsPatient(!decoded.isAdmin)
                 setUserId(decoded.userId)
+                setTenantID(decoded.tenantId)
+                switch (decoded.role) {
+                    case ProfileRole.admin:
+                        setIsAdmin(true)
+                        break;
+                    case ProfileRole.patient:
+                        setIsPatient(true)
+                        break;
+                    case ProfileRole.doctor:
+                        setIsDoctor(true)
+                        break
+                    case ProfileRole.default:
+                        setIsDefault(true)
+                        break
+                }
             }
         }
         checkToken().then()
@@ -44,6 +61,8 @@ const AuthProvider = ({ children }: Props) => {
                    setToken(res.data.token);
                    setIsAuthenticated(true)
                    setIsAdmin(true)
+                   setUserId(decoded.userId)
+                   setTenantID(decoded.tenantId)
                }
            }
            return res
@@ -57,7 +76,8 @@ const AuthProvider = ({ children }: Props) => {
                 setToken(res.data.token);
                 setIsAuthenticated(true)
                 setIsPatient(true)
-                setUserId(decoded.userId);
+                setUserId(decoded.userId)
+                setTenantID(decoded.tenantId)
             }
         }
         return res
@@ -69,10 +89,11 @@ const AuthProvider = ({ children }: Props) => {
         setIsAdmin(false)
         setIsPatient(false)
         setIsAuthenticated(false)
+        setTenantID(undefined)
     }
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, isAdmin, isPatient, token, adminLogin, patientLogin, logOut, userId }}>
+        <AuthContext.Provider value={{ tenantId,isDoctor, isDefault, isAuthenticated, isAdmin, isPatient, token, adminLogin, patientLogin, logOut, userId }}>
             {children}
         </AuthContext.Provider>
     );

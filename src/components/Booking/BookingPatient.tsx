@@ -90,13 +90,8 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
         const getTenant = () => {
             if(auth?.token) {
                 const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                if(!decoded.isAdmin) {
-                    navigate('/admin')
-                }
                 setTenant(decoded.tenantId)
                 setUserId(decoded.userId)
-            } else {
-                navigate('/admin')
             }
         }
         getTenant()
