@@ -13,9 +13,10 @@ import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {deleteDoctor, listAdmins} from "@/services/adminsService.tsx";
-import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
+import {IAdmin} from "@/types/dto/Admin.ts";
+import {findRoleOptions} from "@/lib/optionsFixed.ts";
 
 const AdminList: React.FC = () => {
 
@@ -103,13 +104,15 @@ const AdminList: React.FC = () => {
     if (loading) {
         return <Loading />
     }
-    const renderRow = (doctor: IAdmin) => (
+    const renderRow = (admin: IAdmin) => (
         <>
-            <TableCell className="text-oxfordBlue font-bold">{doctor.fullName}</TableCell>
-            <TableCell className="text-blue-900">{doctor.cpf}</TableCell>
-            <TableCell className="text-blue-900">{doctor.email}</TableCell>
-            <TableCell className="text-blue-900">{doctor.phone}</TableCell>
-            <TableCell className="text-blue-900">{doctor.created_at ? format(doctor.created_at, "dd/MM/yyyy", { locale: ptBR }) : ''}</TableCell>
+            <TableCell className="text-oxfordBlue font-bold">{admin.fullName}</TableCell>
+            <TableCell className="text-blue-900">{admin.cpf}</TableCell>
+            <TableCell className="text-blue-900">{admin.email}</TableCell>
+            <TableCell className="text-blue-900">{admin.cep ? admin.cep : 'Não possuí CEP cadastrado'}</TableCell>
+            <TableCell className="text-blue-900">{admin.phone}</TableCell>
+            <TableCell className="capitalize text-blue-900">{findRoleOptions(admin.role)}</TableCell>
+            <TableCell className="text-blue-900">{admin.created_at ? format(admin.created_at, "dd/MM/yyyy", { locale: ptBR }) : ''}</TableCell>
 
         </>
     );
@@ -146,8 +149,10 @@ const AdminList: React.FC = () => {
                             <TableRow>
                                 <TableHead className="text-oxfordBlue">Nome</TableHead>
                                 <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                <TableHead className="text-oxfordBlue">Email</TableHead>
+                                <TableHead className="text-oxfordBlue">E-mail</TableHead>
+                                <TableHead className="text-oxfordBlue">CEP</TableHead>
                                 <TableHead className="text-oxfordBlue">Contato</TableHead>
+                                <TableHead className="text-oxfordBlue">Perfil de Acesso</TableHead>
                                 <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -158,7 +163,7 @@ const AdminList: React.FC = () => {
             </Card>
 
             {openModalNewAdmin && <ModalRender
-                modalNewPatient={handleModalMessage}
+                modalMessage={handleModalMessage}
                 isOpen={openModalNewAdmin}
                 onClose={() => setOpenModalNewAdmin(false)}
                 type={type}

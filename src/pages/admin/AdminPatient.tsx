@@ -209,7 +209,7 @@ const AdminPatient: React.FC = () => {
                 </Card>
 
             {openModalNewPatient && <ModalRender
-                modalNewPatient={handleModalMessage}
+                modalMessage={handleModalMessage}
                 isOpen={openModalNewPatient}
                 title="Gerenciamento de Pacientes"
                 onClose={() => setOpenModalNewPatient(false)}

@@ -33,7 +33,7 @@ const AuthProvider = ({ children }: Props) => {
             if (tokenFromStorage && user) {
                 setToken(tokenFromStorage);
                 const decoded: ITokenPayload = await jwtDecode(tokenFromStorage);
-                setIsAuthenticated(true);
+                setIsAuthenticated(true)
                 setUserId(decoded.userId)
                 setTenantID(decoded.tenantId)
                 switch (decoded.role) {
@@ -48,6 +48,9 @@ const AuthProvider = ({ children }: Props) => {
                         break
                     case ProfileRole.marketing:
                         setIsMarketing(true)
+                        break
+                    case ProfileRole.master:
+                        setIsAdmin(true)
                         break
                     default:
                         setIsDefault(true)

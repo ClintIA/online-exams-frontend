@@ -7,10 +7,11 @@ import {registerBookingWithPatient, registerPatientExam} from "@/services/patien
 import {updatePatient} from "@/services/patientService.tsx";
 import BookingPatient, {BookingWithPatient} from "@/components/Booking/BookingPatient.tsx";
 import BookingConfirmation, {BookingConfirmationState} from "@/components/Booking/BookingConfirmation.tsx";
-import RegisterDoctor from "@/components/AdminRegister/RegisterAdmin.tsx";
 import {ModalType} from "@/types/ModalType.ts";
-import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {registerAdmin, updateAdmin} from "@/services/adminsService.tsx";
+import RegisterAdmin from "@/components/AdminRegister/RegisterAdmin.tsx";
+import RegisterDoctor from "@/components/AdminDoctor/RegisterDoctor.tsx";
+import {IAdmin} from "@/types/dto/Admin.ts";
 
 
 interface ModalRegisterProps {
@@ -18,7 +19,7 @@ interface ModalRegisterProps {
     onClose: () => void;
     title?: string;
     modalNewBookingConfirmation?: (message: string) => void;
-    modalNewPatient?: (message: string) => void;
+    modalMessage?: (message: string) => void;
     dadosPaciente?: DadosPaciente
     adminData?: IAdmin
     type: ModalType
@@ -27,7 +28,7 @@ interface ModalRegisterProps {
 }
 
 
-const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, title,modalNewPatient,modalNewBookingConfirmation,dadosPaciente, type, adminData }: ModalRegisterProps) => {
+const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, title,modalMessage,modalNewBookingConfirmation,dadosPaciente, type, adminData }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
     const [modalContent,setModalContent] = useState<ModalType>(ModalType.newPatient)
     const [patientData, setPatientData] = useState<BookingConfirmationState>({} as BookingConfirmationState)
@@ -74,11 +75,11 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         }
     }
     const submitUpdatePatient = async (dadosPaciente: DadosPaciente, tenantId: number) => {
-        if (modalNewPatient) {
+        if (modalMessage) {
             await updatePatient(dadosPaciente, tenantId)
                 .then(result => {
                     if (result.data.status === "success") {
-                        modalNewPatient('Paciente Atualizado com sucesso')
+                        modalMessage('Paciente Atualizado com sucesso')
                         onClose()
                     } else {
                         throw new Error('Não foi possível atualizar paciente' + result.message)
@@ -87,12 +88,12 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         }
     }
     const submitNewPatient = async (patientData: DadosPaciente, tenantId: number) => {
-            if (modalNewPatient) {
+            if (modalMessage) {
               return await registerPatient(patientData, tenantId)
                     .then(
                         (result) => {
                             if (result.status === 201) {
-                                modalNewPatient('Paciente cadastrado com sucesso')
+                                modalMessage('Paciente cadastrado com sucesso')
                                 onClose()
                             } else {
                                 throw new Error('Não foi possível cadastrar paciente' + result.message)
@@ -101,24 +102,24 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
                     ).catch(error => console.log(error))
             }
     }
-    const submitNewAdmin = async (adminData: IAdmin,tenantId: number, isDoctor: boolean) => {
-        if(modalNewPatient) {
-            const result = await registerAdmin(adminData,tenantId,isDoctor)
+    const submitNewAdmin = async (adminData: IAdmin,tenantId: number) => {
+        if(modalMessage) {
+            const result = await registerAdmin(adminData,tenantId)
 
             if (result.status === 201) {
-                modalNewPatient('Cadastrado Realizado com sucesso')
+                modalMessage('Cadastrado Realizado com sucesso')
                 onClose()
             } else {
                 throw new Error('Não foi possível realizar cadastro: ' + result.message)
             }
         }
     }
-    const submitUpdateAdmin = async (adminData: IAdmin,tenantId: number, isDoctor: boolean) => {
-        if (modalNewPatient) {
-            await updateAdmin(adminData,tenantId,isDoctor)
+    const submitUpdateAdmin = async (adminData: IAdmin,tenantId: number) => {
+        if (modalMessage) {
+            await updateAdmin(adminData,tenantId)
                 .then(result => {
                     if (result.status === 200) {
-                        modalNewPatient('Dados Atualizados com sucesso')
+                        modalMessage('Dados Atualizados com sucesso')
                         onClose()
                     } else {
                         throw new Error('Não foi possível atualizar dados' + result.message)
@@ -140,13 +141,13 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             case 'bookingConfirmation':
                 return(<BookingConfirmation dadosBooking={patientData} onNewBooking={openModal} />)
             case 'newDoctorAdmin':
-                return(<RegisterDoctor isDoctor={true} isAdmin={submitNewAdmin} />)
+                return(<RegisterDoctor isDoctor={submitNewAdmin} />)
             case 'editDoctorAdmin':
-                return(<RegisterDoctor isDoctor={true} dadosIniciais={adminData} isUpdate={submitUpdateAdmin} />)
+                return(<RegisterDoctor dadosIniciais={adminData} isUpdate={submitUpdateAdmin} />)
             case 'newAdmin':
-                return(<RegisterDoctor isDoctor={false} isAdmin={submitNewAdmin} />)
+                return(<RegisterAdmin isAdmin={submitNewAdmin} />)
             case 'editAdmin':
-                return(<RegisterDoctor isDoctor={false} dadosIniciais={adminData} isUpdate={submitUpdateAdmin} />)
+                return(<RegisterAdmin dadosIniciais={adminData} isUpdate={submitUpdateAdmin} />)
 
 
         }

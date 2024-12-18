@@ -160,7 +160,7 @@ const AdminBooking: React.FC = () =>  {
                 isStepper={true}
                 dadosPaciente={dadosPaciente}
                 onClose={handleClose}
-                modalNewPatient={handleModalMessage}
+                modalMessage={handleModalMessage}
                 modalNewBookingConfirmation={handleConfirmationBooking}
             />}
             <GeneralModal

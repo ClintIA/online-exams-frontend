@@ -1,6 +1,6 @@
 import apiClient from "@/lib/interceptor.ts";
 import {isAxiosError} from 'axios';
-import {IAdmin} from "@/pages/admin/AdminHome.tsx";
+import {IAdmin} from "@/types/dto/Admin.ts";
 
 export const listDoctors = async (tenantId: number, page?: number, perPage?: number) => {
     try {
@@ -19,15 +19,10 @@ export const listDoctors = async (tenantId: number, page?: number, perPage?: num
         }
     }
 }
-export const registerAdmin = async (adminData: IAdmin, tenantId:  number,isDoctor: boolean) => {
-    const data = {
-        adminData: {...adminData, isDoctor: isDoctor},
-        exams: adminData.examsIDs
-    }
-    delete data.adminData.examsIDs
+export const registerAdmin = async (adminData: IAdmin, tenantId:  number) => {
 
     try {
-        return await apiClient.post('admin/register', data, {
+        return await apiClient.post('admin/register', adminData, {
             headers: {
                 'x-tenant-id': tenantId
             }
@@ -39,11 +34,10 @@ export const registerAdmin = async (adminData: IAdmin, tenantId:  number,isDocto
         }
     }
 }
-export const updateAdmin = async (adminData: IAdmin, tenantId:  number,isDoctor: boolean) => {
-    const newAdmin = {...adminData, isDoctor: isDoctor}
+export const updateAdmin = async (adminData: IAdmin, tenantId:  number) => {
 
     try {
-        return await apiClient.put(`admin/update/${adminData.id}`, newAdmin, {
+        return await apiClient.put(`admin/update/${adminData.id}`, adminData, {
             headers: {
                 'x-tenant-id': tenantId
             }

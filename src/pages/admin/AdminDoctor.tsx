@@ -13,9 +13,9 @@ import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {deleteDoctor, listDoctors} from "@/services/adminsService.tsx";
-import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
+import {IAdmin} from "@/types/dto/Admin.ts";
 
 const AdminDoctor: React.FC = () => {
 
@@ -110,10 +110,10 @@ const AdminDoctor: React.FC = () => {
         <>
             <TableCell className="text-oxfordBlue font-bold">{doctor.fullName}</TableCell>
             <TableCell className="text-blue-900">{doctor.cpf}</TableCell>
-            <TableCell className="text-blue-900">{doctor.CRM}</TableCell>
-            <TableCell className="text-blue-900">{doctor.occupation}</TableCell>
+            <TableCell className="text-blue-900">{doctor.cep}</TableCell>
             <TableCell className="text-blue-900">{doctor.email}</TableCell>
             <TableCell className="text-blue-900">{doctor.phone}</TableCell>
+            <TableCell className="text-blue-900">{doctor.role}</TableCell>
             <TableCell className="text-blue-900">{doctor.created_at ? format(doctor.created_at, "dd/MM/yyyy", { locale: ptBR }) : ''}</TableCell>
 
         </>
@@ -159,10 +159,10 @@ const AdminDoctor: React.FC = () => {
                             <TableRow>
                                 <TableHead className="text-oxfordBlue">Nome</TableHead>
                                 <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                <TableHead className="text-oxfordBlue">CRM</TableHead>
-                                <TableHead className="text-oxfordBlue">Ocupação</TableHead>
+                                <TableHead className="text-oxfordBlue">CEP</TableHead>
                                 <TableHead className="text-oxfordBlue">Email</TableHead>
                                 <TableHead className="text-oxfordBlue">Contato</TableHead>
+                                <TableHead className="text-oxfordBlue">Perfil</TableHead>
                                 <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -173,7 +173,7 @@ const AdminDoctor: React.FC = () => {
             </Card>
 
             {openModalNewPatient && <ModalRender
-                modalNewPatient={handleModalMessage}
+                modalMessage={handleModalMessage}
                 isOpen={openModalNewPatient}
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}

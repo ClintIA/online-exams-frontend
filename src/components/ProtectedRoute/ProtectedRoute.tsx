@@ -12,19 +12,27 @@ interface ProtectedRouteProps {
 }
 
 export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }) => {
+
     const auth = useAuth();
     const location = useLocation();
     const tokenFromStorage = Cookies.get('token');
     const user = Cookies.get('user');
     if (tokenFromStorage && user) {
         const decoded: ITokenPayload =  jwtDecode(tokenFromStorage);
-        if(decoded.role === role) {
+        if(decoded.role === 'master') {
+            return <>{children}</>;
+        } else if (decoded.role === role) {
             return <>{children}</>;
         } else {
             return <Navigate to="/error-401" state={{ from: location }} replace />;
         }
     }
-
+    if(auth?.token) {
+        const decoded: ITokenPayload =  jwtDecode(auth.token);
+        if(decoded.role === 'master') {
+            return <>{children}</>;
+        }
+    }
     if (!auth.isAuthenticated) {
         return <Navigate to="/login" />;
     }

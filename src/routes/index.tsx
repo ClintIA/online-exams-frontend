@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import {createBrowserRouter, Navigate} from "react-router-dom";
 import AppLayout from "@/pages/AppLayout.tsx";
 import AdminBooking from "@/pages/admin/AdminBooking.tsx";
 import AdminDashboard from "@/pages/admin/AdminDashboard.tsx";
@@ -8,12 +8,13 @@ import AdminHome from "@/pages/admin/AdminHome.tsx";
 import AdminList from "@/pages/admin/AdminList.tsx";
 import AdminPatient from "@/pages/admin/AdminPatient.tsx";
 import AdminTenantExams from "@/pages/admin/AdminTenantExams.tsx";
-import { DadosCadastrais } from "@/pages/patient/DadosCadastrais";
-import { Exames } from "@/pages/patient/Exames.tsx";
+import {DadosCadastrais} from "@/pages/patient/DadosCadastrais";
+import {Exames} from "@/pages/patient/Exames.tsx";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
-import { ProtectedRoute } from "@/components/ProtectedRoute/ProtectedRoute.tsx";
+import {ProtectedRoute} from "@/components/ProtectedRoute/ProtectedRoute.tsx";
 import Login from "@/pages/auth/Login.tsx";
+import {ProfileRole} from "@/types/ProfileRole.ts";
 
 export const router = createBrowserRouter([
     {
@@ -38,11 +39,11 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:(<ProtectedRoute role={'patient'}><Exames /> </ProtectedRoute>),
+                element:(<ProtectedRoute role={ProfileRole.patient}><Exames /> </ProtectedRoute>),
             },
             {
                 path:'dadoscadastrais',
-                element:(<ProtectedRoute role={'patient'}><DadosCadastrais /> </ProtectedRoute>),
+                element:(<ProtectedRoute role={ProfileRole.patient}><DadosCadastrais /> </ProtectedRoute>),
             },
         ]
     },
@@ -52,35 +53,35 @@ export const router = createBrowserRouter([
         children: [
             {
                 path:'home',
-                element:(<ProtectedRoute role='admin'> <AdminHome /> </ProtectedRoute>),
+                element:(<ProtectedRoute role={ProfileRole.admin}> <AdminHome /> </ProtectedRoute>),
             },
             {
                 path:'agendamento',
-                element:(<ProtectedRoute  role='admin'> <AdminBooking /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role={ProfileRole.admin}> <AdminBooking /> </ProtectedRoute>),
             },
             {
                 path:'registrar-pacientes',
-                element:(<ProtectedRoute  role='admin'> <AdminPatient /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role={ProfileRole.admin}> <AdminPatient /> </ProtectedRoute>),
             },
             {
                 path:'upload-exames',
-                element:(<ProtectedRoute  role='admin'> <AdminExams /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role={ProfileRole.admin}> <AdminExams /> </ProtectedRoute>),
             },
             {
                 path:'registrar-exames',
-                element:(<ProtectedRoute  role='admin'> <AdminTenantExams /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role={ProfileRole.admin}> <AdminTenantExams /> </ProtectedRoute>),
             },
             {
                 path:'registrar-medicos',
-                element:(<ProtectedRoute  role='admin'> <AdminDoctor /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role={ProfileRole.admin}> <AdminDoctor /> </ProtectedRoute>),
             },
             {
                 path:'registrar-admin',
-                element:(<ProtectedRoute  role='admin'> <AdminList /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role={ProfileRole.admin}> <AdminList /> </ProtectedRoute>),
             },
             {
                 path: 'dashboard',
-                element: (<ProtectedRoute  role='admin'> <AdminDashboard /> </ProtectedRoute>),
+                element: (<ProtectedRoute  role={ProfileRole.admin}> <AdminDashboard /> </ProtectedRoute>),
             }
         ]
     },

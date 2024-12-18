@@ -5,7 +5,6 @@ import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
-import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
@@ -13,12 +12,13 @@ import {listDoctors} from "@/services/adminsService.tsx";
 import {IExam} from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
+import {IAdmin} from "@/types/dto/Admin.ts";
 
 interface RegisterExamProps {
     dadosIniciais?: Exams
     title: string
-    isUpdate?: (examData: IExam, tenant: number) => Promise<any>
-    isNewExam?: (examData: IExam, tenant: number) => Promise<any>
+    isUpdate?: (examData: IExam, tenant: number) => Promise<void>
+    isNewExam?: (examData: IExam, tenant: number) => Promise<void>
 }
 const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, isUpdate, isNewExam}) => {
 
@@ -104,22 +104,16 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
         }
 
         if(isUpdate && tenantId) {
-                await isUpdate(newExam, tenantId)
-                    .then(
-                    (result) => {
-                        if(!result) {
-                            setErro('Não foi possível atualizar exame')
-                            return
-                        }
-                    }
-                )
+                await isUpdate(newExam, tenantId).catch((error) => {
+                    setErro(error)
+                    console.log(error)
+                })
             return
         }
         if(isNewExam && tenantId) {
             await isNewExam(newExam, tenantId).catch((error) => {
                 setErro(error)
                 console.log(error)
-
             })
             return
         }

@@ -12,19 +12,7 @@ import {ChevronLeft, ChevronRight, Plus, X} from "lucide-react"
 import React, {useCallback, useEffect, useState} from "react"
 import CardDoctor from "@/components/AdminHome/CardDoctor.tsx";
 import {createDate} from "@/lib/utils.ts";
-
-export interface IAdmin {
-  id?: number
-  fullName?: string
-  email?: string
-  CRM?: string
-  cpf?: string
-  phone?: string
-  isDoctor?: boolean
-  created_at?: string
-  occupation?: string
-  examsIDs?: string[]
-}
+import {IAdmin} from "@/types/dto/Admin.ts";
 
 export interface IPatientExam {
   id: number
@@ -214,7 +202,7 @@ const AdminHome: React.FC = () => {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {Array.isArray(doctors) ? (
                     doctors.map((doctor) => (
-                      <CardDoctor especialidade={doctor.occupation} nome={doctor.fullName} crm={doctor?.CRM} contato={doctor.phone} />
+                      <CardDoctor especialidade={doctor.fullName} nome={doctor.fullName} crm={doctor?.fullName} contato={doctor.phone} />
                     ))
                   ) : (
                     <p>Não há médicos agendados para hoje</p>
