@@ -110,7 +110,10 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
             setErro('Telefone inválido')
             return
         }
-
+        if (!validarCPF(doctorData.cpf)) {
+            setErro('CPF inválido')
+            return
+        }
         try {
             if(auth.tenantId) {
 
