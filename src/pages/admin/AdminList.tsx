@@ -12,7 +12,7 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
 import {ModalType} from "@/types/ModalType.ts";
-import {deleteDoctor, listAdmins} from "@/services/adminsService.tsx";
+import {deleteAdmin, listAdmins} from "@/services/adminsService.tsx";
 import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
 import {IAdmin} from "@/types/dto/Admin.ts";
@@ -81,7 +81,7 @@ const AdminList: React.FC = () => {
     const handleDeletePatient = async () => {
         try {
             if(deleteId && auth.tenantId) {
-            await deleteDoctor(deleteId,auth.tenantId).then(
+            await deleteAdmin(deleteId,auth.tenantId).then(
                     (result) => {
                         if (result.message && result.message.includes('FK_')) {
                             handleModalMessage('Não é possível deletar um administrador com agendamento pendente')
@@ -168,7 +168,7 @@ const AdminList: React.FC = () => {
                 onClose={() => setOpenModalNewAdmin(false)}
                 type={type}
                 title="Gerenciamento de Administradores"
-                adminData={admin}
+                data={admin}
                 isDoctor={false}
             />}
 

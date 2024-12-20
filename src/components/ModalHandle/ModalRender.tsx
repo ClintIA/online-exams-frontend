@@ -10,7 +10,7 @@ import BookingConfirmation, {BookingConfirmationState} from "@/components/Bookin
 import {ModalType} from "@/types/ModalType.ts";
 import {registerAdmin, updateAdmin} from "@/services/adminsService.tsx";
 import RegisterAdmin from "@/components/AdminRegister/RegisterAdmin.tsx";
-import RegisterDoctor from "@/components/AdminDoctor/RegisterDoctor.tsx";
+import RegisterDoctor, {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
 import {IAdmin} from "@/types/dto/Admin.ts";
 
 
@@ -21,14 +21,14 @@ interface ModalRegisterProps {
     modalNewBookingConfirmation?: (message: string) => void;
     modalMessage?: (message: string) => void;
     dadosPaciente?: DadosPaciente
-    adminData?: IAdmin
+    data?: IAdmin | IDoctor
     type: ModalType
     isDoctor?: boolean
     isStepper?: boolean
 }
 
 
-const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, title,modalMessage,modalNewBookingConfirmation,dadosPaciente, type, adminData }: ModalRegisterProps) => {
+const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, title,modalMessage,modalNewBookingConfirmation,dadosPaciente, type, data }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
     const [modalContent,setModalContent] = useState<ModalType>(ModalType.newPatient)
     const [patientData, setPatientData] = useState<BookingConfirmationState>({} as BookingConfirmationState)
@@ -114,6 +114,16 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             }
         }
     }
+    const submitNewDoctor = async (doctorData: IDoctor,tenantId: number) => {
+        if(modalMessage) {
+            console.log(doctorData, tenantId)
+        }
+    }
+    const submitUpdateDoctor = async (doctorData: IDoctor,tenantId: number) => {
+        if(modalMessage) {
+            console.log(doctorData, tenantId)
+        }
+    }
     const submitUpdateAdmin = async (adminData: IAdmin,tenantId: number) => {
         if (modalMessage) {
             await updateAdmin(adminData,tenantId)
@@ -141,13 +151,13 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             case 'bookingConfirmation':
                 return(<BookingConfirmation dadosBooking={patientData} onNewBooking={openModal} />)
             case 'newDoctorAdmin':
-                return(<RegisterDoctor isDoctor={submitNewAdmin} />)
+                return(<RegisterDoctor isDoctor={submitNewDoctor} />)
             case 'editDoctorAdmin':
-                return(<RegisterDoctor dadosIniciais={adminData} isUpdate={submitUpdateAdmin} />)
+                return(<RegisterDoctor dadosIniciais={data} isUpdate={submitUpdateDoctor} />)
             case 'newAdmin':
                 return(<RegisterAdmin isAdmin={submitNewAdmin} />)
             case 'editAdmin':
-                return(<RegisterAdmin dadosIniciais={adminData} isUpdate={submitUpdateAdmin} />)
+                return(<RegisterAdmin dadosIniciais={data} isUpdate={submitUpdateAdmin} />)
 
 
         }

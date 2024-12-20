@@ -3,41 +3,54 @@ import {Button} from "@/components/ui/button.tsx"
 import {Input} from "@/components/ui/input.tsx"
 import {Label} from "@/components/ui/label.tsx"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card.tsx"
-import {AlertCircle} from "lucide-react"
+import {AlertCircle, BadgeInfo, CircleAlert} from "lucide-react"
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx"
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
-import {validarEmail, validarTelefone} from "@/lib/utils.ts";
-import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {Exams} from "@/components/Booking/BookingPatient.tsx";
 import {listTenantExam} from "@/services/tenantExamService.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 import {Switch} from "@/components/ui/switch.tsx";
-import {FormField} from "@/components/ui/form.tsx";
+import {validarCPF, validarTelefone} from "@/lib/utils.ts";
 
 interface RegisterDoctorProps {
-    dadosIniciais?: Partial<IAdmin>
-    isUpdate?: (adminData: IAdmin, tenant: number,isDoctor: boolean) => Promise<any>
-    isDoctor?: (adminData: IAdmin, tenant: number,isDoctor: boolean) => Promise<any>
+    dadosIniciais?: Partial<IDoctor>
+    isUpdate?: (adminData: IDoctor, tenant: number) => Promise<void>
+    isDoctor?: (adminData: IDoctor, tenant: number) => Promise<void>
+}
+
+export interface IDoctor {
+    id?: number;
+    cpf?: string;
+    CRM?: string;
+    cep?: string;
+    role?: string;
+    cnpj?: string;
+    phone?: string;
+    fullName?: string;
+    occupation?: string;
+    sessionToken?: string;
+    created_at?: string;
+    tenant?: any[];
+    exams?: string[];
 }
 
 const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, isDoctor}: RegisterDoctorProps) => {
 
-    const [doctorData, setDoctorData] = useState<IAdmin>({
+    const [doctorData, setDoctorData] = useState<IDoctor>({
         fullName: '',
-        email: '',
+        cep: '',
         phone: '',
         cpf: '',
         CRM:'',
         occupation: '',
-        examsIDs: []
+        exams: [],
+        cnpj: '',
+
     })
     const [exames,  setExames] = useState<Exams[]>([])
     const [selectedExame, setSelectedExame] = useState<string[] | undefined>([]);
     const [examesIDs, setExamesIDs] = useState<string[]>([])
     const [addExam, setAddExam] = useState<boolean>(false)
-    const [tenant, setTenant] = useState<number | undefined>(undefined)
     const [erro, setErro] = useState<string | null>(null)
     const auth = useAuth()
 
@@ -46,12 +59,19 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
         setDoctorData(prev => ({ ...prev, [name]: value }))
     }
 
-
+    useEffect(() => {
+        if(dadosIniciais) {
+            setDoctorData(prevDados => ({
+                ...prevDados,
+                ...dadosIniciais
+            }))
+        }
+    }, [dadosIniciais])
     useEffect( () => {
         const fetchExams = async () => {
             try {
-                if(tenant) {
-                    const result = await listTenantExam(tenant)
+                if(auth.tenantId) {
+                    const result = await listTenantExam(auth.tenantId)
                     if(result?.data.data.length === 0 ) {
                         setErro('Não possui exames cadastrados')
                         return
@@ -67,163 +87,250 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
             }
         }
         fetchExams().then()
-    }, [tenant]);
+    }, [auth.tenantId]);
     const handleSelectedExames = (exames: string[]) => {
         setSelectedExame(exames)
     }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-        setIsLoading(true)
-        console.log(e)
-
         setErro(null)
-        setIsLoading(false)
 
+        if (!doctorData.fullName ||
+            !doctorData.cep ||
+            !doctorData.occupation ||
+            !doctorData.cnpj ||
+            !doctorData.CRM ||
+            !doctorData.phone ||
+            !doctorData.cpf) {
+            setErro('Por favor, preencha todos os campos')
+            return
+        }
+        if (!validarCPF(doctorData.cpf)) {
+            setErro('Email Inválido')
+            return
+        }
+        if (!validarTelefone(doctorData.phone)) {
+            setErro('Telefone inválido')
+            return
+        }
 
+        try {
+            if(auth.tenantId) {
+
+                if(isUpdate) {
+                    await isUpdate(doctorData, auth.tenantId)
+                        .catch((error) => console.log(error))
+                    return
+                }
+                if(isDoctor) {
+                    await isDoctor({...doctorData, exams: selectedExame}, auth.tenantId)
+                        .catch((error) => console.log(error))
+                }
+
+                setDoctorData({
+                    fullName: '',
+                    phone: '',
+                    CRM: '',
+                    cpf: '',
+                    occupation: '',
+                    cep: '',
+                    cnpj: ''
+                })
+                setSelectedExame([])
+                setAddExam(false)
+                setExamesIDs([])
+            }
+        } catch (error) {
+            setErro('Falha ao cadastrar médico')
+            console.log(error)
+        }
     }
-    const [isLoading, setIsLoading] = useState<boolean>(false)
 
-   return (
-       <div>
-           <Card className="w-full max-w-2xl">
-               <CardHeader>
-                   <CardTitle>Adicionar Novo Médico</CardTitle>
-                   <CardDescription>Preencha os dados do novo médico para registrá-lo no sistema.</CardDescription>
-               </CardHeader>
-               <CardContent>
-                                            <span className="flex flex-col text-xs w-full col-span-3">
+    return (
+        <div className="mt-10">
+
+            <Card className="w-full max-w-2xl mx-auto">
+                <CardHeader>
+                    <CardTitle className='text-blue-900 text-xl'>{isDoctor ? 'Cadastro de Médicos' : 'Cadastro de Adminstradores'}</CardTitle>
+                    <CardDescription className="text-gray-500">
+                        Preencha os dados abaixo. Clique em salvar para finalizar o cadastro.
+                    </CardDescription>
+                   <p className="flex text-xs text-gray-500"> <CircleAlert className="mr-2" size={12} color={'red'}/> Campos Obrigátorios</p>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-2">
+                        <div>
+                            <Label htmlFor="fullName" className="flex text-right text-blue-800 mb-2">
+                                Nome <CircleAlert className="ml-2" size={12} color={'red'}/>
+                            </Label>
+                            <span className="flex flex-col col-span-3">
                                    <Input
                                        id="fullName"
                                        name="fullName"
                                        type="text"
-                                       value={adminData.fullName}
+                                       value={doctorData.fullName}
                                        onChange={handleInputChange}
                                    />
-                                   Nome completo do médico conforme registro profissional.
-                               </span>
-                   <Form>
-                       <form onSubmit={handleSubmit} className="space-y-8">
-                           <FormField
+                                       <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1" size={12}/> Nome completo conforme registro profissional.</span>
+                                   </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            <div>
+                                <Label htmlFor="CRM" className="flex text-right text-blue-800 mb-2">
+                                    CRM <CircleAlert className="ml-2" size={12} color={'red'}/>
+                                </Label>
+                                <span className="flex flex-col col-span-3">
 
-                               name="fullName"
-                               render={({field}) => (
-                                   <FormItem>
-                                       <FormLabel>Nome Completo</FormLabel>
-                                       <FormControl>
-                                           <Input placeholder="Dr. João da Silva" {...field} />
-                                       </FormControl>
-                                       <FormDescription>
-                                           Nome completo do médico conforme registro profissional.
-                                       </FormDescription>
-                                       <FormMessage/>
-                                   </FormItem>
-                               )}
-                           />
-                           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                               <FormField
+                                <Input
+                                    id="CRM"
+                                    name="CRM"
+                                    type="text"
+                                    value={doctorData?.CRM}
+                                    onChange={handleInputChange}
+                                />
+                                     <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1" size={12}/>Certificado de Registro Médico.</span>
+                                </span>
+                            </div>
+                            <div>
+                                <Label htmlFor="occupation" className="flex text-right text-blue-800 mb-2">
+                                    Ocupação  <CircleAlert className="ml-2" size={12} color={'red'}/>
+                                </Label>
+                                <span className="flex flex-col">
+                                <Input
+                                    id="occupation"
+                                    name="occupation"
+                                    type="text"
+                                    value={doctorData?.occupation}
+                                    onChange={handleInputChange}
+                                />
+                                    <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo
+                                        className="mr-1" size={12}/> Área de especialização. Ex: Cardiologista.</span>
+                                   </span>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            <div>
+                                <Label htmlFor="cpf" className="flex text-right text-blue-800 mb-2">
+                                    CPF <CircleAlert className="ml-2" size={12} color={'red'}/>
+                                </Label>
+                                <span className="flex flex-col col-span-3">
+                                    <Input
+                                    id="cpf"
+                                    name="cpf"
+                                    type="text"
+                                    value={doctorData?.cpf}
+                                    onChange={handleInputChange}
+                                    className="col-span-3"/>
+                                    <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1" size={12}/> CPF: Número de identificação pessoa física.</span>
+                                   </span>
+                            </div>
 
-                                   name="cpf"
-                                   render={({field}) => (
-                                       <FormItem>
-                                           <FormLabel>CPF</FormLabel>
-                                           <FormControl>
-                                               <Input placeholder="12345678900" {...field} />
-                                           </FormControl>
-                                           <FormMessage/>
-                                       </FormItem>
-                                   )}
-                               />
-                               <FormField
+                            <div>
+                                <Label htmlFor="email" className="flex text-right text-blue-800 mb-2">
+                                    CNPJ
+                                </Label>
+                                <span className="flex flex-col col-span-3">
+                                <Input
+                                    id="cnpj"
+                                    name="cnpj"
+                                    type="text"
+                                    value={doctorData.cnpj}
+                                    onChange={handleInputChange}
+                                    className="col-span-3"/>
+                                    <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo
+                                        className="mr-1" size={12}/>Registro de pessoa jurídica, caso tenha.</span>
+                                   </span>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            <div>
+                                <Label htmlFor="phone" className="flex text-right text-blue-800 mb-2">
+                                    Telefone <CircleAlert className="ml-2" size={12} color={'red'}/>
+                                </Label>
+                                <span className="flex flex-col col-span-3">
+                                <Input
+                                    id="phone"
+                                    name="phone"
+                                    type="tel"
+                                    value={doctorData.phone}
+                                    onChange={handleInputChange}
+                                    className="col-span-3"/>
+                                    <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo
+                                        className="mr-1" size={12}/> Telefone para contato. EX: 22999999999.</span>
+                                   </span>
+                            </div>
+                            <div>
+                                <Label htmlFor="phone" className="flex text-right text-blue-800 mb-2">
+                                    CEP
+                                </Label>
+                                <span className="flex flex-col col-span-3">
+                                <Input
+                                    id="cep"
+                                    name="cep"
+                                    type="tel"
+                                    value={doctorData.cep}
+                                    onChange={handleInputChange}
+                                    />
+                                    <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo
+                                        className="mr-1" size={12}/> CEP do endereço residencial.</span>
+                                   </span>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            <div>
+                                <Label htmlFor="gender" className="flex text-right text-blue-800 mb-2">
+                                    Deseja adicionar exame(s) ?
+                                </Label>
+                                <span className="flex flex-col mt-3">
 
-                                   name="CRM"
-                                   render={({field}) => (
-                                       <FormItem>
-                                           <FormLabel>CRM</FormLabel>
-                                           <FormControl>
-                                               <Input placeholder="123456" {...field} />
-                                           </FormControl>
-                                           <FormMessage/>
-                                       </FormItem>
-                                   )}
-                               />
-                           </div>
-                           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                               <FormField
-                                   name="cep"
-                                   render={({field}) => (
-                                       <FormItem>
-                                           <FormLabel>CEP</FormLabel>
-                                           <FormControl>
-                                               <Input placeholder="12345678" {...field} />
-                                           </FormControl>
-                                           <FormMessage/>
-                                       </FormItem>
-                                   )}
-                               />
-                               <FormField
-                                   name="CNPJ"
-                                   render={({field}) => (
-                                       <FormItem>
-                                           <FormLabel>CNPJ</FormLabel>
-                                           <FormControl>
-                                               <Input placeholder="12345678000199" {...field} />
-                                           </FormControl>
-                                           <FormMessage/>
-                                       </FormItem>
-                                   )}
-                               />
-                           </div>
-                           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-                               <FormField
-                                   name="phone"
-                                   render={({field}) => (
-                                       <FormItem>
-                                           <FormLabel>Telefone</FormLabel>
-                                           <FormControl>
-                                               <Input placeholder="(11) 98765-4321" {...field} />
-                                           </FormControl>
-                                           <FormMessage/>
-                                       </FormItem>
-                                   )}
-                               />
-                               <FormField
-                                   name="occupation"
-                                   render={({field}) => (
-                                       <FormItem>
-                                           <FormLabel>Especialidade</FormLabel>
-                                           <FormControl>
-                                               <Input placeholder="Cardiologia" {...field} />
-                                           </FormControl>
-                                           <FormMessage/>
-                                       </FormItem>
-                                   )}
-                               />
-                           </div>
-                           <FormField
-                               name="password"
-                               render={({field}) => (
-                                   <FormItem>
-                                       <FormLabel>Senha</FormLabel>
-                                       <FormControl>
-                                           <Input type="password" {...field} />
-                                       </FormControl>
-                                       <FormDescription>
-                                           A senha deve ter pelo menos 8 caracteres.
-                                       </FormDescription>
-                                       <FormMessage/>
-                                   </FormItem>
-                               )}
-                           />
-                       </form>
-                   </Form>
-               </CardContent>
-               <CardFooter>
-                   <Button onClick={handleSubmit} disabled={isLoading}>
-                       {isLoading ? "Adicionando..." : "Adicionar Médico"}
-                   </Button>
-               </CardFooter>
-           </Card>
-       </div>
-   )
+                                <div className="flex flex-row gap-2">
+                                    <Switch
+                                        id="toggle-select"
+                                        checked={addExam}
+                                        onCheckedChange={setAddExam}
+                                    />
+                                </div>
+                                    <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo
+                                        className="mr-1" size={12}/> Selecione para adicionar exames.</span>
+                                   </span>
+                            </div>
+                        </div>
+                        {addExam && (
+                            <div className="grid gap-2">
+                                <MultiSelect
+                                    options={exames}
+                                        atribbute="exam_name"
+                                        onValueChange={handleSelectedExames}
+                                        defaultValue={examesIDs}
+                                        placeholder="Selecione o(s) exame(s)"
+                                        variant="inverted"
+                                        className="max-w-xl"
+                                    />
+                                </div>
+                            )}
+
+                        <div className="flex justify-end mt-6">
+                            {isDoctor && (
+                                <Button className="bg-oxfordBlue text-white" type="submit">Cadastrar</Button>
+                            )}
+                            {isUpdate && (
+                                <Button className="bg-oxfordBlue text-white" type="submit">Atualizar
+                                </Button>
+                            )}
+                        </div>
+                    </form>
+                </CardContent>
+                <CardFooter>
+                    {erro && (
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4"/>
+                            <AlertTitle>Erro</AlertTitle>
+                            <AlertDescription>{erro}</AlertDescription>
+                        </Alert>
+                    )}
+                </CardFooter>
+            </Card>
+        </div>
+    )
 }
 export default RegisterDoctor;

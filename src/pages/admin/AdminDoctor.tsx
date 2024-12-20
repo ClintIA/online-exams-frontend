@@ -12,10 +12,11 @@ import {useAuth} from "@/hooks/auth.tsx";
 import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
 import {ModalType} from "@/types/ModalType.ts";
-import {deleteDoctor, listDoctors} from "@/services/adminsService.tsx";
 import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
 import {IAdmin} from "@/types/dto/Admin.ts";
+import {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
+import {deleteDoctor, listDoctors} from "@/services/doctorService.ts";
 
 const AdminDoctor: React.FC = () => {
 
@@ -24,11 +25,11 @@ const AdminDoctor: React.FC = () => {
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
-    const [doctors,setDoctors] = useState<IAdmin[]>([]);
+    const [doctors,setDoctors] = useState<IDoctor[]>([]);
     const [filtroName, setFiltroName] = useState<string>('')
     const [filtroCRM, setFiltroCRM] = useState<string>('')
     const [deleteId, setDeleteId] = useState<number>()
-    const [doctor, setDoctor] = useState<IAdmin>()
+    const [doctor, setDoctor] = useState<IDoctor>()
     const [doctorsPagination, setDoctorsPagination] = useState({ total: 0, page: 1, take: 1000, skip: 0, remaining: 0 })
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
@@ -36,7 +37,7 @@ const AdminDoctor: React.FC = () => {
     const auth = useAuth()
 
 
-    const openFlexiveModal = (modalType: ModalType, doctor?: IAdmin) => {
+    const openFlexiveModal = (modalType: ModalType, doctor?: IDoctor) => {
         if(doctor) {
             setDoctor(doctor)
         }
@@ -178,7 +179,7 @@ const AdminDoctor: React.FC = () => {
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}
                 title="Gerenciamento de Médicos"
-                adminData={doctor}
+                data={doctor}
             />}
 
             <GeneralModal

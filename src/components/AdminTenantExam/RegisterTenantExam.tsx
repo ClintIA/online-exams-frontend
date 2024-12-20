@@ -8,11 +8,11 @@ import {AlertCircle} from "lucide-react";
 import {useAuth} from "@/hooks/auth.tsx";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
-import {listDoctors} from "@/services/adminsService.tsx";
 import {IExam} from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
-import {IAdmin} from "@/types/dto/Admin.ts";
+import {listDoctors} from "@/services/doctorService.ts";
+import {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
 
 interface RegisterExamProps {
     dadosIniciais?: Exams
@@ -29,7 +29,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
     });
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [selectedDoctors, setSelectedDoctors] = useState<string[] | undefined>([]);
-    const [doctors, setDoctors] = useState<IAdmin[]>([])
+    const [doctors, setDoctors] = useState<IDoctor[]>([])
     const [erro, setErro] = useState<string | null>(null)
     const [doctorIDs, setDoctorsIDs] = useState<string[]>([])
     const auth = useAuth()

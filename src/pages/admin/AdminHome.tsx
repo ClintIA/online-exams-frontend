@@ -3,7 +3,6 @@ import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card.tsx
 import {Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog.tsx"
 import {Input} from "@/components/ui/input.tsx"
 import {useAuth} from "@/hooks/auth.tsx"
-import {listDoctors} from "@/services/adminsService.tsx"
 import {createNoticeCard, deleteNoticeCard, listNoticeCards} from "@/services/noticeCardService.tsx"
 import {listPatientExams} from "@/services/patientExamService.tsx"
 import {format} from "date-fns"
@@ -12,7 +11,6 @@ import {ChevronLeft, ChevronRight, Plus, X} from "lucide-react"
 import React, {useCallback, useEffect, useState} from "react"
 import CardDoctor from "@/components/AdminHome/CardDoctor.tsx";
 import {createDate} from "@/lib/utils.ts";
-import {IAdmin} from "@/types/dto/Admin.ts";
 
 export interface IPatientExam {
   id: number
@@ -36,6 +34,7 @@ export interface IPatientExam {
     CRM: string
     phone: string
     email: string
+    occupation: string
   }
 }
 
@@ -55,31 +54,10 @@ const AdminHome: React.FC = () => {
   const [currentDoctorPage, setCurrentDoctorPage] = useState(1)
   const [currentExamPage, setCurrentExamPage] = useState(1)
   const examsPerPage = 12
-  const [doctors, setDoctors] = useState<IAdmin[]>([])
-  const [doctorsPagination, setDoctorsPagination] = useState({ total: 0, page: 1, take: 5, skip: 0, remaining: 0 })
   const [exams, setExams] = useState<IPatientExam[]>([])
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const auth = useAuth()
-
-  
-  useEffect(() => {
-    const fetchDoctors = async (page: number) => {
-      try {
-        if (auth.tenantId) {
-          const result = await listDoctors(auth.tenantId, page, doctorsPagination.take)
-          if (result?.data.status === "success") {
-            const doctorsList = result?.data?.data?.data as IAdmin[]
-            setDoctors(doctorsList || [])
-            setDoctorsPagination(result.data?.data?.pagination)
-          }
-        }
-      } catch (error) {
-        console.error(error)
-      }
-    }
-    fetchDoctors(currentDoctorPage).then()
-  }, [auth.tenantId, currentDoctorPage, doctorsPagination.take]);
 
   useEffect(() => {
     const fetchPatientExams = async () => {
@@ -103,6 +81,8 @@ const AdminHome: React.FC = () => {
     }
     fetchPatientExams().then()
   }, [auth.tenantId]);
+
+
   const fetchNotices = useCallback(async () => {
     try {
       if (auth.tenantId) {
@@ -161,8 +141,6 @@ const AdminHome: React.FC = () => {
     }
   }
 
-  const totalPages = Math.ceil(doctorsPagination.total / doctorsPagination.take);
-
   return (
     <div className="w-full max-w-full min-h-screen overflow-x-hidden mx-auto">
       <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-[2px]">
@@ -191,8 +169,6 @@ const AdminHome: React.FC = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    onClick={() => setCurrentDoctorPage(currentDoctorPage < totalPages ? currentDoctorPage + 1 : currentDoctorPage)}
-                    disabled={currentDoctorPage >= totalPages}
                   >
                     <ChevronRight className="h-4 w-4" />
                   </Button>
@@ -200,9 +176,9 @@ const AdminHome: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {Array.isArray(doctors) ? (
-                    doctors.map((doctor) => (
-                      <CardDoctor especialidade={doctor.fullName} nome={doctor.fullName} crm={doctor?.fullName} contato={doctor.phone} />
+                  {Array.isArray(exams) ? (
+                    exams.map((exam) => (
+                      <CardDoctor especialidade={exam.doctor?.occupation} nome={exam.doctor?.fullName} crm={exam.doctor?.CRM} contato={exam.doctor?.phone} />
                     ))
                   ) : (
                     <p>Não há médicos agendados para hoje</p>

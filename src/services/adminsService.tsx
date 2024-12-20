@@ -2,9 +2,9 @@ import apiClient from "@/lib/interceptor.ts";
 import {isAxiosError} from 'axios';
 import {IAdmin} from "@/types/dto/Admin.ts";
 
-export const listDoctors = async (tenantId: number, page?: number, perPage?: number) => {
+export const listAdmins = async (tenantId: number, page?: number, perPage?: number) => {
     try {
-        return await apiClient.get('admin/doctors/', {
+        return await apiClient.get('admin/', {
             headers: {
                 'x-tenant-id': tenantId
             },
@@ -22,7 +22,7 @@ export const listDoctors = async (tenantId: number, page?: number, perPage?: num
 export const registerAdmin = async (adminData: IAdmin, tenantId:  number) => {
 
     try {
-        return await apiClient.post('admin/register', adminData, {
+        return await apiClient.post('admin/', adminData, {
             headers: {
                 'x-tenant-id': tenantId
             }
@@ -37,21 +37,20 @@ export const registerAdmin = async (adminData: IAdmin, tenantId:  number) => {
 export const updateAdmin = async (adminData: IAdmin, tenantId:  number) => {
 
     try {
-        return await apiClient.put(`admin/update/${adminData.id}`, adminData, {
+        return await apiClient.put(`admin/${adminData.id}`, adminData, {
             headers: {
                 'x-tenant-id': tenantId
             }
         })
-
     } catch (error) {
         if (isAxiosError(error)) {
             return error.response?.data
         }
     }
 }
-export const deleteDoctor = async (deleteId:number, tenantId: number) => {
+export const deleteAdmin = async (deleteId: number, tenantId: number) => {
     try {
-        return await apiClient.delete(`admin/delete/${deleteId}`, {
+        return await apiClient.delete(`admin/${deleteId}`, {
             headers: {
                 'x-tenant-id': tenantId
             }
@@ -60,19 +59,5 @@ export const deleteDoctor = async (deleteId:number, tenantId: number) => {
         if (isAxiosError(error)) {
         return error.response?.data
      }
-    }
-}
-
-export const listAdmins = async (tenantId: number) => {
-    try {
-        return await apiClient.get('admin/', {
-            headers: {
-                'x-tenant-id': tenantId
-            }
-        })
-    } catch (error) {
-        if (isAxiosError(error)) {
-            return error.response?.data
-        }
     }
 }
