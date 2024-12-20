@@ -82,6 +82,20 @@ const AdminHome: React.FC = () => {
     fetchPatientExams().then()
   }, [auth.tenantId]);
 
+  const doctorsToday = () => {
+    const idsVistos = {};
+
+    return exams.filter(objeto => {
+      if(objeto.doctor) {
+        if (!idsVistos[objeto.doctor.id]) {
+          idsVistos[objeto.doctor.id] = true;
+          return true;
+        }
+        return false;
+      }
+    });
+  }
+
 
   const fetchNotices = useCallback(async () => {
     try {
@@ -176,13 +190,10 @@ const AdminHome: React.FC = () => {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                  {Array.isArray(exams) ? (
-                    exams.map((exam) => (
+                  {doctorsToday().map((exam) => (
                       <CardDoctor especialidade={exam.doctor?.occupation} nome={exam.doctor?.fullName} crm={exam.doctor?.CRM} contato={exam.doctor?.phone} />
-                    ))
-                  ) : (
-                    <p>Não há médicos agendados para hoje</p>
-                  )}
+
+                  ))}
                 </div>
               </CardContent>
             </Card>
