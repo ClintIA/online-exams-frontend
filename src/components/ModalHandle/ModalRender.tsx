@@ -1,17 +1,18 @@
 import React, {useEffect, useState} from 'react'
 import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {registerPatient} from "@/services/loginService.tsx";
-import Booking, {DadosBooking} from "@/components/Booking/Booking.tsx";
+import RegisterBooking, {DadosBooking} from "@/components/Booking/RegisterBooking.tsx";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
 import {registerBookingWithPatient, registerPatientExam} from "@/services/patientExamService.tsx";
 import {updatePatient} from "@/services/patientService.tsx";
-import BookingPatient, {BookingWithPatient} from "@/components/Booking/BookingPatient.tsx";
+import RegisterBookingAndPatient, {BookingWithPatient} from "@/components/Booking/RegisterBookingAndPatient.tsx";
 import BookingConfirmation, {BookingConfirmationState} from "@/components/Booking/BookingConfirmation.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {registerAdmin, updateAdmin} from "@/services/adminsService.tsx";
 import RegisterAdmin from "@/components/AdminRegister/RegisterAdmin.tsx";
 import RegisterDoctor, {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
 import {IAdmin} from "@/types/dto/Admin.ts";
+import {registerDoctor, updateDoctor} from "@/services/doctorService.ts";
 
 
 interface ModalRegisterProps {
@@ -50,14 +51,18 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         setOpen(false)
         onClose()
     }
-    const submitBookintExam = async (bookingDados: DadosBooking, tenantId: number) => {
+    const submitBookintExam = async (bookingDados: DadosBooking, tenantId: number, patientData?: DadosPaciente) => {
         try {
             if (modalNewBookingConfirmation) {
+                if(patientData) {
+                   await updatePatient(patientData, tenantId)
+                }
             const result = await registerPatientExam(bookingDados, tenantId)
                 setPatientData(result.data.data.data)
                 modalNewBookingConfirmation('Paciente Agendado com sucesso')
                 return result
             }
+
         } catch (error) {
             console.log(error)
         }
@@ -114,16 +119,6 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             }
         }
     }
-    const submitNewDoctor = async (doctorData: IDoctor,tenantId: number) => {
-        if(modalMessage) {
-            console.log(doctorData, tenantId)
-        }
-    }
-    const submitUpdateDoctor = async (doctorData: IDoctor,tenantId: number) => {
-        if(modalMessage) {
-            console.log(doctorData, tenantId)
-        }
-    }
     const submitUpdateAdmin = async (adminData: IAdmin,tenantId: number) => {
         if (modalMessage) {
             await updateAdmin(adminData,tenantId)
@@ -137,17 +132,39 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
                 }).catch(error => {console.log(error)})
         }
     }
+    const submitNewDoctor = async (doctorData: IDoctor,tenantId: number) => {
+        if(modalMessage) {
+           const result = await registerDoctor(doctorData, tenantId)
+            if (result.status === 201) {
+                modalMessage('Cadastrado Realizado com sucesso')
+                onClose()
+            } else {
+                throw new Error('Não foi possível realizar cadastro: ' + result.message)
+            }
+        }
+    }
+    const submitUpdateDoctor = async (doctorData: IDoctor,tenantId: number) => {
+        if(modalMessage) {
+            const result = await updateDoctor(doctorData,tenantId)
+            if (result.status === 201) {
+                modalMessage('Cadastrado atualizado com sucesso')
+                onClose()
+            } else {
+                throw new Error('Não foi possível realizar cadastro: ' + result.message)
+            }
+        }
+    }
     const renderModalContent = () => {
         switch (modalContent) {
             case 'booking':
-                return (<Booking onClose={handleClose} dadosPaciente={dadosPaciente} isNewBooking={submitBookintExam} />)
+                return (<RegisterBooking onClose={handleClose} dadosPaciente={dadosPaciente} isNewBooking={submitBookintExam} />)
             case 'newPatient':
                 return(<RegisterPatient isNewPatient={submitNewPatient}/>)
             case 'editPatient':
                 return(<RegisterPatient dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
                 )
             case 'newBookingPatient':
-                return(<BookingPatient setStep={setStep} submitBooking={submitBookintExam} submitBookingWithPatient={submitBookintWithPatient}  handleModalMessage={openModal} />)
+                return(<RegisterBookingAndPatient setStep={setStep} submitBooking={submitBookintExam} submitBookingWithPatient={submitBookintWithPatient} handleModalMessage={openModal} />)
             case 'bookingConfirmation':
                 return(<BookingConfirmation dadosBooking={patientData} onNewBooking={openModal} />)
             case 'newDoctorAdmin':

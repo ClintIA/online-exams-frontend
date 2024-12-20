@@ -3,9 +3,13 @@ import {isAxiosError} from "axios";
 import {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
 
 export const registerDoctor = async (doctorData: IDoctor, tenantId:  number) => {
-
+    const data = {
+        newDoctor: doctorData,
+        exams: doctorData.exams
+    }
+    delete data.newDoctor.exams
     try {
-        return await apiClient.post('admin/doctors/', doctorData, {
+        return await apiClient.post('admin/doctors/', data, {
             headers: {
                 'x-tenant-id': tenantId
             }

@@ -6,7 +6,7 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} 
 import {AlertCircle, BadgeInfo, CircleAlert} from "lucide-react"
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx"
 import {useAuth} from "@/hooks/auth.tsx";
-import {Exams} from "@/components/Booking/BookingPatient.tsx";
+import {Exams} from "@/components/Booking/RegisterBookingAndPatient.tsx";
 import {listTenantExam} from "@/services/tenantExamService.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 import {Switch} from "@/components/ui/switch.tsx";
@@ -105,10 +105,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
             setErro('Por favor, preencha todos os campos')
             return
         }
-        if (!validarCPF(doctorData.cpf)) {
-            setErro('Email Inválido')
-            return
-        }
+
         if (!validarTelefone(doctorData.phone)) {
             setErro('Telefone inválido')
             return

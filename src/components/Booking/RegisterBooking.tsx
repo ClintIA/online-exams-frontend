@@ -26,7 +26,7 @@ export interface DadosBooking {
 interface BookingModalProps {
     dadosPaciente?: DadosPaciente
     onAgendamentoConcluido?: (exam: Exams, dados: DadosPaciente, dadosBooking: DadosBooking) => void
-    isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<any>
+    isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<void>
     onClose?: () => void
 }
 export interface Exams {
@@ -41,7 +41,7 @@ interface Doctor {
     exams: any[]
 }
 
-const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcluido, isNewBooking}: BookingModalProps ) => {
+const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcluido, isNewBooking}: BookingModalProps ) => {
     const [tenantId, setTenantID] = useState<number | undefined>()
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
@@ -293,4 +293,4 @@ const Booking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcl
     )
 }
 
-export default Booking;
+export default RegisterBooking;
