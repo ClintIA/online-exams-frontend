@@ -21,7 +21,10 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
                 <TableRow key={data.id}>
                     {renderRow(data)}
                     <TableCell className="text-blue-900">
-                        {data?.role === 'master' ? '' :(
+                        {data?.role === 'master' ? (
+                            <Button disabled={true} className="w-full bg-oxfordBlue text-white">
+                                <span className="text-sm">Master Admin</span>
+                            </Button>) :(
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <MoreHorizontal className="h-6 w-6"/>

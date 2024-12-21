@@ -70,7 +70,7 @@ const AdminTenantExams: React.FC = () => {
         <>
             <TableCell className="text-oxfordBlue font-bold">{exame.exam_name}</TableCell>
             <TableCell className="text-blue-900">{ exame.doctors.length > 0 ?
-                exame.doctors.map((doctor) => (<p>Dr(a). {doctor.fullName}</p>))
+                exame.doctors.map((doctor) => (<p key={doctor.id}>Dr(a). {doctor.fullName}</p>))
                 :
                 (<p>Não possuí médico cadastrado</p>)
             }
