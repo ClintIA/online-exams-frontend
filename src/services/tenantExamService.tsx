@@ -18,7 +18,7 @@ export const listTenantExam = async (tenantId:  number)=> {
 
 export const listDoctorByExam = async (tenantId:  number,examName: string)=> {
     try {
-        return await apiClient.get(`admin/exam`,{
+        return await apiClient.get(`admin/doctors/exam`,{
             params: {
                 examName: examName
             },

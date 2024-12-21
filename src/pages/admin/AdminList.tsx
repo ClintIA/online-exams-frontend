@@ -8,16 +8,15 @@ import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import React, {useCallback, useEffect, useState} from "react";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
 import {ModalType} from "@/types/ModalType.ts";
-import {deleteDoctor, listAdmins} from "@/services/adminsService.tsx";
-import {IAdmin} from "@/pages/admin/AdminHome.tsx";
+import {deleteAdmin, listAdmins} from "@/services/adminsService.tsx";
 import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
+import {IAdmin} from "@/types/dto/Admin.ts";
+import {findRoleOptions} from "@/lib/optionsFixed.ts";
 
 const AdminList: React.FC = () => {
 
@@ -30,7 +29,6 @@ const AdminList: React.FC = () => {
     const [filtroName, setFiltroName] = useState<string>('')
     const [deleteId, setDeleteId] = useState<number>()
     const [admin, setAdmin] = useState<IAdmin>()
-    const [tenantId, setTenantId] = useState<number | undefined>()
     const [openModalNewAdmin, setOpenModalNewAdmin] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const [loading, setLoading] = useState<boolean>(false);
@@ -45,20 +43,12 @@ const AdminList: React.FC = () => {
         setType(modalType)
         setOpenModalNewAdmin(true)
     }
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenantId(decoded.tenantId)
-            }
-        }
-        getTenant()
-    },[auth.token])
+
     const fetchAdmins = useCallback(async () => {
         try {
-            if (tenantId) {
+            if (auth.tenantId) {
                 setLoading(true)
-                const result = await listAdmins(tenantId)
+                const result = await listAdmins(auth.tenantId)
                 setLoading(false)
                 if (result?.data.status === "success") {
                     const adminsList = result?.data?.data as IAdmin[]
@@ -68,7 +58,7 @@ const AdminList: React.FC = () => {
         } catch (error) {
             console.error(error)
         }
-    },[tenantId])
+    },[auth.tenantId])
     useEffect(() => {
         fetchAdmins().then()
     }, [fetchAdmins]);
@@ -90,8 +80,8 @@ const AdminList: React.FC = () => {
     }
     const handleDeletePatient = async () => {
         try {
-            if(deleteId && tenantId) {
-            await deleteDoctor(deleteId,tenantId).then(
+            if(deleteId && auth.tenantId) {
+            await deleteAdmin(deleteId,auth.tenantId).then(
                     (result) => {
                         if (result.message && result.message.includes('FK_')) {
                             handleModalMessage('Não é possível deletar um administrador com agendamento pendente')
@@ -114,13 +104,15 @@ const AdminList: React.FC = () => {
     if (loading) {
         return <Loading />
     }
-    const renderRow = (doctor: IAdmin) => (
+    const renderRow = (admin: IAdmin) => (
         <>
-            <TableCell className="text-oxfordBlue font-bold">{doctor.fullName}</TableCell>
-            <TableCell className="text-blue-900">{doctor.cpf}</TableCell>
-            <TableCell className="text-blue-900">{doctor.email}</TableCell>
-            <TableCell className="text-blue-900">{doctor.phone}</TableCell>
-            <TableCell className="text-blue-900">{doctor.created_at ? format(doctor.created_at, "dd/MM/yyyy", { locale: ptBR }) : ''}</TableCell>
+            <TableCell className="text-oxfordBlue font-bold">{admin.fullName}</TableCell>
+            <TableCell className="text-blue-900">{admin.cpf}</TableCell>
+            <TableCell className="text-blue-900">{admin.email}</TableCell>
+            <TableCell className="text-blue-900">{admin.cep ? admin.cep : 'Não possuí CEP cadastrado'}</TableCell>
+            <TableCell className="text-blue-900">{admin.phone}</TableCell>
+            <TableCell className="capitalize text-blue-900">{findRoleOptions(admin.role)}</TableCell>
+            <TableCell className="text-blue-900">{admin.created_at ? format(admin.created_at, "dd/MM/yyyy", { locale: ptBR }) : ''}</TableCell>
 
         </>
     );
@@ -157,8 +149,10 @@ const AdminList: React.FC = () => {
                             <TableRow>
                                 <TableHead className="text-oxfordBlue">Nome</TableHead>
                                 <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                <TableHead className="text-oxfordBlue">Email</TableHead>
+                                <TableHead className="text-oxfordBlue">E-mail</TableHead>
+                                <TableHead className="text-oxfordBlue">CEP</TableHead>
                                 <TableHead className="text-oxfordBlue">Contato</TableHead>
+                                <TableHead className="text-oxfordBlue">Perfil de Acesso</TableHead>
                                 <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
                             </TableRow>
                         </TableHeader>
@@ -169,12 +163,12 @@ const AdminList: React.FC = () => {
             </Card>
 
             {openModalNewAdmin && <ModalRender
-                modalNewPatient={handleModalMessage}
+                modalMessage={handleModalMessage}
                 isOpen={openModalNewAdmin}
                 onClose={() => setOpenModalNewAdmin(false)}
                 type={type}
                 title="Gerenciamento de Administradores"
-                adminData={admin}
+                data={admin}
                 isDoctor={false}
             />}
 

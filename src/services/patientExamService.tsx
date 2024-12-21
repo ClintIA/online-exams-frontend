@@ -1,7 +1,7 @@
-import {DadosBooking} from "@/components/Booking/Booking.tsx";
+import {DadosBooking} from "@/components/Booking/RegisterBooking.tsx";
 import apiClient from "@/lib/interceptor.ts";
 import {isAxiosError} from 'axios';
-import {BookingWithPatient} from "@/components/Booking/BookingPatient.tsx";
+import {BookingWithPatient} from "@/components/Booking/RegisterBookingAndPatient.tsx";
 
 interface ListPatientExamsFilters {
     startDate?: string

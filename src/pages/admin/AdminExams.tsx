@@ -3,9 +3,7 @@ import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/
 import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx"
 import {useAuth} from "@/hooks/auth.tsx"
 import {listPatientExams, updatePatientExam} from "@/services/patientExamService.tsx"
-import {ITokenPayload} from "@/types/Auth.ts"
 import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3"
-import {jwtDecode} from "jwt-decode"
 import {FileUp, Upload} from 'lucide-react'
 import React, {useEffect, useState} from 'react'
 import {toast} from 'react-toastify'
@@ -25,29 +23,22 @@ const AdminExams: React.FC = () =>  {
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [exams, setExams] = useState<IPatientExam[]>([])
-  const [tenantId, setTenantId] = useState<number>()
   const auth = useAuth()
   const [isUploading, setIsUploading] = useState(false);
   const [selectedExamId, setSelectedExamId] = useState<number | null>(null);
 
-  useEffect(() => {
-    if (auth?.token) {
-      const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-      setTenantId(decoded.tenantId)
-    }
-  }, [auth.token])
 
   useEffect(() => {
     const fetchExams = async () => {
-      if (tenantId) {
-        const result = await listPatientExams(tenantId, {})
+      if (auth.tenantId) {
+        const result = await listPatientExams(auth.tenantId, {})
         if (result?.data?.status === "success") {
           setExams(result?.data?.data.exams || [])
         }
       }
     }
     fetchExams().then()
-  }, [tenantId])
+  }, [auth.tenantId])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -80,12 +71,12 @@ const AdminExams: React.FC = () =>  {
   }
 
   const handleUpload = async () => {
-    if (!selectedFile || !selectedExamId || !tenantId) return;
+    if (!selectedFile || !selectedExamId || !auth.tenantId) return;
     
     try {
       setIsUploading(true);
       
-      const fileKey = `${tenantId}/exams/${Date.now()}-${selectedFile.name}`;
+      const fileKey = `${auth.tenantId}/exams/${Date.now()}-${selectedFile.name}`;
       const bucketName = import.meta.env.VITE_AWS_BUCKET_NAME;
       
       if (!bucketName) {
@@ -101,14 +92,14 @@ const AdminExams: React.FC = () =>  {
 
       const fileUrl = `https://${bucketName}.s3.amazonaws.com/${fileKey}`;
 
-      const result = await updatePatientExam(tenantId, selectedExamId, {
+      const result = await updatePatientExam(auth.tenantId, selectedExamId, {
         status: 'Completed',
         link: fileUrl
       });
 
       if (result?.data?.status === "success") {
         toast.success("Arquivo enviado com sucesso!");
-        const updatedExams = await listPatientExams(tenantId!, {});
+        const updatedExams = await listPatientExams(auth.tenantId!, {});
         if (updatedExams?.data?.status === "success") {
           setExams(updatedExams.data.data.exames[0].patientExams || []);
         }

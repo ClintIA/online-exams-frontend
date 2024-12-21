@@ -19,7 +19,7 @@ import {ModalType} from "@/types/ModalType.ts";
 import {Spinner} from "@/components/ui/Spinner.tsx";
 import {canaisOptions, genderOptions} from "@/lib/optionsFixed.ts";
 import {isAxiosError} from "axios";
-import {DadosBooking} from "@/components/Booking/Booking.tsx";
+import {DadosBooking} from "@/components/Booking/RegisterBooking.tsx";
 
 export interface Exams {
     id: number
@@ -41,12 +41,12 @@ export interface BookingWithPatient {
 }
 interface BookingModalProps {
     handleModalMessage?: (type: ModalType) => void
-    submitBooking?: (bookingDados: DadosBooking, tenantId: number) => Promise<any>
+    submitBooking?: (bookingDados: DadosBooking, tenantId: number,patientData: DadosPaciente) => Promise<any>
     setStep: (step: number) => void
     submitBookingWithPatient?: (data: BookingWithPatient, tenant: number) => Promise<any>
 }
 
-const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking, submitBookingWithPatient, setStep }: BookingModalProps) => {
+const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking, submitBookingWithPatient, setStep }: BookingModalProps) => {
     const [tenant, setTenant] = useState<number | undefined>()
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
@@ -90,13 +90,8 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
         const getTenant = () => {
             if(auth?.token) {
                 const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                if(!decoded.isAdmin) {
-                    navigate('/admin')
-                }
                 setTenant(decoded.tenantId)
                 setUserId(decoded.userId)
-            } else {
-                navigate('/admin')
             }
         }
         getTenant()
@@ -234,7 +229,6 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
            if (tenant && userId) {
                if(isNewPatient && submitBookingWithPatient) {
                    if(patientData) {
-
                        patientData.cpf = cpf;
                        patientData.canal = selectedCanal
 
@@ -244,6 +238,7 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                            userId: userId,
                            doctorId: parseInt(selectedDoctor),
                            examDate: createDate(dadosBooking.examDate),
+
                        }
                       await submitBookingWithPatient(bookingWithPatient, tenant)
                            .catch((error) =>  {
@@ -261,8 +256,11 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
                    doctor: doctorSelected
                }
                try {
-                   if (submitBooking) {
-                       const result = await submitBooking(bookingDados, tenant)
+                   if (submitBooking && patientData) {
+                       patientData.cpf = cpf;
+                       patientData.canal = selectedCanal
+
+                       const result = await submitBooking(bookingDados,tenant, patientData)
                        if(result.status === 201 && handleModalMessage) {
                            handleModalMessage(ModalType.bookingConfirmation)
                        }
@@ -517,4 +515,4 @@ const BookingPatient: React.FC<BookingModalProps> = ({handleModalMessage, submit
 )
 }
 
-export default BookingPatient;
+export default RegisterBookingAndPatient;

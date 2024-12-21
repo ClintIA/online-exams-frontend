@@ -51,6 +51,25 @@ export const genderOptions = [
     { value: 'Outros', label: 'Outros' }
 ];
 
+export const roleOptions = [
+    { value: 'admin', label: 'Admin', disable: false},
+    { value: 'marketing', label: 'Marketing', disable: false },
+    { value: 'default', label: 'Atendente', disable: false },
+    { value: 'doctor', label: 'Médico', disable: true },
+    { value: 'patient', label: 'Paciente', disable: true }
+];
+export const findRoleOptions = (canal?: string) => {
+    if(canal) {
+        let role;
+        roleOptions.find((option) => {
+            if(option.value == canal) {
+                role = option.label;
+            }
+        })
+        return role
+    }
+}
+
 export const findCanalOptions = (canal?: string) => {
     if(canal) {
         let patientCanal;
