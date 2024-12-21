@@ -191,7 +191,7 @@ const AdminHome: React.FC = () => {
               <CardContent>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                   {doctorsToday().map((exam) => (
-                      <CardDoctor especialidade={exam.doctor?.occupation} nome={exam.doctor?.fullName} crm={exam.doctor?.CRM} contato={exam.doctor?.phone} />
+                      <CardDoctor key={exam.doctor?.id} especialidade={exam.doctor?.occupation} nome={exam.doctor?.fullName} crm={exam.doctor?.CRM} contato={exam.doctor?.phone} />
 
                   ))}
                 </div>
