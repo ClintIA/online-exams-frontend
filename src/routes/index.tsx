@@ -22,6 +22,10 @@ export const router = createBrowserRouter([
         element: <Navigate to='/login'/>
     },
     {
+        path: "*/*",
+        element: <Error404 />
+    },
+    {
         path: "/error-401",
         element: <Error401 />,
     },
@@ -35,8 +39,13 @@ export const router = createBrowserRouter([
     },
     {
         path: "/paciente",
-        element: <AppLayout />,
+        element: (<ProtectedRoute role={ProfileRole.patient}><AppLayout /> </ProtectedRoute>),
+        errorElement: <Error404 />,
         children: [
+            {
+                index: true,
+                element: <Navigate replace to={'home'} />
+            },
             {
                 path:'home',
                 element:(<ProtectedRoute role={ProfileRole.patient}><Exames /> </ProtectedRoute>),
@@ -49,8 +58,13 @@ export const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element:  <AppLayout />,
+        element:  (<ProtectedRoute role={ProfileRole.admin}><AppLayout /> </ProtectedRoute>),
+        errorElement: <Error404 />,
         children: [
+            {
+                index: true,
+                element: <Navigate replace to={'home'} />
+            },
             {
                 path:'home',
                 element:(<ProtectedRoute role={ProfileRole.admin}> <AdminHome /> </ProtectedRoute>),
