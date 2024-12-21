@@ -15,6 +15,7 @@ import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@radix-ui/rea
 import {Button} from "@/components/ui/button.tsx";
 import clintiaLogo from "@/assets/logoClintia.png";
 import {List} from "phosphor-react";
+import {hasAccess} from "@/lib/controlAccessLevel.ts";
 
 
 const AdminSidebar: React.FC = () => {
@@ -28,6 +29,7 @@ const AdminSidebar: React.FC = () => {
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
+
 
   const toggleSection = (section: string) => {
     setOpenSections(prev =>
@@ -83,7 +85,7 @@ const AdminSidebar: React.FC = () => {
                 <span>Portal de Exames</span>
               </Link>
             </li>
-            <li>
+            {hasAccess(auth.role, 'admin') && (<li>
               <Collapsible open={isOpen('register')} onOpenChange={() => toggleSection('register')}>
                 <CollapsibleTrigger asChild>
                   <Button variant="ghost" className="w-full justify-between">
@@ -113,8 +115,8 @@ const AdminSidebar: React.FC = () => {
                   </Link>
                 </CollapsibleContent>
               </Collapsible>
-            </li>
-            <li>
+            </li>)}
+            {hasAccess(auth.role, 'marketing') && (<li>
               <Collapsible open={isOpen('relatorios')} onOpenChange={() => toggleSection('relatorios')}>
                 <CollapsibleTrigger asChild>
                   <Button variant="ghost" className="w-full justify-between">
@@ -136,7 +138,7 @@ const AdminSidebar: React.FC = () => {
                   </Link>
                 </CollapsibleContent>
               </Collapsible>
-            </li>
+            </li>)}
           </ul>
         </nav>
 

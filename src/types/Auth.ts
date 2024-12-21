@@ -1,5 +1,6 @@
 import React from "react";
 import {ProfileRole} from "@/types/ProfileRole.ts";
+import {AccessLevel} from "@/lib/controlAccessLevel.ts";
 
 export interface ILoginAdmin {
     status: string;
@@ -15,11 +16,7 @@ export type IAuthContextType = {
     logOut: () => void;
     isAuthenticated: boolean;
     userId?: number;
-    isAdmin?: boolean;
-    isPatient?: boolean;
-    isDoctor: boolean;
-    isDefault: boolean;
-    isMarketing: boolean;
+    role: AccessLevel;
     tenantId: number | undefined;
 
 }

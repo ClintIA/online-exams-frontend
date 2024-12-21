@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
 import {ProfileRole} from "@/types/ProfileRole.ts";
+import {hasAccess} from "@/lib/controlAccessLevel.ts";
 
 interface ProtectedRouteProps {
     children: React.ReactNode;
@@ -19,9 +20,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }
     const user = Cookies.get('user');
     if (tokenFromStorage && user) {
         const decoded: ITokenPayload =  jwtDecode(tokenFromStorage);
-        if(decoded.role === 'master') {
-            return <>{children}</>;
-        } else if (decoded.role === role) {
+        console.log(decoded.role)
+        console.log(role)
+        console.log(hasAccess(decoded.role, role))
+        if(hasAccess(decoded.role, role)) {
             return <>{children}</>;
         } else {
             return <Navigate to="/error-401" state={{ from: location }} replace />;
@@ -29,8 +31,10 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }
     }
     if(auth?.token) {
         const decoded: ITokenPayload =  jwtDecode(auth.token);
-        if(decoded.role === 'master') {
+        if(hasAccess(decoded.role, role)) {
             return <>{children}</>;
+        } else {
+            return <Navigate to="/error-401" state={{ from: location }} replace />;
         }
     }
     if (!auth.isAuthenticated) {

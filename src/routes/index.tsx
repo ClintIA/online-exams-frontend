@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
     },
     {
         path: "/admin",
-        element:  (<ProtectedRoute role={ProfileRole.admin}><AppLayout /> </ProtectedRoute>),
+        element:  (<ProtectedRoute role={ProfileRole.default}><AppLayout /> </ProtectedRoute>),
         errorElement: <Error404 />,
         children: [
             {
@@ -67,11 +67,11 @@ export const router = createBrowserRouter([
             },
             {
                 path:'home',
-                element:(<ProtectedRoute role={ProfileRole.admin}> <AdminHome /> </ProtectedRoute>),
+                element:(<ProtectedRoute role={ProfileRole.default}> <AdminHome /> </ProtectedRoute>),
             },
             {
                 path:'agendamento',
-                element:(<ProtectedRoute  role={ProfileRole.admin}> <AdminBooking /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role={ProfileRole.default}> <AdminBooking /> </ProtectedRoute>),
             },
             {
                 path:'registrar-pacientes',
@@ -79,7 +79,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:'upload-exames',
-                element:(<ProtectedRoute  role={ProfileRole.admin}> <AdminExams /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role={ProfileRole.doctor}> <AdminExams /> </ProtectedRoute>),
             },
             {
                 path:'registrar-exames',
@@ -95,7 +95,12 @@ export const router = createBrowserRouter([
             },
             {
                 path: 'dashboard',
-                element: (<ProtectedRoute  role={ProfileRole.admin}> <AdminDashboard /> </ProtectedRoute>),
+                element: (<ProtectedRoute  role={ProfileRole.marketing}> <AdminDashboard /> </ProtectedRoute>),
+            }
+            ,
+            {
+                path: 'gestao',
+                element: (<ProtectedRoute  role={ProfileRole.marketing}> <AdminDashboard /> </ProtectedRoute>),
             }
         ]
     },
