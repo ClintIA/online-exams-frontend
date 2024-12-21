@@ -20,9 +20,6 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, role }
     const user = Cookies.get('user');
     if (tokenFromStorage && user) {
         const decoded: ITokenPayload =  jwtDecode(tokenFromStorage);
-        console.log(decoded.role)
-        console.log(role)
-        console.log(hasAccess(decoded.role, role))
         if(hasAccess(decoded.role, role)) {
             return <>{children}</>;
         } else {

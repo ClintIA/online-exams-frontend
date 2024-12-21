@@ -12,7 +12,6 @@ import {
 import {useNavigate, Link} from "react-router-dom";
 import React, {useEffect, useState} from "react";
 import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@radix-ui/react-collapsible";
-import {Button} from "@/components/ui/button.tsx";
 import clintiaLogo from "@/assets/logoClintia.png";
 import {List} from "phosphor-react";
 import {hasAccess} from "@/lib/controlAccessLevel.ts";
@@ -52,7 +51,7 @@ const AdminSidebar: React.FC = () => {
     if (location.pathname.includes('/admin/dashboard') || location.pathname.includes('/admin/gestao')) {
       setOpenSections(prev => prev.includes('relatorios') ? prev : [...prev, 'relatorios']);
     }
-  }, [location.pathname]);
+  }, []);
   return (
       <aside
           className={`bg-oxfordBlue text-white w-64 min-h-screen ${menuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out fixed left-0 top-0 z-30`}>
@@ -85,55 +84,61 @@ const AdminSidebar: React.FC = () => {
                 <span>Portal de Exames</span>
               </Link>
             </li>
-            {hasAccess(auth.role, 'admin') && (<li>
+            {hasAccess(auth.role, 'default') && (<li>
               <Collapsible open={isOpen('register')} onOpenChange={() => toggleSection('register')}>
                 <CollapsibleTrigger asChild>
-                  <Button variant="ghost" className="w-full justify-between">
+                  <div className="flex w-full p-2 justify-between">
                     <div className="flex items-center">
                       <MonitorCog className="mr-2" size={24}/>
                       <span>Cadastros</span>
                     </div>
                     {isOpen('register') ? <ChevronDown size={24}/> : <ChevronRight size={24}/>}
-                  </Button>
+                  </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pl-6 space-y-2">
-                  <Link to="/admin/registrar-exames" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                    <Microscope className="mr-2" size={16}/>
-                    <span>Exames</span>
-                  </Link>
-                  <Link to="/admin/registrar-pacientes" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                    <Users className="mr-2" size={16}/>
+                  {hasAccess(auth.role, 'default') &&  (<Link to="/admin/registrar-pacientes" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
+                    <Users className="mr-2" size={12}/>
                     <span>Pacientes</span>
-                  </Link>
-                  <Link to="/admin/registrar-medicos" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                    <Contact2 className="mr-2" size={16}/>
-                    <span>Médicos</span>
-                  </Link>
-                  <Link to="/admin/registrar-admin" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                    <CircleUser className="mr-2" size={16}/>
-                    <span>Administradores</span>
-                  </Link>
+                  </Link>)}
+                  {hasAccess(auth.role, 'admin') && (
+                      <>
+                        <Link to="/admin/registrar-exames" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
+                          <Microscope className="mr-2" size={12}/>
+                          <span>Exames</span>
+                        </Link>
+                        <Link to="/admin/registrar-medicos"
+                               className="flex items-center p-2 rounded-lg hover:bg-gray-700">
+                          <Contact2 className="mr-2" size={12}/>
+                          <span>Médicos</span>
+                        </Link>
+                        <Link to="/admin/registrar-admin"
+                               className="flex items-center p-2 rounded-lg hover:bg-gray-700">
+                          <CircleUser className="mr-2" size={12}/>
+                          <span>Administradores</span>
+                        </Link>
+                      </>
+                  )}
                 </CollapsibleContent>
               </Collapsible>
             </li>)}
             {hasAccess(auth.role, 'marketing') && (<li>
               <Collapsible open={isOpen('relatorios')} onOpenChange={() => toggleSection('relatorios')}>
                 <CollapsibleTrigger asChild>
-                  <Button variant="ghost" className="w-full justify-between">
+                  <div className="flex p-2 w-full justify-between">
                     <div className="flex items-center">
                       <Activity className="mr-2" size={24}/>
                       <span>Relatórios</span>
                     </div>
                     {isOpen('relatorios') ? <ChevronDown size={24}/> : <ChevronRight size={24}/>}
-                  </Button>
+                  </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pl-6 space-y-2">
                   <Link to="/admin/dashboard" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                    <LayoutDashboard className="mr-2" size={16}/>
+                    <LayoutDashboard className="mr-2" size={12}/>
                     <span>Marketing</span>
                   </Link>
                   <Link to="/admin/gestao" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                    <Lightbulb className="mr-2" size={16}/>
+                    <Lightbulb className="mr-2" size={12}/>
                     <span>Gestão</span>
                   </Link>
                 </CollapsibleContent>

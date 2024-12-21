@@ -11,7 +11,7 @@ const AppLayout: React.FC = () => {
 
 
     function HandleSideBar() {
-        if(hasAccess(auth.role, 'admin')) {
+        if(hasAccess(auth.role, 'default')) {
             return <AdminSidebar />
         } else {
             return <Header />
