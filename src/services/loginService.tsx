@@ -3,30 +3,14 @@ import {ILoginAdmin} from "@/types/Auth.ts";
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import apiClient from "@/lib/interceptor.ts";
 
-export const loginAdmin = async (email: string, password: string): Promise<ILoginAdmin | undefined> => {
-     try {
-             const data = {
-                 email: email,
-                 password: password,
-             }
-             const response = await apiClient.post('auth/login/admin', data);
-             return response.data;
-         } catch (error) {
-         if(isAxiosError(error)) {
-             return error.response?.data
-         }
-     }
 
-
-};
-
-export const loginPatient = async (patientCpf: string, password: string): Promise<ILoginAdmin | undefined> => {
+export const loginService = async (user: string, password: string): Promise<ILoginAdmin | undefined> => {
     try {
         const data = {
-            cpf: patientCpf.replace(/[.,-]/g, ''),
+            user: user.replace(/[.,-]/g, ''),
             password: password
         }
-        const response = await apiClient.post('auth/login/patient', data);
+        const response = await apiClient.post('auth/login', data);
         return response.data;
     } catch (error) {
         if(isAxiosError(error)) {

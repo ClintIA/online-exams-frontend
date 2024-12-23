@@ -75,7 +75,7 @@ export const router = createBrowserRouter([
             },
             {
                 path:'registrar-pacientes',
-                element:(<ProtectedRoute  role={ProfileRole.admin}> <AdminPatient /> </ProtectedRoute>),
+                element:(<ProtectedRoute  role={ProfileRole.default}> <AdminPatient /> </ProtectedRoute>),
             },
             {
                 path:'upload-exames',

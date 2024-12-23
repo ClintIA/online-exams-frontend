@@ -146,11 +146,11 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
     const submitUpdateDoctor = async (doctorData: IDoctor,tenantId: number) => {
         if(modalMessage) {
             const result = await updateDoctor(doctorData,tenantId)
-            if (result.status === 201) {
+            if (result.status === 200) {
                 modalMessage('Cadastrado atualizado com sucesso')
                 onClose()
             } else {
-                throw new Error('Não foi possível realizar cadastro: ' + result.message)
+                throw new Error('Não foi possível atualizar cadastro: ' + result.message)
             }
         }
     }

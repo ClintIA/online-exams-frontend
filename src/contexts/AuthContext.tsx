@@ -1,6 +1,6 @@
 import React, {createContext, useEffect, useState} from "react";
 import {IAuthContextType, ILoginAdmin, ITokenPayload, Props} from "../types/Auth.ts";
-import {loginAdmin, loginPatient} from "../services/loginService.tsx";
+import {loginService} from "../services/loginService.tsx";
 import {jwtDecode} from "jwt-decode";
 import Cookies from 'js-cookie';
 import {AccessLevel} from "@/lib/controlAccessLevel.ts";
@@ -36,8 +36,8 @@ const AuthProvider = ({ children }: Props) => {
         }
         checkToken().then()
     },[])
-    const adminLogin = async (email: string,password: string): Promise<ILoginAdmin | undefined> => {
-           const res = await loginAdmin(email, password);
+    const login = async (email: string,password: string): Promise<ILoginAdmin | undefined> => {
+           const res = await loginService(email, password);
            if(res?.status === 'success') {
                if (res?.data?.token) {
                    const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
@@ -51,21 +51,6 @@ const AuthProvider = ({ children }: Props) => {
            }
            return res
     };
-    const patientLogin = async (cpf: string, password: string): Promise<ILoginAdmin | undefined> => {
-        const res = await loginPatient(cpf,password);
-        if(res?.status === 'success') {
-            if (res?.data?.token) {
-                const decoded: ITokenPayload = jwtDecode(res.data.token) as ITokenPayload;
-                saveStorage(decoded, res.data.token)
-                setToken(res.data.token);
-                setIsAuthenticated(true)
-                setRole(decoded.role)
-                setUserId(decoded.userId)
-                setTenantID(decoded.tenantId)
-            }
-        }
-        return res
-    };
     const logOut =  () => {
             Cookies.remove("token")
             Cookies.remove("user")
@@ -76,7 +61,7 @@ const AuthProvider = ({ children }: Props) => {
     }
 
     return (
-        <AuthContext.Provider value={{ tenantId, isAuthenticated, role, token, adminLogin, patientLogin, logOut, userId }}>
+        <AuthContext.Provider value={{ tenantId, isAuthenticated, role, token, login, logOut, userId }}>
             {children}
         </AuthContext.Provider>
     );

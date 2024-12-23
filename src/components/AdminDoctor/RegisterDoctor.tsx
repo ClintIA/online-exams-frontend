@@ -27,6 +27,7 @@ export interface IDoctor {
     cnpj?: string;
     phone?: string;
     fullName?: string;
+    email?: string;
     occupation?: string;
     sessionToken?: string;
     created_at?: string;
@@ -43,6 +44,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
         cpf: '',
         CRM:'',
         occupation: '',
+        email: '',
         exams: [],
         cnpj: '',
 
@@ -134,6 +136,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
                     cpf: '',
                     occupation: '',
                     cep: '',
+                    email: '',
                     cnpj: ''
                 })
                 setSelectedExame([])
@@ -159,11 +162,12 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
                 </CardHeader>
                 <CardContent>
                     <form onSubmit={handleSubmit} className="space-y-2">
-                        <div>
-                            <Label htmlFor="fullName" className="flex text-right text-blue-800 mb-2">
-                                Nome <CircleAlert className="ml-2" size={12} color={'red'}/>
-                            </Label>
-                            <span className="flex flex-col col-span-3">
+                        <div className="grid grid-cols-2 gap-2">
+                            <div>
+                                <Label htmlFor="fullName" className="flex text-right text-blue-800 mb-2">
+                                    Nome <CircleAlert className="ml-2" size={12} color={'red'}/>
+                                </Label>
+                                <span className="flex flex-col col-span-3">
                                    <Input
                                        id="fullName"
                                        name="fullName"
@@ -171,9 +175,30 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
                                        value={doctorData.fullName}
                                        onChange={handleInputChange}
                                    />
-                                       <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1" size={12}/> Nome completo conforme registro profissional.</span>
+                                       <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1"
+                                                                                                     size={12}/> Nome completo conforme registro profissional.</span>
                                    </span>
+                            </div>
+                            <div>
+                                <div>
+                                    <Label htmlFor="cpf" className="flex text-right text-blue-800 mb-2">
+                                        CPF <CircleAlert className="ml-2" size={12} color={'red'}/>
+                                    </Label>
+                                    <span className="flex flex-col col-span-3">
+                                    <Input
+                                        id="cpf"
+                                        name="cpf"
+                                        type="text"
+                                        value={doctorData?.cpf}
+                                        onChange={handleInputChange}
+                                        className="col-span-3"/>
+                                    <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1"
+                                                                                                  size={12}/> CPF: Número de identificação pessoa física.</span>
+                                   </span>
+                                </div>
+                            </div>
                         </div>
+
                         <div className="grid grid-cols-2 gap-2">
                             <div>
                                 <Label htmlFor="CRM" className="flex text-right text-blue-800 mb-2">
@@ -188,12 +213,13 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
                                     value={doctorData?.CRM}
                                     onChange={handleInputChange}
                                 />
-                                     <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1" size={12}/>Certificado de Registro Médico.</span>
+                                     <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1"
+                                                                                                   size={12}/>Certificado de Registro Médico.</span>
                                 </span>
                             </div>
                             <div>
                                 <Label htmlFor="occupation" className="flex text-right text-blue-800 mb-2">
-                                    Ocupação  <CircleAlert className="ml-2" size={12} color={'red'}/>
+                                    Ocupação <CircleAlert className="ml-2" size={12} color={'red'}/>
                                 </Label>
                                 <span className="flex flex-col">
                                 <Input
@@ -210,21 +236,21 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
                         </div>
                         <div className="grid grid-cols-2 gap-2">
                             <div>
-                                <Label htmlFor="cpf" className="flex text-right text-blue-800 mb-2">
-                                    CPF <CircleAlert className="ml-2" size={12} color={'red'}/>
+                                <Label htmlFor="fullName" className="flex text-right text-blue-800 mb-2">
+                                    E-mail <CircleAlert className="ml-2" size={12} color={'red'}/>
                                 </Label>
                                 <span className="flex flex-col col-span-3">
-                                    <Input
-                                    id="cpf"
-                                    name="cpf"
-                                    type="text"
-                                    value={doctorData?.cpf}
-                                    onChange={handleInputChange}
-                                    className="col-span-3"/>
-                                    <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1" size={12}/> CPF: Número de identificação pessoa física.</span>
+                                   <Input
+                                       id="email"
+                                       name="email"
+                                       type="text"
+                                       value={doctorData.email}
+                                       onChange={handleInputChange}
+                                   />
+                                       <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo className="mr-1"
+                                                                                                     size={12}/> E-mail para acesso a plataforma.</span>
                                    </span>
                             </div>
-
                             <div>
                                 <Label htmlFor="email" className="flex text-right text-blue-800 mb-2">
                                     CNPJ
@@ -270,7 +296,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
                                     type="tel"
                                     value={doctorData.cep}
                                     onChange={handleInputChange}
-                                    />
+                                />
                                     <span className="flex text-xs text-gray-500 mt-2"> <BadgeInfo
                                         className="mr-1" size={12}/> CEP do endereço residencial.</span>
                                    </span>
@@ -299,15 +325,15 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
                             <div className="grid gap-2">
                                 <MultiSelect
                                     options={exames}
-                                        atribbute="exam_name"
-                                        onValueChange={handleSelectedExames}
-                                        defaultValue={examesIDs}
-                                        placeholder="Selecione o(s) exame(s)"
-                                        variant="inverted"
-                                        className="max-w-xl"
-                                    />
-                                </div>
-                            )}
+                                    atribbute="exam_name"
+                                    onValueChange={handleSelectedExames}
+                                    defaultValue={examesIDs}
+                                    placeholder="Selecione o(s) exame(s)"
+                                    variant="inverted"
+                                    className="max-w-xl"
+                                />
+                            </div>
+                        )}
 
                         <div className="flex justify-end mt-6">
                             {isDoctor && (
