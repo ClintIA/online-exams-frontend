@@ -31,7 +31,6 @@ const AuthProvider = ({ children }: Props) => {
                 setUserId(decoded.userId)
                 setTenantID(decoded.tenantId)
                 setRole(decoded.role)
-
             }
         }
         checkToken().then()

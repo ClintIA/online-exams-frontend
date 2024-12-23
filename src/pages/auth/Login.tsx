@@ -29,15 +29,7 @@ const Login: React.FC = () => {
             return;
         }
 
-        const isEmail = identifier.includes('@');
-        
-        let result;
-        if (isEmail) {
-            result = await auth.adminLogin(identifier, password);
-        } else {
-            result = await auth.patientLogin(identifier, password);
-        }
-
+        const result = await auth.login(identifier, password);
         if (!result) {
             setErrorMessage('Erro ao realizar login');
             setIsErrorModalOpen(true);
@@ -51,7 +43,7 @@ const Login: React.FC = () => {
         }
 
         if (result.status === "success" && result.data !== null) {
-            if (isEmail) {
+            if (identifier.includes('@')) {
                 return navigate('/admin/home');
             } else {
                 setCpf(identifier);
