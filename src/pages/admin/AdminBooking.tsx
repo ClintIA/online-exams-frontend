@@ -5,8 +5,6 @@ import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import {confirmPatientExam, listPatientExams} from "@/services/patientExamService.tsx";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import BookingList from "@/components/Booking/BookingList.tsx";
@@ -20,7 +18,6 @@ const AdminBooking: React.FC = () =>  {
 
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
-    const [tenantId, setTenantID] = useState<number | undefined>()
     const [exams, setExams] = useState<IPatientExam[]>([])
     const [title, setTitle] = useState<string>("")
     const [date, setDate] = useState(new Date().toISOString())
@@ -42,7 +39,6 @@ const AdminBooking: React.FC = () =>  {
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const auth = useAuth()
-
     const openFlexiveModal = (title: string, modalType: ModalType, paciente?: DadosPaciente) => {
         if(paciente) {
             setDadosPaciente(paciente)
@@ -51,21 +47,13 @@ const AdminBooking: React.FC = () =>  {
         setTitle(title)
         setOpenModalNewPatient(true)
     }
-    useEffect(() => {
-        const getTenant = () => {
-            if (auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenantID(decoded.tenantId)
-            }
-        }
-        getTenant()
-    }, [auth.token])
+
 
     const fetchPatientExams = useCallback(async (newDate: string) => {
         try {
-            if (tenantId) {
+            if (auth.tenantId) {
                 setLoading(true)
-                const result = await listPatientExams(tenantId, {
+                const result = await listPatientExams(auth.tenantId, {
                     startDate: newDate,
                     endDate: newDate,
                     status: 'Scheduled'
@@ -80,7 +68,7 @@ const AdminBooking: React.FC = () =>  {
             setLoading(false)
             console.error(error)
         }
-    }, [tenantId])
+    }, [auth.tenantId])
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target
         setDate(value)
@@ -105,8 +93,8 @@ const AdminBooking: React.FC = () =>  {
     }
     const handlePresence  = async (examId: number, presence: boolean | null) => {
         try {
-            if(tenantId) {
-                const result = await confirmPatientExam(tenantId, examId, presence)
+            if(auth.tenantId) {
+                const result = await confirmPatientExam(auth.tenantId, examId, presence)
                 if(result) {
                     if(presence === null) {
                         handleModalMessage('Paciente Cancelado')
@@ -172,7 +160,7 @@ const AdminBooking: React.FC = () =>  {
                 isStepper={true}
                 dadosPaciente={dadosPaciente}
                 onClose={handleClose}
-                modalNewPatient={handleModalMessage}
+                modalMessage={handleModalMessage}
                 modalNewBookingConfirmation={handleConfirmationBooking}
             />}
             <GeneralModal

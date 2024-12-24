@@ -3,10 +3,16 @@ import styles from './Header.module.css';
 import {Flask, List, SignOut, UserCircleGear} from 'phosphor-react';
 import {NavLink} from 'react-router-dom';
 import clintiaLogo from '../../assets/logoClintia.png';
+import {useAuth} from "@/hooks/auth.tsx";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const auth = useAuth();
 
+  const logout = () => {
+    auth.logOut()
+    setMenuOpen(false)
+  }
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
   };
@@ -30,11 +36,10 @@ export function Header() {
             <UserCircleGear className={styles.icon}  />
             Dados Cadastrais
           </NavLink>
-          <NavLink to="/login" title="Sair" onClick={() => setMenuOpen(false)}>
+          <NavLink to="/login" title="Sair" onClick={logout}>
             <SignOut className={styles.icon}  />
             Sair
           </NavLink>
-          {/* Adicione mais itens de menu aqui */}
         </nav>
       </aside>
     </>

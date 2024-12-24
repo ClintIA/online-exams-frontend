@@ -5,6 +5,7 @@ import {ModalEditDados} from './ModalEditDados';
 import {getPatientData, PatientData} from '@/api/patient-dados.ts';
 import {useCpf} from '../../hooks/useCpf';
 import {useAuth} from '../../hooks/auth';
+import Cookies from "js-cookie";
 
 type PersonalInfo = {
   label: string;
@@ -22,8 +23,11 @@ export function PersonalInfoTable() {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        const response = await getPatientData(Number(userId),cpf);
+        const response = await getPatientData(Number(userId),cpf.replace(/\D/g, ''));
         const data: PatientData = response.data;
+        if(data) {
+          Cookies.set('cpf', data.cpf);
+        }
 
         // Atualiza personalInfoData com as informações do paciente
         const updatedPersonalInfoData: PersonalInfo[] = [

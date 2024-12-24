@@ -5,20 +5,18 @@ import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
-import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
-import {listDoctors} from "@/services/adminsService.tsx";
 import {IExam} from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
+import {listDoctors} from "@/services/doctorService.ts";
+import {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
 
 interface RegisterExamProps {
     dadosIniciais?: Exams
     title: string
-    isUpdate?: (examData: IExam, tenant: number) => Promise<any>
-    isNewExam?: (examData: IExam, tenant: number) => Promise<any>
+    isUpdate?: (examData: IExam, tenant: number) => Promise<void>
+    isNewExam?: (examData: IExam, tenant: number) => Promise<void>
 }
 const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, isUpdate, isNewExam}) => {
 
@@ -27,34 +25,22 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
         price: '',
         doctorPrice: ''
     });
-    const [tenantId, setTenantID] = useState<number | undefined>()
-    const [selectedDoctors, setSelectedDoctors] = useState<string[] | undefined>([]);
-    const [doctors, setDoctors] = useState<IAdmin[]>([])
+    const [selectedDoctors, setSelectedDoctors] = useState<string[]>();
+    const [doctors, setDoctors] = useState<IDoctor[]>([])
     const [erro, setErro] = useState<string | null>(null)
     const [doctorIDs, setDoctorsIDs] = useState<string[]>([])
     const auth = useAuth()
-
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenantID(decoded.tenantId)
-            }
-        }
-        getTenant()
-    },[auth.token])
 
     useEffect(() => {
         const getDoctorsId = () => {
             if(dadosIniciais) {
                 dadosIniciais.doctors?.map(doctor => {
                     if(doctor) {
-                        doctorIDs.push(doctor.id.toString())
+                            doctorIDs.push(doctor.id.toString())
                     }
                 })
                 setDoctorsIDs(doctorIDs)
             }
-
         }
         getDoctorsId()
         setSelectedDoctors(doctorIDs)
@@ -64,11 +50,11 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
             ...prevDados,
             ...newDados
         }))
-    }, [dadosIniciais, doctorIDs, examData])
+    }, [dadosIniciais])
     const fetchDoctors = useCallback(async () => {
         try {
-            if(tenantId)  {
-                await listDoctors(tenantId).then(
+            if(auth.tenantId)  {
+                await listDoctors(auth.tenantId).then(
                     (result) => {
                         setDoctors(result.data.data.data)
                     }
@@ -78,7 +64,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
         } catch (error) {
             setErro('Erro ao carregar médicos' + error)
         }
-    }, [tenantId])
+    }, [auth.tenantId])
     useEffect(() => {
     fetchDoctors().then()
     }, [fetchDoctors]);
@@ -88,8 +74,8 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
         const { name, value } = e.target
         setExamData(prev => ({ ...prev, [name]: value }))
     }
-    const handleSelectedDoctors = (doctors: string[]) => {
-        setSelectedDoctors(doctors)
+    const handleSelectedDoctors = (doctorIDs: string[]) => {
+        setSelectedDoctors(doctorIDs)
     }
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -103,23 +89,18 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
             doctors: selectedDoctors,
         }
 
-        if(isUpdate && tenantId) {
-                await isUpdate(newExam, tenantId)
-                    .then(
-                    (result) => {
-                        if(!result) {
-                            setErro('Não foi possível atualizar exame')
-                            return
-                        }
-                    }
-                )
+        if(isUpdate && auth.tenantId) {
+
+                await isUpdate(newExam, auth.tenantId).catch((error) => {
+                    setErro(error)
+                    console.log(error)
+                })
             return
         }
-        if(isNewExam && tenantId) {
-            await isNewExam(newExam, tenantId).catch((error) => {
+        if(isNewExam && auth.tenantId) {
+            await isNewExam(newExam, auth.tenantId).catch((error) => {
                 setErro(error)
                 console.log(error)
-
             })
             return
         }

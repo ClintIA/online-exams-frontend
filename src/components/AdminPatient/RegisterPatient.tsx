@@ -24,6 +24,7 @@ export interface DadosPaciente {
     canal?: string
     gender?: string
     exams?: any[]
+    role?: string
     sessionToken?: string
     created_at?: string
     health_card_number?: string

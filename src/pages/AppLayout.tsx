@@ -1,28 +1,17 @@
 import { Header } from "@/components/patient/Header.tsx";
 import { useAuth } from "@/hooks/auth.tsx";
 import AdminSidebar from "@/pages/admin/AdminSidebar.tsx";
-import { ITokenPayload } from "@/types/Auth.ts";
-import { jwtDecode } from "jwt-decode";
-import React, { useEffect, useState } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import React from "react";
+import { Outlet } from "react-router-dom";
+import {hasAccess} from "@/lib/controlAccessLevel.ts";
 
 
 const AppLayout: React.FC = () => {
-    const [isAdmin, setIsAdmin ] = useState<boolean | undefined>(false);
-    const navigate = useNavigate();
     const auth = useAuth();
 
-    useEffect(() => {
-        const getAccess = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setIsAdmin(decoded.isAdmin)
-            }
-        }
-        getAccess()
-    },[auth, isAdmin, navigate])
-    function HandleSideBar({ isAdmin }: { isAdmin: boolean | undefined }) {
-        if(isAdmin) {
+
+    function HandleSideBar() {
+        if(hasAccess(auth.role, 'default')) {
             return <AdminSidebar />
         } else {
             return <Header />
@@ -32,7 +21,7 @@ const AppLayout: React.FC = () => {
     return (
         <div className="flex h-screen">
             <div>
-                <HandleSideBar isAdmin={isAdmin}/>
+                <HandleSideBar/>
             </div>
             <div className="flex-1 overflow-y-auto md:ml-64">
                 <Outlet/>

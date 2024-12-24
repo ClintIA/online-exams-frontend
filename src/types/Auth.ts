@@ -1,4 +1,6 @@
 import React from "react";
+import {ProfileRole} from "@/types/ProfileRole.ts";
+import {AccessLevel} from "@/lib/controlAccessLevel.ts";
 
 export interface ILoginAdmin {
     status: string;
@@ -9,19 +11,18 @@ export interface ILoginAdmin {
 }
 export type IAuthContextType = {
     token?: string;
-    patientLogin: (cpf: string, password: string) => Promise<ILoginAdmin | undefined>;
-    adminLogin: (email: string, password:string) => Promise<ILoginAdmin | undefined>;
+    login: (user: string, password:string) => Promise<ILoginAdmin | undefined>;
     logOut: () => void;
     isAuthenticated: boolean;
     userId?: number;
-    isAdmin?: boolean;
-    isPatient?: boolean;
+    role: AccessLevel;
+    tenantId: number | undefined;
 
 }
 export interface ITokenPayload {
     userId: number;
     tenantId?: number;
-    isAdmin: boolean;
+    role: ProfileRole;
     exp: number;
     iat: number;
 }

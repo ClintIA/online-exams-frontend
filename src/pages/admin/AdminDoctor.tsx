@@ -8,16 +8,15 @@ import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import React, {useCallback, useEffect, useState} from "react";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
 import {ModalType} from "@/types/ModalType.ts";
-import {deleteDoctor, listDoctors} from "@/services/adminsService.tsx";
-import {IAdmin} from "@/pages/admin/AdminHome.tsx";
 import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
+import {IAdmin} from "@/types/dto/Admin.ts";
+import {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
+import {deleteDoctor, listDoctors} from "@/services/doctorService.ts";
 
 const AdminDoctor: React.FC = () => {
 
@@ -26,12 +25,11 @@ const AdminDoctor: React.FC = () => {
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
-    const [doctors,setDoctors] = useState<IAdmin[]>([]);
+    const [doctors,setDoctors] = useState<IDoctor[]>([]);
     const [filtroName, setFiltroName] = useState<string>('')
     const [filtroCRM, setFiltroCRM] = useState<string>('')
     const [deleteId, setDeleteId] = useState<number>()
-    const [doctor, setDoctor] = useState<IAdmin>()
-    const [tenant, setTenant] = useState<number | undefined>()
+    const [doctor, setDoctor] = useState<IDoctor>()
     const [doctorsPagination, setDoctorsPagination] = useState({ total: 0, page: 1, take: 1000, skip: 0, remaining: 0 })
     const [openModalNewPatient, setOpenModalNewPatient] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
@@ -39,7 +37,7 @@ const AdminDoctor: React.FC = () => {
     const auth = useAuth()
 
 
-    const openFlexiveModal = (modalType: ModalType, doctor?: IAdmin) => {
+    const openFlexiveModal = (modalType: ModalType, doctor?: IDoctor) => {
         if(doctor) {
             setDoctor(doctor)
         }
@@ -47,20 +45,12 @@ const AdminDoctor: React.FC = () => {
         setType(modalType)
         setOpenModalNewPatient(true)
     }
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenant(decoded.tenantId)
-            }
-        }
-        getTenant()
-    },[auth.token])
+
     const fetchDoctors = useCallback(async () => {
         try {
-            if (tenant) {
+            if (auth.tenantId) {
                 setLoading(true)
-                const result = await listDoctors(tenant, doctorsPagination.take)
+                const result = await listDoctors(auth.tenantId, doctorsPagination.take)
                 setLoading(false)
                 if (result?.data.status === "success") {
                     const doctorsList = result?.data?.data?.data as IAdmin[]
@@ -71,7 +61,7 @@ const AdminDoctor: React.FC = () => {
         } catch (error) {
             console.error(error)
         }
-    },[doctorsPagination.take, tenant])
+    },[auth.tenantId, doctorsPagination.take])
     useEffect(() => {
         fetchDoctors().then()
     }, [fetchDoctors]);
@@ -93,8 +83,8 @@ const AdminDoctor: React.FC = () => {
     }
     const handleDeletePatient = async () => {
         try {
-            if(deleteId && tenant) {
-            await deleteDoctor(deleteId,tenant).then(
+            if(deleteId && auth.tenantId) {
+            await deleteDoctor(deleteId,auth.tenantId).then(
                     (result) => {
                         if (result.message && result.message.includes('FK_')) {
                             handleModalMessage('Não é possível deletar um médico com agendamento pendente')
@@ -121,8 +111,7 @@ const AdminDoctor: React.FC = () => {
         <>
             <TableCell className="text-oxfordBlue font-bold">{doctor.fullName}</TableCell>
             <TableCell className="text-blue-900">{doctor.cpf}</TableCell>
-            <TableCell className="text-blue-900">{doctor.CRM}</TableCell>
-            <TableCell className="text-blue-900">{doctor.occupation}</TableCell>
+            <TableCell className="text-blue-900">{doctor.cep}</TableCell>
             <TableCell className="text-blue-900">{doctor.email}</TableCell>
             <TableCell className="text-blue-900">{doctor.phone}</TableCell>
             <TableCell className="text-blue-900">{doctor.created_at ? format(doctor.created_at, "dd/MM/yyyy", { locale: ptBR }) : ''}</TableCell>
@@ -170,8 +159,7 @@ const AdminDoctor: React.FC = () => {
                             <TableRow>
                                 <TableHead className="text-oxfordBlue">Nome</TableHead>
                                 <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                <TableHead className="text-oxfordBlue">CRM</TableHead>
-                                <TableHead className="text-oxfordBlue">Ocupação</TableHead>
+                                <TableHead className="text-oxfordBlue">CEP</TableHead>
                                 <TableHead className="text-oxfordBlue">Email</TableHead>
                                 <TableHead className="text-oxfordBlue">Contato</TableHead>
                                 <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
@@ -184,12 +172,12 @@ const AdminDoctor: React.FC = () => {
             </Card>
 
             {openModalNewPatient && <ModalRender
-                modalNewPatient={handleModalMessage}
+                modalMessage={handleModalMessage}
                 isOpen={openModalNewPatient}
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}
                 title="Gerenciamento de Médicos"
-                adminData={doctor}
+                data={doctor}
             />}
 
             <GeneralModal
