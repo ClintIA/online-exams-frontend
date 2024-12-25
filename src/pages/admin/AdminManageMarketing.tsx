@@ -102,8 +102,11 @@ const AdminManageMarketing: React.FC = () => {
                     <div className="flex items-center">
                         <Input
                             type="text"
-                            value={totalBudget}
-                            onChange={(e) => setTotalBudget(Number(e.target.value))}
+                            value={`R$ ${totalBudget.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                            onChange={(e) => {
+                                const value = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
+                                setTotalBudget(Number(value));
+                            }}
                             className="mr-2"
                         />
                         <Button onClick={() => setTotalBudget(totalBudget)}>Atualizar</Button>
@@ -127,8 +130,8 @@ const AdminManageMarketing: React.FC = () => {
                                     type="text"
                                     value={allocation.formattedAmount}
                                     onChange={(e) => {
-                                        const value = e.target.value.replace(/[^0-9]/g, '');
-                                        updateAllocation(allocation.platform, Number(value) / 100);
+                                        const value = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
+                                        updateAllocation(allocation.platform, Number(value));
                                     }}
                                     className="mr-2"
                                 />
