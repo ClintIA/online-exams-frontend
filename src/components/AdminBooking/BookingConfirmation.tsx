@@ -1,7 +1,7 @@
 import React from 'react'
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {Exams} from "@/components/Booking/RegisterBooking.tsx";
+import {Exams} from "@/components/AdminBooking/RegisterBooking.tsx";
 import {CalendarDays, Clock, FileText, User} from "lucide-react";
 import {ModalType} from "@/types/ModalType.ts";
 

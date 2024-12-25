@@ -7,7 +7,7 @@ import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import {confirmPatientExam, listPatientExams} from "@/services/patientExamService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
-import BookingList from "@/components/Booking/BookingList.tsx";
+import BookingList from "@/components/AdminBooking/BookingList.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import { formatDate} from "@/lib/utils.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";

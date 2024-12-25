@@ -283,7 +283,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                        <SelectContent>
                                            {canaisOptions.map((canal) => (
                                                <SelectItem key={canal.id} value={canal.id}>
-                                                   {canal.name}
+                                                   {canal.platform}
                                                </SelectItem>
                                            ))}
                                        </SelectContent>

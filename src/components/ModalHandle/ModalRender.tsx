@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react'
 import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {registerPatient} from "@/services/loginService.tsx";
-import RegisterBooking, {DadosBooking} from "@/components/Booking/RegisterBooking.tsx";
+import RegisterBooking, {DadosBooking} from "@/components/AdminBooking/RegisterBooking.tsx";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
 import {registerBookingWithPatient, registerPatientExam} from "@/services/patientExamService.tsx";
 import {updatePatient} from "@/services/patientService.tsx";
-import RegisterBookingAndPatient, {BookingWithPatient} from "@/components/Booking/RegisterBookingAndPatient.tsx";
-import BookingConfirmation, {BookingConfirmationState} from "@/components/Booking/BookingConfirmation.tsx";
+import RegisterBookingAndPatient, {BookingWithPatient} from "@/components/AdminBooking/RegisterBookingAndPatient.tsx";
+import BookingConfirmation, {BookingConfirmationState} from "@/components/AdminBooking/BookingConfirmation.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {registerAdmin, updateAdmin} from "@/services/adminsService.tsx";
 import RegisterAdmin from "@/components/AdminRegister/RegisterAdmin.tsx";

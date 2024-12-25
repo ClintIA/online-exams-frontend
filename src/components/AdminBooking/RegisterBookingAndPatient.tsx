@@ -19,7 +19,7 @@ import {ModalType} from "@/types/ModalType.ts";
 import {Spinner} from "@/components/ui/Spinner.tsx";
 import {canaisOptions, genderOptions} from "@/lib/optionsFixed.ts";
 import {isAxiosError} from "axios";
-import {DadosBooking} from "@/components/Booking/RegisterBooking.tsx";
+import {DadosBooking} from "@/components/AdminBooking/RegisterBooking.tsx";
 
 export interface Exams {
     id: number
@@ -421,7 +421,8 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
                                                     onChange={handleInputChange}
                                                     className="form-radio h-4 w-4 text-blue-800 focus:ring-blue-800 border-gray-300"
                                                 />
-                                                <span className="w-max text-sm text-blue-800">{option.label}</span>
+                                                <span
+                                                    className="w-max text-sm text-blue-800">{option.label}</span>
                                             </label>
                                         ))}
                                     </div>
@@ -436,7 +437,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
                                         <SelectContent>
                                             {canaisOptions.map((canal) => (
                                                 <SelectItem key={canal.id} value={canal.id}>
-                                                    {canal.name}
+                                                    {canal.platform}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>
