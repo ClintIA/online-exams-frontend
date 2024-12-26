@@ -13,6 +13,7 @@ import RegisterAdmin from "@/components/AdminRegister/RegisterAdmin.tsx";
 import RegisterDoctor, {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
 import {IAdmin} from "@/types/dto/Admin.ts";
 import {registerDoctor, updateDoctor} from "@/services/doctorService.ts";
+import RegisterCanal, {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
 
 
 interface ModalRegisterProps {
@@ -22,7 +23,7 @@ interface ModalRegisterProps {
     modalNewBookingConfirmation?: (message: string) => void;
     modalMessage?: (message: string) => void;
     dadosPaciente?: DadosPaciente
-    data?: IAdmin | IDoctor
+    data?: IAdmin | IDoctor | IMarketing
     type: ModalType
     isDoctor?: boolean
     isStepper?: boolean
@@ -66,6 +67,12 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         } catch (error) {
             console.log(error)
         }
+    }
+    const submitNewCanal = async (canalData: IMarketing, tenantId: number) => {
+        console.log(canalData, tenantId)
+    }
+    const updateNewCanal = async (canalData: IMarketing, tenantId: number) => {
+        console.log(canalData, tenantId)
     }
     const submitBookintWithPatient = async (bookingDataWithPatient: BookingWithPatient, tenantId: number) => {
         try {
@@ -175,6 +182,10 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
                 return(<RegisterAdmin isAdmin={submitNewAdmin} />)
             case 'editAdmin':
                 return(<RegisterAdmin dadosIniciais={data} isUpdate={submitUpdateAdmin} />)
+            case 'newCanal':
+                return(<RegisterCanal isCanal={submitNewCanal}/>)
+            case 'editCanal':
+                return(<RegisterCanal dadosIniciais={data} isUpdate={updateNewCanal}/>)
 
 
         }

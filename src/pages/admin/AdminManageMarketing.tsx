@@ -93,7 +93,6 @@ const AdminManageMarketing: React.FC = () => {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">Gerenciamento Financeiro do Marketing</h1>
-
             <Card className="mb-4">
                 <CardHeader>
                     <CardTitle>Total Budget</CardTitle>
@@ -118,7 +117,7 @@ const AdminManageMarketing: React.FC = () => {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex justify-between"> DISTRIBUIÇÃO DO ORÇAMENTO POR CANAL
-                            <Button onClick={() => openFlexiveModal(ModalType.newDoctorAdmin)}
+                            <Button onClick={() => openFlexiveModal(ModalType.newCanal)}
                                     className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Gerenciar Canais</Button>
                         </CardTitle>
                     </CardHeader>
