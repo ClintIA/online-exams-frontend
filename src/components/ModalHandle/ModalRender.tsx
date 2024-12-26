@@ -185,7 +185,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             case 'newCanal':
                 return(<RegisterCanal isCanal={submitNewCanal}/>)
             case 'editCanal':
-                return(<RegisterCanal dadosIniciais={data} isUpdate={updateNewCanal}/>)
+                return(<RegisterCanal isUpdate={updateNewCanal}/>)
 
 
         }
