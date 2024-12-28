@@ -71,7 +71,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
     const submitNewCanal = async (canalData: IMarketing, tenantId: number) => {
         console.log(canalData, tenantId)
     }
-    const updateNewCanal = async (canalData: IMarketing, tenantId: number) => {
+    const submitUpdateNewCanal = async (canalData: IMarketing, tenantId: number) => {
         console.log(canalData, tenantId)
     }
     const submitBookintWithPatient = async (bookingDataWithPatient: BookingWithPatient, tenantId: number) => {
@@ -183,10 +183,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             case 'editAdmin':
                 return(<RegisterAdmin dadosIniciais={data} isUpdate={submitUpdateAdmin} />)
             case 'newCanal':
-                return(<RegisterCanal isCanal={submitNewCanal}/>)
-            case 'editCanal':
-                return(<RegisterCanal isUpdate={updateNewCanal}/>)
-
+                return(<RegisterCanal isUpdate={submitUpdateNewCanal} isCanal={submitNewCanal}/>)
 
         }
     }
