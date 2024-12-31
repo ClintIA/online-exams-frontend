@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js'
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import {Input} from "@/components/ui/input"
@@ -31,7 +31,7 @@ const AdminManageMarketing: React.FC = () => {
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const { toast } = useToast()
     const auth = useAuth()
-    const fetchCanal = async () => {
+    const fetchCanal = useCallback(async () => {
         if (auth.tenantId) {
             const result = await listCanalMarketing(auth.tenantId)
 
@@ -40,10 +40,9 @@ const AdminManageMarketing: React.FC = () => {
             }
 
         }
-    }
+    },[])
     useEffect(   () => {
-
-        fetchCanal().then()
+    fetchCanal().then()
     }, [fetchCanal]);
     useEffect(() => {
         const fetchBudget = async () => {
@@ -178,7 +177,6 @@ const AdminManageMarketing: React.FC = () => {
                         <div className="flex justify-between mt-8">
                             <p><strong>Total Distribuído:</strong> R$ {calculateTotalAllocation()}</p>
                             <p><strong>Orçamento Restante:</strong> R$ {(totalBudget - calculateTotalAllocation()).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-
                         </div>
                     </CardContent>
                 </Card>
@@ -243,6 +241,7 @@ const AdminManageMarketing: React.FC = () => {
                 onClose={() => setOpenModalModalPlatform(false)}
                 type={type}
                 title="Gerenciamento de Canais"
+                totalBudget={totalBudget}
             />}
             <GeneralModal
                 onClose={onClose}

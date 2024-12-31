@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {Button} from "@/components/ui/button.tsx"
 import {Input} from "@/components/ui/input.tsx"
 import {Label} from "@/components/ui/label.tsx"
@@ -11,7 +11,9 @@ import {jwtDecode} from "jwt-decode";
 import {useAuth} from "@/hooks/auth.tsx";
 import {validarDataNascimento, validarEmail, validarTelefone} from "@/lib/utils.ts";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx";
-import {canaisOptions, genderOptions} from "@/lib/optionsFixed.ts";
+import {genderOptions} from "@/lib/optionsFixed.ts";
+import {listCanalMarketing} from "@/services/marketingService.ts";
+import {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
 
 export interface DadosPaciente {
     id?: number
@@ -54,13 +56,27 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
     const [tenant, setTenant] = useState<number | undefined>(undefined)
     const [erro, setErro] = useState<string | null>(null)
     const [selectedCanal, setSelectedCanal] = useState<string | undefined>('')
+    const [canal, setCanal] = useState<IMarketing[]>([])
+
     const auth = useAuth()
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setDadosPaciente(prev => ({ ...prev, [name]: value }))
     }
+    const fetchCanal = useCallback(async () => {
+        if (auth.tenantId) {
+            const result = await listCanalMarketing(auth.tenantId)
 
+            if (result.data) {
+                setCanal(result.data.data)
+            }
+
+        }
+    }, [auth.tenantId])
+    useEffect(   () => {
+        fetchCanal().then()
+    }, [fetchCanal]);
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
@@ -281,9 +297,9 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                            <SelectValue placeholder="Selecione o Canal de Captação"/>
                                        </SelectTrigger>
                                        <SelectContent>
-                                           {canaisOptions.map((canal) => (
-                                               <SelectItem key={canal.id} value={canal.id}>
-                                                   {canal.platform}
+                                           {canal.map((canal) => (
+                                               <SelectItem key={canal.id} value={canal.id ? canal.id.toString() : ''}>
+                                                   {canal.canal}
                                                </SelectItem>
                                            ))}
                                        </SelectContent>
