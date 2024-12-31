@@ -7,8 +7,8 @@ import { listCanalMarketing} from "@/services/marketingService.ts";
 
 export interface IMarketing {
     id?: number
-    canal?: string
-    budgetCanal?: number
+    canal: string
+    budgetCanal: string
     createdBy?: number
     uploadBy?: number
 }
@@ -23,7 +23,7 @@ const RegisterCanal: React.FC<RegisterCanalProps> = ({ isCanal, isUpdate }:Regis
     const [updateCanalData, setUpdateCanalData] = useState<IMarketing>({} as IMarketing)
     const [newCanalData,setNewCanalData] = useState<IMarketing>({
         canal: '',
-        budgetCanal: 0
+        budgetCanal: ''
     })
     const [listCanal, setListCanal] = useState<IMarketing[]>([])
     const auth = useAuth();
@@ -52,15 +52,23 @@ const RegisterCanal: React.FC<RegisterCanalProps> = ({ isCanal, isUpdate }:Regis
     const handleNewCanalSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
         if(isCanal && auth.tenantId) {
-            console.log({...newCanalData, uploadBy: auth.userId})
-            await isCanal({...newCanalData, uploadBy: auth.userId}, auth.tenantId).catch((error) => console.log(error))
+            const newCanal = {...newCanalData,
+                budgetCanal: newCanalData.budgetCanal.replace(',', '.'),
+                uploadBy: auth.userId,
+                createdBy: auth.userId
+            }
+            await isCanal(newCanal, auth.tenantId)
+                .catch((error) => console.log(error))
         }
     }
     const handleUpdateCanalSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
         if(isUpdate && auth.tenantId) {
-            console.log({...newCanalData, uploadBy: auth.userId})
-            await isUpdate({...newCanalData, uploadBy: auth.userId}, auth.tenantId).catch((error) => console.log(error))
+            await isUpdate({...newCanalData,
+                budgetCanal: updateCanalData.budgetCanal.replace(',', '.'),
+                uploadBy: auth.userId},
+                auth.tenantId)
+                .catch((error) => console.log(error))
         }
     }
     return (

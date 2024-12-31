@@ -1,23 +1,27 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js'
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import {Input} from "@/components/ui/input"
 import {Button} from "@/components/ui/button"
 import {Pie} from 'react-chartjs-2'
-import {canaisOptions, CanalOptions} from "@/lib/optionsFixed.ts";
 import {useToast} from "@/hooks/use-toast"
 import {Toaster} from "@/components/ui/toaster.tsx";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {ModalType} from "@/types/ModalType.ts";
 import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
+import {getBudgetCanal, listCanalMarketing} from "@/services/marketingService.ts";
+import {useAuth} from "@/hooks/auth.tsx";
+import {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
+import {TooltipManual} from "@/components/ui/TooltipManual.tsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend,ChartDataLabels)
 
 const AdminManageMarketing: React.FC = () => {
 
     const [totalBudget, setTotalBudget] = useState(0)
-    const [allocations, setAllocations] = useState<CanalOptions[]>(canaisOptions)
+    const [allocations, setAllocations] = useState<IMarketing[]>([])
+
     const [openModalPlatform, setOpenModalModalPlatform] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const [title,setTitle] = useState("");
@@ -26,16 +30,41 @@ const AdminManageMarketing: React.FC = () => {
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const { toast } = useToast()
+    const auth = useAuth()
+    const fetchCanal = async () => {
+        if (auth.tenantId) {
+            const result = await listCanalMarketing(auth.tenantId)
 
-    const calculateTotalAllocation = () => allocations.reduce((sum, alloc) => sum + alloc.amount, 0)
+            if (result.data) {
+                setAllocations(result.data.data)
+            }
+
+        }
+    }
+    useEffect(   () => {
+
+        fetchCanal().then()
+    }, [fetchCanal]);
+    useEffect(() => {
+        const fetchBudget = async () => {
+            if(auth.tenantId) {
+                const result = await getBudgetCanal(auth.tenantId)
+                setTotalBudget(result.data.data.budget)
+            }
+        }
+        fetchBudget().then()
+    }, [auth.tenantId]);
+
+    const calculateTotalAllocation = () => allocations.reduce((sum, alloc) => Number(sum) + Number(alloc.budgetCanal), 0)
 
     const calculatePercentages = () => {
-        return allocations.map(alloc => ({
+        return allocations?.map(alloc => ({
             ...alloc,
-            percentage: ((alloc.amount / totalBudget) * 100).toFixed(1),
-            formattedAmount: `R$ ${alloc.amount.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+            percentage: ((Number(alloc.budgetCanal) / totalBudget) * 100).toFixed(1),
+            formattedAmount: `R$ ${Number(alloc.budgetCanal).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
         }))
     }
+
     const openFlexiveModal = (modalType: ModalType) => {
         setType(modalType)
         setOpenModalModalPlatform(true)
@@ -47,11 +76,16 @@ const AdminManageMarketing: React.FC = () => {
         setIsError(false)
         setIsGeneralModalOpen(true)
     }
+    const onClose = () => {
+        fetchCanal().then()
+        setIsGeneralModalOpen(false)
+    }
+
     const updateAllocation = (platform: string, amount: number) => {
         const newAllocations = allocations.map(alloc =>
-            alloc.platform === platform ? { ...alloc, amount } : alloc
+            alloc.canal === platform ? { ...alloc, amount } : alloc
         )
-        const newTotal = newAllocations.reduce((sum, alloc) => sum + alloc.amount, 0)
+        const newTotal = newAllocations.reduce((sum, alloc) => sum + Number(alloc.budgetCanal), 0)
 
         if (newTotal > totalBudget) {
             toast({
@@ -66,10 +100,10 @@ const AdminManageMarketing: React.FC = () => {
     }
 
     const chartData = {
-        labels: calculatePercentages().map(a => `${a.platform} (${a.percentage}%)`),
+        labels: calculatePercentages().map(a => `${a.canal} (${a.percentage}%)`),
         datasets: [
             {
-                data: allocations.map(a => a.amount),
+                data: allocations.map(a => a.budgetCanal),
                 backgroundColor: [
                     'rgb(255, 0, 0)',
                     'rgb(0, 255, 0)',
@@ -101,7 +135,7 @@ const AdminManageMarketing: React.FC = () => {
                     <div className="flex items-center">
                         <Input
                             type="text"
-                            value={`R$ ${totalBudget.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                            value={`R$ ${totalBudget}`}
                             onChange={(e) => {
                                 const value = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
                                 setTotalBudget(Number(value));
@@ -116,29 +150,33 @@ const AdminManageMarketing: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-4">
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex justify-between"> DISTRIBUIÇÃO DO ORÇAMENTO POR CANAL
+                        <CardTitle className="flex justify-between">ORÇAMENTO POR CANAL
                             <Button onClick={() => openFlexiveModal(ModalType.newCanal)}
                                     className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Gerenciar Canais</Button>
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         {calculatePercentages().map((allocation) => (
-                            <div key={allocation.platform} className="mb-2 flex items-center">
-                                <span className="min-w-40 text-right mr-4">{allocation.platform}</span>
+                            <div key={allocation.canal} className="mb-2 flex items-center">
+                                <span className="min-w-40 text-right mr-4">{allocation.canal}</span>
+                                <TooltipManual text={'Clique em Gerenciar Canais para editar'}>
                                 <Input
                                     type="text"
                                     value={allocation.formattedAmount}
                                     onChange={(e) => {
                                         const value = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
-                                        updateAllocation(allocation.platform, Number(value));
-                                    }}
-                                    className="mr-2"
+                                        updateAllocation(allocation.canal, Number(value));
+                                    }
+                                }
+                                    disabled={true}
+                                    className="placeholder-black mr-2"
                                 />
+                                </TooltipManual>
                                 <span className="w-10 text-right">{Number(allocation.percentage) ? allocation.percentage+'%' : ''}</span>
                             </div>
                         ))}
                         <div className="flex justify-between mt-8">
-                            <p><strong>Total Distribuído:</strong> R$ {calculateTotalAllocation().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            <p><strong>Total Distribuído:</strong> R$ {calculateTotalAllocation()}</p>
                             <p><strong>Orçamento Restante:</strong> R$ {(totalBudget - calculateTotalAllocation()).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
 
                         </div>
@@ -159,8 +197,7 @@ const AdminManageMarketing: React.FC = () => {
                                             label: function(context) {
                                                 const label = context.label || '';
                                                 const value = context.parsed || 0;
-                                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                                const percentage = ((value / total) * 100).toFixed(1);
+                                                const percentage = ((value / totalBudget) * 100).toFixed(1);
                                                 const formattedValue = `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                                                 return `${label}: ${formattedValue} (${percentage}%)`;
                                             }
@@ -208,7 +245,7 @@ const AdminManageMarketing: React.FC = () => {
                 title="Gerenciamento de Canais"
             />}
             <GeneralModal
-                onClose={() => setIsGeneralModalOpen(false)}
+                onClose={onClose}
                 title={title}
                 action={action}
                 error={isError}

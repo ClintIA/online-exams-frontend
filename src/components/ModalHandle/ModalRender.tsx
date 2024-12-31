@@ -14,6 +14,7 @@ import RegisterDoctor, {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.t
 import {IAdmin} from "@/types/dto/Admin.ts";
 import {registerDoctor, updateDoctor} from "@/services/doctorService.ts";
 import RegisterCanal, {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
+import {registerCanalMarketing} from "@/services/marketingService.ts";
 
 
 interface ModalRegisterProps {
@@ -69,7 +70,16 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         }
     }
     const submitNewCanal = async (canalData: IMarketing, tenantId: number) => {
-        console.log(canalData, tenantId)
+       const result = await registerCanalMarketing(canalData,tenantId)
+        console.log(result)
+        if(result.data) {
+            console.log(result.data)
+            if (modalMessage) {
+                modalMessage('Canal Agendado com sucesso')
+                onClose()
+            }
+
+        }
     }
     const submitUpdateNewCanal = async (canalData: IMarketing, tenantId: number) => {
         console.log(canalData, tenantId)

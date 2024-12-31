@@ -1,9 +1,26 @@
 import apiClient from "@/lib/interceptor.ts";
+import {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
 
-export const listCanalMarketing = async (tenantId: number) => {
+export const listCanalMarketing = async (tenantID: number) => {
     return await apiClient.get('admin/marketing/canal', {
         headers: {
-            'x-tenant-id': tenantId
+            'x-tenant-id': tenantID
+        }
+    })
+}
+
+export const getBudgetCanal = async(tenantID: number ) => {
+    return await apiClient.get('/admin/marketing/tenantBudget', {
+        headers: {
+            'x-tenant-id': tenantID
+        }
+    })
+}
+
+export const registerCanalMarketing = async(canal: IMarketing, tenantID: number) => {
+    return await apiClient.post('admin/marketing/canal', canal, {
+        headers: {
+            'x-tenant-id': tenantID
         }
     })
 }
