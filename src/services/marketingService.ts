@@ -16,7 +16,15 @@ export const getBudgetCanal = async(tenantID: number ) => {
         }
     })
 }
-
+export const updateBudgetCanal = async (budget: number,tenantID: number) => {
+    return await apiClient.put('/admin/marketing/tenantBudget', {
+        budget: budget
+    }, {
+        headers: {
+            'x-tenant-id': tenantID
+        }
+    })
+}
 export const registerCanalMarketing = async(canal: IMarketing, tenantID: number) => {
     return await apiClient.post('admin/marketing/canal', canal, {
         headers: {

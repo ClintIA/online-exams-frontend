@@ -10,7 +10,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {ModalType} from "@/types/ModalType.ts";
 import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
-import {getBudgetCanal, listCanalMarketing} from "@/services/marketingService.ts";
+import {getBudgetCanal, listCanalMarketing, updateBudgetCanal} from "@/services/marketingService.ts";
 import {useAuth} from "@/hooks/auth.tsx";
 import {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
 import {TooltipManual} from "@/components/ui/TooltipManual.tsx";
@@ -19,9 +19,9 @@ ChartJS.register(ArcElement, Tooltip, Legend,ChartDataLabels)
 
 const AdminManageMarketing: React.FC = () => {
 
-    const [totalBudget, setTotalBudget] = useState(0)
+    const [ totalBudget, setTotalBudget] = useState(0)
+    const [newTotalBudget, setNewTotalBudget] = useState(0)
     const [allocations, setAllocations] = useState<IMarketing[]>([])
-
     const [openModalPlatform, setOpenModalModalPlatform] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const [title,setTitle] = useState("");
@@ -40,19 +40,19 @@ const AdminManageMarketing: React.FC = () => {
             }
 
         }
-    },[])
+    },[auth.tenantId])
     useEffect(   () => {
     fetchCanal().then()
     }, [fetchCanal]);
-    useEffect(() => {
-        const fetchBudget = async () => {
-            if(auth.tenantId) {
-                const result = await getBudgetCanal(auth.tenantId)
-                setTotalBudget(result.data.data.budget)
-            }
+    const fetchBudget = useCallback(async () => {
+        if(auth.tenantId) {
+            const result = await getBudgetCanal(auth.tenantId)
+            setTotalBudget(result.data.data.budget)
         }
+    },[auth.tenantId])
+    useEffect(() => {
         fetchBudget().then()
-    }, [auth.tenantId]);
+    }, [fetchBudget]);
 
     const calculateTotalAllocation = () => allocations.reduce((sum, alloc) => Number(sum) + Number(alloc.budgetCanal), 0)
 
@@ -97,6 +97,17 @@ const AdminManageMarketing: React.FC = () => {
             setAllocations(newAllocations)
         }
     }
+    const updateBudgetTenant = async () => {
+      if(auth.tenantId) {
+        const result = await updateBudgetCanal(Number(newTotalBudget), auth.tenantId)
+          if(result.data.data) {
+              setTotalBudget(result.data.data.budget)
+              fetchCanal().then()
+              fetchBudget().then()
+          }
+
+      }
+    }
 
     const chartData = {
         labels: calculatePercentages().map(a => `${a.canal} (${a.percentage}%)`),
@@ -134,14 +145,15 @@ const AdminManageMarketing: React.FC = () => {
                     <div className="flex items-center">
                         <Input
                             type="text"
-                            value={`R$ ${totalBudget}`}
+                            placeholder={`R$ ${newTotalBudget !== 0 ? newTotalBudget : totalBudget}`}
                             onChange={(e) => {
                                 const value = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
-                                setTotalBudget(Number(value));
+                                setNewTotalBudget(Number(value));
                             }}
+
                             className="mr-2"
                         />
-                        <Button onClick={() => setTotalBudget(totalBudget)}>Atualizar</Button>
+                        <Button onClick={updateBudgetTenant}>Atualizar</Button>
                     </div>
                 </CardContent>
             </Card>
@@ -161,14 +173,15 @@ const AdminManageMarketing: React.FC = () => {
                                 <TooltipManual text={'Clique em Gerenciar Canais para editar'}>
                                 <Input
                                     type="text"
-                                    value={allocation.formattedAmount}
+                                    placeholder={allocation.formattedAmount}
                                     onChange={(e) => {
                                         const value = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
                                         updateAllocation(allocation.canal, Number(value));
                                     }
                                 }
                                     disabled={true}
-                                    className="placeholder-black mr-2"
+                                    readOnly={true}
+                                    className="placeholder-black text-black mr-2"
                                 />
                                 </TooltipManual>
                                 <span className="w-10 text-right">{Number(allocation.percentage) ? allocation.percentage+'%' : ''}</span>
