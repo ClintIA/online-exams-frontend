@@ -158,7 +158,7 @@ const AdminManageMarketing: React.FC = () => {
                 </CardContent>
             </Card>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex justify-between">ORÇAMENTO POR CANAL
@@ -184,7 +184,7 @@ const AdminManageMarketing: React.FC = () => {
                                     className="placeholder-black text-black mr-2"
                                 />
                                 </TooltipManual>
-                                <span className="w-10 text-right">{Number(allocation.percentage) ? allocation.percentage+'%' : ''}</span>
+                                <span className="hidden xl:flex w-10 text-right">{Number(allocation.percentage) ? allocation.percentage+'%' : ''}</span>
                             </div>
                         ))}
                         <div className="flex justify-between mt-8">
