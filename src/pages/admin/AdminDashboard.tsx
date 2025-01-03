@@ -25,8 +25,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {useAuth} from "@/hooks/auth.tsx";
 import {
   countChannel, countPatientExamWithFilters, countPatientWithFilters,
-  countTotalInvoice,
-  listCanalMarketing,
+  countTotalInvoice, countTotalInvoiceDoctor,
   MarketingFilters
 } from "@/services/marketingService.ts";
 
@@ -42,20 +41,6 @@ const investmentData = [
   { name: 'ROAS', total: 1230 },
 ]
 
-const exams = [
-  { name: 'Hemograma Completo', price: 50, doctorFee: 20 },
-  { name: 'Perfil Lipídico', price: 80, doctorFee: 30 },
-  { name: 'Função Tireoidiana', price: 120, doctorFee: 45 },
-  { name: 'Vitamina D', price: 70, doctorFee: 25 },
-  { name: 'HbA1c', price: 65, doctorFee: 22 },
-]
-
-const examsRevenue = [
-  { name: 'Ginecologista', value: 30000 },
-  { name: 'Ultrassom', value: 25000 },
-  { name: 'Cardiologista', value: 10000 },
-  { name: 'Raio X', value: 15000 },
-]
 
 const examsByDoctor = [
   { name: 'João', quantity: 32, totalValue: 25000},
@@ -75,6 +60,10 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
 interface ChannelChart {
   name: string
   total: number
+  quantity?: number
+  totalDoctor?: number
+  profit?: number
+  percent?: number
 }
 export function AdminDashboard() {
   const [date, setDate] = useState<DateRange | undefined>({
@@ -82,6 +71,9 @@ export function AdminDashboard() {
     to: addDays(new Date(2024, 0, 1), 20),
   })
 
+
+  const [exams, setExam] = useState<ChannelChart[]>()
+  const [examsRevenue, setExamsRevenue] = useState<ChannelChart[]>()
   const [totalDoctorInvoice, setTotalDoctorInvoice] = useState(0)
   const [totalPatient, setTotalPatient] = useState(0)
   const [totalExams, setTotalExams] = useState(0)
@@ -105,7 +97,8 @@ export function AdminDashboard() {
       const result = await countTotalInvoice(filter,auth.tenantId)
       setTotalInvoice(result.data.data.generalTotalInvoice)
       setTotalDoctorInvoice(result.data.data.doctorTotalInvoice)
-      console.log(result.data.data)
+      setExam(result.data.data.totalPerExam)
+      setExamsRevenue(result.data.data.totalPerExam)
     }
 
   },[auth.tenantId])
@@ -128,15 +121,17 @@ export function AdminDashboard() {
       setTotalExams(result.data.data.total)
     }
   },[auth.tenantId])
-  const fetchCanal = useCallback(async () => {
+  const fetchDoctorsTable = useCallback(async(filter: MarketingFilters) => {
     if (auth.tenantId) {
-      const result = await listCanalMarketing(auth.tenantId)
+      filter = { ...filter, attended: 'Sim'}
+      const result = await countTotalInvoiceDoctor(filter,auth.tenantId)
       console.log(result.data)
     }
   },[auth.tenantId])
+
   useEffect(   () => {
-    fetchCanal().then()
-  }, [fetchCanal]);
+    fetchDoctorsTable({}).then()
+  }, [fetchDoctorsTable]);
 
   useEffect(() => {
     const filters = {}
@@ -346,16 +341,16 @@ export function AdminDashboard() {
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={examsRevenue}
+                        data={examsRevenue?.filter((exam) => exam.profit !== 0)}
                         cx="50%"
                         cy="50%"
                         labelLine={false}
-                        outerRadius={80}
+                        outerRadius={70}
                         fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        dataKey="percent"
+                        label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent).toFixed(0)}%`}
                       >
-                        {exams.map((_entry, index) => (
+                        {exams?.map((_entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
@@ -383,18 +378,15 @@ export function AdminDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {exams.map((exam) => {
-                      const quantity = Math.floor(Math.random() * 100) + 1;
-                      const totalValue = exam.price * quantity;
-                      const doctorPayment = exam.doctorFee * quantity;
-                      const profit = totalValue - doctorPayment;
+                    {exams?.map((exam) => {
+
                       return (
-                        <TableRow key={exam.name}>
+                        <TableRow key={exam.profit}>
                           <TableCell className="font-medium">{exam.name}</TableCell>
-                          <TableCell>{quantity}</TableCell>
-                          <TableCell>R$ {totalValue.toFixed(2)}</TableCell>
-                          <TableCell>R$ {doctorPayment.toFixed(2)}</TableCell>
-                          <TableCell>R$ {profit.toFixed(2)}</TableCell>
+                          <TableCell>{exam.quantity}</TableCell>
+                          <TableCell>R$ {exam.total.toFixed(2)}</TableCell>
+                          <TableCell>R$ {exam.totalDoctor}</TableCell>
+                          <TableCell>R$ {exam.profit?.toFixed(2)}</TableCell>
                         </TableRow>
                       );
                     })}
@@ -595,16 +587,16 @@ export function AdminDashboard() {
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={examsRevenue}
+                        data={examsRevenue?.filter((exam) => exam.percent !== 0)}
                         cx="50%"
                         cy="50%"
                         labelLine={false}
                         outerRadius={80}
                         fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                        dataKey="percent"
+                        label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent).toFixed(0)}%`}
                       >
-                        {exams.map((_entry, index) => (
+                        {exams?.map((_entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>

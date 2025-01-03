@@ -83,6 +83,14 @@ export const countTotalInvoice = async (filters: MarketingFilters, tenantID: num
         params: filters
     })
 }
+export const countTotalInvoiceDoctor = async (filters: MarketingFilters, tenantID: number) => {
+    return await apiClient.get('/admin/marketing/totalInvoiceDoctor', {
+        headers: {
+            'x-tenant-id': tenantID
+        },
+        params: filters
+    })
+}
 
 export const getExamPrice = async (filters: MarketingFilters, tenantID: number) => {
     return await apiClient.get('/admin/marketing/examPrice', {
