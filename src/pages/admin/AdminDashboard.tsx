@@ -1,7 +1,7 @@
 import { addDays, format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
-import { useState } from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import { DateRange } from 'react-day-picker'
 import { Bar, BarChart, Cell, Funnel, FunnelChart, LabelList, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
@@ -22,14 +22,14 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {useAuth} from "@/hooks/auth.tsx";
+import {
+  countChannel, countPatientExamWithFilters, countPatientWithFilters,
+  countTotalInvoice,
+  listCanalMarketing,
+  MarketingFilters
+} from "@/services/marketingService.ts";
 
-const patientChannels = [
-  { name: 'Indicação', total: 1230 },
-  { name: 'Site', total: 751 },
-  { name: 'Redes Sociais', total: 471 },
-  { name: 'Visita Espontânea', total: 280 },
-  { name: 'Convênio', total: 78 },
-]
 
 const marketingMetricData = [
   { name: 'CPL', total: 1230 },
@@ -72,13 +72,90 @@ const funnelData = [
 ]
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
-
+interface ChannelChart {
+  name: string
+  total: number
+}
 export function AdminDashboard() {
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2024, 0, 1),
     to: addDays(new Date(2024, 0, 1), 20),
   })
 
+  const [totalDoctorInvoice, setTotalDoctorInvoice] = useState(0)
+  const [totalPatient, setTotalPatient] = useState(0)
+  const [totalExams, setTotalExams] = useState(0)
+  const [totalInvoiceToProfit, setTotalInvoiceToProfit] = useState(0)
+  const [totalInvoice, setTotalInvoice] = useState(0)
+  const [canalMarketing, setCanalMarketing] = useState<ChannelChart[]>([])
+  const auth = useAuth()
+  const fetchCountPatient = useCallback(async () => {
+    if (auth.tenantId) {
+      const result = await countChannel(auth.tenantId)
+      if(result.data) {
+        setCanalMarketing(result.data.data.listChannelPerPatient)
+
+      }
+    }
+  },[auth.tenantId])
+
+  const fetchCountPatientExam = useCallback(async (filter: MarketingFilters) => {
+    if (auth.tenantId) {
+      filter = { ...filter, attended: 'Sim'}
+      const result = await countTotalInvoice(filter,auth.tenantId)
+      setTotalInvoice(result.data.data.generalTotalInvoice)
+      setTotalDoctorInvoice(result.data.data.doctorTotalInvoice)
+      console.log(result.data.data)
+    }
+
+  },[auth.tenantId])
+  const fetchProfitExams = useCallback(async (filter: MarketingFilters) => {
+    if (auth.tenantId) {
+      filter = { ...filter, attended: 'Não'}
+      const result = await countTotalInvoice(filter,auth.tenantId)
+      setTotalInvoiceToProfit(result.data.data.doctorTotalInvoice)
+    }
+  },[auth.tenantId])
+  const fetchCountPatients = useCallback(async(filter: MarketingFilters) => {
+    if (auth.tenantId) {
+      const result = await countPatientWithFilters(filter,auth.tenantId)
+      setTotalPatient(result.data.data.total)
+    }
+  },[auth.tenantId])
+  const fetchCountExams = useCallback(async(filter: MarketingFilters) => {
+    if (auth.tenantId) {
+      const result = await countPatientExamWithFilters(filter,auth.tenantId)
+      setTotalExams(result.data.data.total)
+    }
+  },[auth.tenantId])
+  const fetchCanal = useCallback(async () => {
+    if (auth.tenantId) {
+      const result = await listCanalMarketing(auth.tenantId)
+      console.log(result.data)
+    }
+  },[auth.tenantId])
+  useEffect(   () => {
+    fetchCanal().then()
+  }, [fetchCanal]);
+
+  useEffect(() => {
+    const filters = {}
+    fetchCountPatients(filters).then()
+  }, [fetchCountPatients]);
+  useEffect(() => {
+    const filters = {}
+    fetchCountExams(filters).then()
+  }, [fetchCountExams]);
+  useEffect(() => {
+    fetchCountPatient().then()
+  }, [fetchCountPatient]);
+
+  useEffect(() => {
+    fetchCountPatientExam({}).then()
+  }, [fetchCountPatientExam]);
+  useEffect(() => {
+    fetchProfitExams({}).then()
+  }, [fetchProfitExams]);
   return (
     <div className="flex-col md:flex w-full mx-auto pb-5">
       <div className="flex-1 space-y-4 p-8 pt-6">
@@ -147,7 +224,7 @@ export function AdminDashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">R$ 245.231,89</div>
+                  <div className="text-2xl font-bold">R$ {totalInvoice.toString().replace('.', ',')}</div>
                   <p className="text-xs text-muted-foreground">
                     +20,1% desde o mês passado
                   </p>
@@ -174,7 +251,7 @@ export function AdminDashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">2.810</div>
+                  <div className="text-2xl font-bold">{totalPatient}</div>
                   <p className="text-xs text-muted-foreground">
                     +180 desde o mês passado
                   </p>
@@ -199,7 +276,7 @@ export function AdminDashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">573</div>
+                  <div className="text-2xl font-bold">{totalExams}</div>
                   <p className="text-xs text-muted-foreground">
                     +201 desde a semana passada
                   </p>
@@ -223,7 +300,7 @@ export function AdminDashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">R$ 121.456,78</div>
+                  <div className="text-2xl font-bold">R$ {(Number(totalInvoice) - Number(totalInvoiceToProfit) - Number(totalDoctorInvoice)).toFixed(2)}</div>
                   <p className="text-xs text-muted-foreground">
                     +19% desde o mês passado
                   </p>
@@ -232,33 +309,33 @@ export function AdminDashboard() {
 
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <Card className="col-span-3">
+              <Card className="col-span-4">
                 <CardHeader>
                   <CardTitle>Canais de Aquisição de Pacientes</CardTitle>
                 </CardHeader>
                 <CardContent className="pl-2">
-                  <ResponsiveContainer width="100%" height={350}>
-                    <BarChart data={patientChannels}>
+                    <ResponsiveContainer width="100%" height={350}>
+                    <BarChart data={canalMarketing}>
                       <XAxis
                         dataKey="name"
                         stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
+                        fontSize={10}
+                        tickLine={true}
+                        axisLine={true}
                       />
                       <YAxis
+
                         stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(value) => `${value}`}
+                        fontSize={10}
+                        tickLine={true}
+                        axisLine={true}
                       />
                       <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
-              <Card className="col-span-4">
+              <Card className="col-span-3">
                 <CardHeader>
                   <CardTitle>Faturamento por Procedimento</CardTitle>
                   <CardDescription>
@@ -467,20 +544,19 @@ export function AdminDashboard() {
                 </CardHeader>
                 <CardContent className="pl-2">
                   <ResponsiveContainer width="100%" height={350}>
-                    <BarChart data={patientChannels}>
+                    <BarChart data={canalMarketing}>
                       <XAxis
                         dataKey="name"
                         stroke="#888888"
                         fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
+                        tickLine={true}
+                        axisLine={true}
                       />
                       <YAxis
                         stroke="#888888"
                         fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(value) => `${value}`}
+                        tickLine={true}
+                        axisLine={true}
                       />
                       <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
                     </BarChart>

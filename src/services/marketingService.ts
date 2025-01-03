@@ -1,6 +1,18 @@
 import apiClient from "@/lib/interceptor.ts";
 import {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
 
+export interface MarketingFilters {
+        startDate?: string
+        endDate?: string
+        gender?: string
+        patientID?: number
+        canal?: string
+        status?: 'Scheduled' | 'InProgress' | 'Completed'
+        examID?: number
+        examType?: string
+        attended?: string
+        exam_name?: string
+}
 export const listCanalMarketing = async (tenantID: number) => {
     return await apiClient.get('admin/marketing/canal', {
         headers: {
@@ -37,5 +49,46 @@ export const updateCanalMarketing = async(canal: IMarketing, tenantID: number) =
         headers: {
             'x-tenant-id': tenantID
         }
+    })
+}
+
+export const countPatientWithFilters = async(filters: MarketingFilters,tenantID: number) => {
+    return await apiClient.get('admin/marketing/countPatient', {
+        headers: {
+            'x-tenant-id': tenantID
+        },
+        params: filters
+    })
+}
+export const countPatientExamWithFilters = async(filters: MarketingFilters,tenantID: number) => {
+    return await apiClient.get('admin/marketing/countPatientExam', {
+        headers: {
+            'x-tenant-id': tenantID
+        },
+        params: filters
+    })
+}
+export const countChannel = async(tenantID: number) => {
+    return await apiClient.get('admin/marketing/countChannel', {
+        headers: {
+            'x-tenant-id': tenantID
+        }
+    })
+}
+export const countTotalInvoice = async (filters: MarketingFilters, tenantID: number) => {
+    return await apiClient.get('/admin/marketing/totalInvoice', {
+        headers: {
+            'x-tenant-id': tenantID
+        },
+        params: filters
+    })
+}
+
+export const getExamPrice = async (filters: MarketingFilters, tenantID: number) => {
+    return await apiClient.get('/admin/marketing/examPrice', {
+        headers: {
+            'x-tenant-id': tenantID
+        },
+        params: filters
     })
 }
