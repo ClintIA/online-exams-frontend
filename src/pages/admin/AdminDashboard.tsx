@@ -73,7 +73,6 @@ export function AdminDashboard() {
   const [totalDoctorInvoice, setTotalDoctorInvoice] = useState(0)
   const [totalPatient, setTotalPatient] = useState(0)
   const [totalExams, setTotalExams] = useState(0)
-  const [totalInvoiceToProfit, setTotalInvoiceToProfit] = useState(0)
   const [totalInvoice, setTotalInvoice] = useState(0)
   const [canalMarketing, setCanalMarketing] = useState<ChannelChart[]>([])
   const auth = useAuth()
@@ -98,13 +97,7 @@ export function AdminDashboard() {
     }
 
   },[auth.tenantId])
-  const fetchProfitExams = useCallback(async (filter: MarketingFilters) => {
-    if (auth.tenantId) {
-      filter = { ...filter, attended: 'Não'}
-      const result = await countTotalInvoice(filter,auth.tenantId)
-      setTotalInvoiceToProfit(result.data.data.doctorTotalInvoice)
-    }
-  },[auth.tenantId])
+
   const fetchCountPatients = useCallback(async(filter: MarketingFilters) => {
     if (auth.tenantId) {
       const result = await countPatientWithFilters(filter,auth.tenantId)
@@ -144,9 +137,6 @@ export function AdminDashboard() {
   useEffect(() => {
     fetchCountPatientExam({}).then()
   }, [fetchCountPatientExam]);
-  useEffect(() => {
-    fetchProfitExams({}).then()
-  }, [fetchProfitExams]);
   return (
     <div className="flex-col md:flex w-full mx-auto pb-5">
       <div className="flex-1 space-y-4 p-8 pt-6">
