@@ -42,12 +42,7 @@ const investmentData = [
 ]
 
 
-const examsByDoctor = [
-  { name: 'João', quantity: 32, totalValue: 25000},
-  { name: 'Maria', quantity: 25, totalValue: 20000},
-  { name: 'José', quantity: 15, totalValue: 10000},
-  { name: 'Ana', quantity: 10, totalValue: 5000},
-]
+
 
 const funnelData = [
   { name: 'Cliques', value: 500, fill: '#FFBB28' },
@@ -72,6 +67,7 @@ export function AdminDashboard() {
   })
 
 
+  const [totalInvoiceDoctor, setTotalInvoiceDoctor] = useState<ChannelChart[]>([])
   const [exams, setExam] = useState<ChannelChart[]>()
   const [examsRevenue, setExamsRevenue] = useState<ChannelChart[]>()
   const [totalDoctorInvoice, setTotalDoctorInvoice] = useState(0)
@@ -125,7 +121,7 @@ export function AdminDashboard() {
     if (auth.tenantId) {
       filter = { ...filter, attended: 'Sim'}
       const result = await countTotalInvoiceDoctor(filter,auth.tenantId)
-      console.log(result.data)
+      setTotalInvoiceDoctor(result.data.data.quantityExamDoctor)
     }
   },[auth.tenantId])
 
@@ -162,7 +158,7 @@ export function AdminDashboard() {
                 <Button
                   id="date"
                   variant={"outline"}
-                  className={`w-[300px] justify-start text-left font-normal`}
+                  className={` hidden w-[300px] justify-start text-left font-normal`}
                 >
                   <CalendarIcon className="mr-2 h-4 w-4" />
                   {date?.from ? (
@@ -295,7 +291,7 @@ export function AdminDashboard() {
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">R$ {(Number(totalInvoice) - Number(totalInvoiceToProfit) - Number(totalDoctorInvoice)).toFixed(2)}</div>
+                  <div className="text-2xl font-bold">R$ {(Number(totalInvoice) - Number(totalDoctorInvoice)).toFixed(2)}</div>
                   <p className="text-xs text-muted-foreground">
                     +19% desde o mês passado
                   </p>
@@ -398,7 +394,7 @@ export function AdminDashboard() {
               <CardHeader>
                 <CardTitle>Valores a receber</CardTitle>
                 <CardDescription>
-                  Informações detalhadas sobre os valores a receber para cada médico.
+                  Informações detalhadas da quantidade de exames realizadas por cada médico.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -407,16 +403,14 @@ export function AdminDashboard() {
                     <TableRow>
                       <TableHead>Nome do Médico</TableHead>
                       <TableHead>Procedimentos Realizados</TableHead>
-                      <TableHead>A Receber</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {examsByDoctor.map((row) => {
+                    {totalInvoiceDoctor?.map((row) => {
                       return (
                         <TableRow key={row.name}>
                           <TableCell className="font-medium">{row.name}</TableCell>
                           <TableCell>{row.quantity}</TableCell>
-                          <TableCell>R$ {row.totalValue.toFixed(2)}</TableCell>
                         </TableRow>
                       );
                     })}
