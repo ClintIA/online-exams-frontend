@@ -7,7 +7,7 @@ import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import {confirmPatientExam, listPatientExams} from "@/services/patientExamService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
-import BookingList from "@/components/Booking/BookingList.tsx";
+import BookingList from "@/components/AdminBooking/BookingList.tsx";
 import {Input} from "@/components/ui/input.tsx";
 import { formatDate} from "@/lib/utils.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
@@ -111,8 +111,8 @@ const AdminBooking: React.FC = () =>  {
         }
     }
     return (
-        <div className="w-full max-w-6xl p-4 mx-auto">
-            <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Agendamentos</h1>
+        <div className="w-full p-10 mx-auto">
+            <h1 className="text-3xl mb-6 font-bold tracking-tight">Agendamentos</h1>
             <div className="flex flex-col md:flex-row gap-3 mb-6">
                 <Cards name='Total de Agendamentos' content={exams?.length}/>
             </div>

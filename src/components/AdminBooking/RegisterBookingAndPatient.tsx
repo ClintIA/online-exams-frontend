@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {Button} from "@/components/ui/button.tsx"
 import {Input} from "@/components/ui/input.tsx"
 import {Label} from "@/components/ui/label.tsx"
@@ -17,9 +17,11 @@ import {validarCPF} from "@/lib/utils.ts";
 import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {Spinner} from "@/components/ui/Spinner.tsx";
-import {canaisOptions, genderOptions} from "@/lib/optionsFixed.ts";
+import {genderOptions} from "@/lib/optionsFixed.ts";
 import {isAxiosError} from "axios";
-import {DadosBooking} from "@/components/Booking/RegisterBooking.tsx";
+import {DadosBooking} from "@/components/AdminBooking/RegisterBooking.tsx";
+import {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
+import {listCanalMarketing} from "@/services/marketingService.ts";
 
 export interface Exams {
     id: number
@@ -49,6 +51,7 @@ interface BookingModalProps {
 const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking, submitBookingWithPatient, setStep }: BookingModalProps) => {
     const [tenant, setTenant] = useState<number | undefined>()
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
+    const [canal, setCanal] = useState<IMarketing[]>([])
     const [selectedExame, setSelectedExame] = useState<string>('')
     const [selectedDoctor, setSelectedDoctor] = useState<string>('')
     const [exames, setExames] = useState<Exams[]>([])
@@ -69,6 +72,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
         const { name, value } = e.target
         setPatientData(prev => ({ ...prev, [name]: value }))
     }
+
     const clearCpf = () => {
         setPatientData({
             full_name: '',
@@ -86,6 +90,19 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
         setCpf('')
         setStep(0)
     }
+    const fetchCanal = useCallback(async () => {
+        if (auth.tenantId) {
+            const result = await listCanalMarketing(auth.tenantId)
+
+            if (result.data) {
+                setCanal(result.data.data)
+            }
+
+        }
+    }, [auth.tenantId])
+    useEffect(   () => {
+        fetchCanal().then()
+    }, [fetchCanal]);
     useEffect(() => {
         const getTenant = () => {
             if(auth?.token) {
@@ -421,7 +438,8 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
                                                     onChange={handleInputChange}
                                                     className="form-radio h-4 w-4 text-blue-800 focus:ring-blue-800 border-gray-300"
                                                 />
-                                                <span className="w-max text-sm text-blue-800">{option.label}</span>
+                                                <span
+                                                    className="w-max text-sm text-blue-800">{option.label}</span>
                                             </label>
                                         ))}
                                     </div>
@@ -434,9 +452,9 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
                                             <SelectValue placeholder="Selecione o Canal de Captação"/>
                                         </SelectTrigger>
                                         <SelectContent>
-                                            {canaisOptions.map((canal) => (
-                                                <SelectItem key={canal.id} value={canal.id}>
-                                                    {canal.name}
+                                            {canal.map((canal) => (
+                                                <SelectItem key={canal.id} value={canal.id ? canal.id.toString() : ''}>
+                                                    {canal.canal}
                                                 </SelectItem>
                                             ))}
                                         </SelectContent>

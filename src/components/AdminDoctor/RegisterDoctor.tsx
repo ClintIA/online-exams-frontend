@@ -6,7 +6,7 @@ import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} 
 import {AlertCircle, BadgeInfo, CircleAlert} from "lucide-react"
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx"
 import {useAuth} from "@/hooks/auth.tsx";
-import {Exams} from "@/components/Booking/RegisterBookingAndPatient.tsx";
+import {Exams} from "@/components/AdminBooking/RegisterBookingAndPatient.tsx";
 import {listTenantExam} from "@/services/tenantExamService.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 import {Switch} from "@/components/ui/switch.tsx";

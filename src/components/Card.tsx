@@ -14,7 +14,7 @@ const Cards: React.FC<CardProps> = ({name, content}: CardProps) => {
                 <UserCheck className="ml-4 h-4 w-4 text-muted-foreground"/>
             </CardHeader>
             <CardContent>
-                <div className="text-2xl text-blue-900 font-bold">{content}</div>
+                <div className="text-2xl text-oxfordBlue font-bold">{content}</div>
             </CardContent>
         </Card>
     )

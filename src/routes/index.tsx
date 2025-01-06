@@ -15,6 +15,7 @@ import Error404 from "../error/Error404.tsx";
 import {ProtectedRoute} from "@/components/ProtectedRoute/ProtectedRoute.tsx";
 import Login from "@/pages/auth/Login.tsx";
 import {ProfileRole} from "@/types/ProfileRole.ts";
+import AdminManageMarketing from "@/pages/admin/AdminManageMarketing.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -100,7 +101,7 @@ export const router = createBrowserRouter([
             ,
             {
                 path: 'gestao',
-                element: (<ProtectedRoute  role={ProfileRole.marketing}> <AdminDashboard /> </ProtectedRoute>),
+                element: (<ProtectedRoute  role={ProfileRole.marketing}> <AdminManageMarketing /> </ProtectedRoute>),
             }
         ]
     },

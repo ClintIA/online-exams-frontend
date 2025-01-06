@@ -14,7 +14,7 @@ const CardDoctor: React.FC<CardMedicoProps>  = ({ nome, crm = 'Não informado', 
             <div className="w-max space-x-1 pb-1">
                     <img
                         src={doctorImg}
-                        className="hidden sm:flex sm:h-12 sm:w-12 md:h-14 md:w-14 text-blue-800" alt="Doctor Image"/>
+                        className="hidden sm:flex sm:h-12 sm:w-12 md:h-14 md:w-14 text-oxfordBlue" alt="Doctor Image"/>
             </div>
             <div className="ml-4">
                 <div>

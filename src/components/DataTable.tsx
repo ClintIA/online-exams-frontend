@@ -20,7 +20,7 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
             {dataTable?.map((data) => (
                 <TableRow key={data.id}>
                     {renderRow(data)}
-                    <TableCell className="text-blue-900">
+                    <TableCell className="text-oxfordBlue">
                         {data?.role === 'master' ? (
                             <Button disabled={true} className="w-full bg-oxfordBlue text-white">
                                 <span className="text-sm">Master Admin</span>

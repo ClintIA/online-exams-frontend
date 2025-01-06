@@ -11,7 +11,7 @@ const ExameDetail: React.FC<ExameDetailProps> = ({ exame }) => {
 
   return (
     <div className="exame-detail p-6 bg-white shadow-md rounded-lg w-full">
-      <h2 className="text-2xl font-bold text-yaleBlue mb-4">{exame.nome}</h2>
+      <h2 className="text-2xl font-bold text-oxfordBlue mb-4">{exame.nome}</h2>
       <p className="text-sm text-gray-400 mb-2">Consultório: {exame.consultorio}</p>
       <p className="text-sm text-gray-400 mb-4">Data: {exame.data} · {exame.horario}</p>
       

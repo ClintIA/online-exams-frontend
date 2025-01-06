@@ -33,12 +33,15 @@ export interface Exams {
     id: number
     exam_name: string
     price: string
+    exam_type?: string
+    doctorPrice?: number
+    doctors?: Doctor[]
     createdAt: Date
 }
 interface Doctor {
     id: number
     fullName: string
-    exams: any[]
+    exams?: any[]
 }
 
 const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcluido, isNewBooking}: BookingModalProps ) => {

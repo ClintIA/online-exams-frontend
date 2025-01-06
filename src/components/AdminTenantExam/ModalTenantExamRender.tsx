@@ -18,6 +18,7 @@ export interface IExam {
     id?: number
     exam_name: string
     price: string
+    exam_type?: string
     doctorPrice?: string
     doctors?: string[]
     createdAt?: Date

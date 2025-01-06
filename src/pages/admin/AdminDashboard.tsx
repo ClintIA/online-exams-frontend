@@ -1,7 +1,7 @@
 import { addDays, format } from 'date-fns'
 import { ptBR } from 'date-fns/locale'
 import { CalendarIcon } from 'lucide-react'
-import { useState } from 'react'
+import {useCallback, useEffect, useState} from 'react'
 import { DateRange } from 'react-day-picker'
 import { Bar, BarChart, Cell, Funnel, FunnelChart, LabelList, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
@@ -22,14 +22,13 @@ import {
   TableRow,
 } from '@/components/ui/table'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import {useAuth} from "@/hooks/auth.tsx";
+import {
+  countChannel, countPatientExamWithFilters, countPatientWithFilters,
+  countTotalInvoice, countTotalInvoiceDoctor,
+  MarketingFilters
+} from "@/services/marketingService.ts";
 
-const patientChannels = [
-  { name: 'Indicação', total: 1230 },
-  { name: 'Site', total: 751 },
-  { name: 'Redes Sociais', total: 471 },
-  { name: 'Visita Espontânea', total: 280 },
-  { name: 'Convênio', total: 78 },
-]
 
 const marketingMetricData = [
   { name: 'CPL', total: 1230 },
@@ -42,27 +41,8 @@ const investmentData = [
   { name: 'ROAS', total: 1230 },
 ]
 
-const exams = [
-  { name: 'Hemograma Completo', price: 50, doctorFee: 20 },
-  { name: 'Perfil Lipídico', price: 80, doctorFee: 30 },
-  { name: 'Função Tireoidiana', price: 120, doctorFee: 45 },
-  { name: 'Vitamina D', price: 70, doctorFee: 25 },
-  { name: 'HbA1c', price: 65, doctorFee: 22 },
-]
 
-const examsRevenue = [
-  { name: 'Ginecologista', value: 30000 },
-  { name: 'Ultrassom', value: 25000 },
-  { name: 'Cardiologista', value: 10000 },
-  { name: 'Raio X', value: 15000 },
-]
 
-const examsByDoctor = [
-  { name: 'João', quantity: 32, totalValue: 25000},
-  { name: 'Maria', quantity: 25, totalValue: 20000},
-  { name: 'José', quantity: 15, totalValue: 10000},
-  { name: 'Ana', quantity: 10, totalValue: 5000},
-]
 
 const funnelData = [
   { name: 'Cliques', value: 500, fill: '#FFBB28' },
@@ -72,50 +52,127 @@ const funnelData = [
 ]
 
 const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8']
-
+interface ChannelChart {
+  name: string
+  total: number
+  quantity?: number
+  totalDoctor?: number
+  profit?: number
+  percent?: number
+}
 export function AdminDashboard() {
   const [date, setDate] = useState<DateRange | undefined>({
     from: new Date(2024, 0, 1),
     to: addDays(new Date(2024, 0, 1), 20),
   })
 
+
+  const [totalInvoiceDoctor, setTotalInvoiceDoctor] = useState<ChannelChart[]>([])
+  const [exams, setExam] = useState<ChannelChart[]>()
+  const [examsRevenue, setExamsRevenue] = useState<ChannelChart[]>()
+  const [totalDoctorInvoice, setTotalDoctorInvoice] = useState(0)
+  const [totalPatient, setTotalPatient] = useState(0)
+  const [totalExams, setTotalExams] = useState(0)
+  const [totalInvoice, setTotalInvoice] = useState(0)
+  const [canalMarketing, setCanalMarketing] = useState<ChannelChart[]>([])
+  const auth = useAuth()
+  const fetchCountPatient = useCallback(async () => {
+    if (auth.tenantId) {
+      const result = await countChannel(auth.tenantId)
+      if(result.data) {
+        setCanalMarketing(result.data.data.listChannelPerPatient)
+
+      }
+    }
+  },[auth.tenantId])
+
+  const fetchCountPatientExam = useCallback(async (filter: MarketingFilters) => {
+    if (auth.tenantId) {
+      filter = { ...filter, attended: 'Sim'}
+      const result = await countTotalInvoice(filter,auth.tenantId)
+      setTotalInvoice(result.data.data.generalTotalInvoice)
+      setTotalDoctorInvoice(result.data.data.doctorTotalInvoice)
+      setExam(result.data.data.totalPerExam)
+      setExamsRevenue(result.data.data.totalPerExam)
+    }
+
+  },[auth.tenantId])
+
+  const fetchCountPatients = useCallback(async(filter: MarketingFilters) => {
+    if (auth.tenantId) {
+      const result = await countPatientWithFilters(filter,auth.tenantId)
+      setTotalPatient(result.data.data.total)
+    }
+  },[auth.tenantId])
+  const fetchCountExams = useCallback(async(filter: MarketingFilters) => {
+    if (auth.tenantId) {
+      const result = await countPatientExamWithFilters(filter,auth.tenantId)
+      setTotalExams(result.data.data.total)
+    }
+  },[auth.tenantId])
+  const fetchDoctorsTable = useCallback(async(filter: MarketingFilters) => {
+    if (auth.tenantId) {
+      filter = { ...filter, attended: 'Sim'}
+      const result = await countTotalInvoiceDoctor(filter,auth.tenantId)
+      setTotalInvoiceDoctor(result.data.data.quantityExamDoctor)
+    }
+  },[auth.tenantId])
+
+  useEffect(   () => {
+    fetchDoctorsTable({}).then()
+  }, [fetchDoctorsTable]);
+
+  useEffect(() => {
+    const filters = {}
+    fetchCountPatients(filters).then()
+  }, [fetchCountPatients]);
+  useEffect(() => {
+    const filters = {}
+    fetchCountExams(filters).then()
+  }, [fetchCountExams]);
+  useEffect(() => {
+    fetchCountPatient().then()
+  }, [fetchCountPatient]);
+
+  useEffect(() => {
+    fetchCountPatientExam({}).then()
+  }, [fetchCountPatientExam]);
   return (
-    <div className="flex-col md:flex w-full mx-auto pb-5">
-      <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="w-full p-10 mx-auto">
         <div className="flex items-center justify-between space-y-2">
-          <h2 className="text-3xl font-bold tracking-tight">Dashboards</h2>
+          <h2 className="text-3xl mb-6 font-bold tracking-tight">Dashboards</h2>
           <div className="flex items-center space-x-2">
             <Popover>
               <PopoverTrigger asChild>
                 <Button
-                  id="date"
-                  variant={"outline"}
-                  className={`w-[300px] justify-start text-left font-normal`}
+                    id="date"
+                    variant={"outline"}
+                    className={` hidden w-[300px] justify-start text-left font-normal`}
                 >
-                  <CalendarIcon className="mr-2 h-4 w-4" />
+                  <CalendarIcon className="mr-2 h-4 w-4"/>
                   {date?.from ? (
-                    date.to ? (
-                      <>
-                        {format(date.from, "dd 'de' MMMM", { locale: ptBR })} -{" "}
-                        {format(date.to, "dd 'de' MMMM, yyyy", { locale: ptBR })}
-                      </>
-                    ) : (
-                      format(date.from, "dd 'de' MMMM, yyyy", { locale: ptBR })
-                    )
+                      date.to ? (
+                          <>
+                            {format(date.from, "dd 'de' MMMM", {locale: ptBR})} -{" "}
+                            {format(date.to, "dd 'de' MMMM, yyyy", {locale: ptBR})}
+                          </>
+                      ) : (
+                          format(date.from, "dd 'de' MMMM, yyyy", {locale: ptBR})
+                      )
                   ) : (
-                    <span>Selecione uma data</span>
+                      <span>Selecione uma data</span>
                   )}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0" align="start">
                 <Calendar
-                  initialFocus
-                  mode="range"
-                  defaultMonth={date?.from}
-                  selected={date}
-                  onSelect={setDate}
-                  numberOfMonths={2}
-                  locale={ptBR}
+                    initialFocus
+                    mode="range"
+                    defaultMonth={date?.from}
+                    selected={date}
+                    onSelect={setDate}
+                    numberOfMonths={2}
+                    locale={ptBR}
                 />
               </PopoverContent>
             </Popover>
@@ -134,20 +191,20 @@ export function AdminDashboard() {
                     Faturamento Total
                   </CardTitle>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
                   >
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">R$ 245.231,89</div>
+                  <div className="text-2xl font-bold">R$ {totalInvoice.toString().replace('.', ',')}</div>
                   <p className="text-xs text-muted-foreground">
                     +20,1% desde o mês passado
                   </p>
@@ -159,22 +216,22 @@ export function AdminDashboard() {
                     Total de Pacientes
                   </CardTitle>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
                   >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">2.810</div>
+                  <div className="text-2xl font-bold">{totalPatient}</div>
                   <p className="text-xs text-muted-foreground">
                     +180 desde o mês passado
                   </p>
@@ -186,20 +243,20 @@ export function AdminDashboard() {
                     Procedimentos realizados
                   </CardTitle>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
                   >
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">573</div>
+                  <div className="text-2xl font-bold">{totalExams}</div>
                   <p className="text-xs text-muted-foreground">
                     +201 desde a semana passada
                   </p>
@@ -209,21 +266,22 @@ export function AdminDashboard() {
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Lucro</CardTitle>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
                   >
-                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                    <path d="M2 10h20" />
+                    <rect width="20" height="14" x="2" y="5" rx="2"/>
+                    <path d="M2 10h20"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">R$ 121.456,78</div>
+                  <div
+                      className="text-2xl font-bold">R$ {(Number(totalInvoice) - Number(totalDoctorInvoice)).toFixed(2)}</div>
                   <p className="text-xs text-muted-foreground">
                     +19% desde o mês passado
                   </p>
@@ -232,33 +290,33 @@ export function AdminDashboard() {
 
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-              <Card className="col-span-3">
+              <Card className="col-span-4">
                 <CardHeader>
                   <CardTitle>Canais de Aquisição de Pacientes</CardTitle>
                 </CardHeader>
                 <CardContent className="pl-2">
                   <ResponsiveContainer width="100%" height={350}>
-                    <BarChart data={patientChannels}>
+                    <BarChart data={canalMarketing}>
                       <XAxis
-                        dataKey="name"
-                        stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
+                          dataKey="name"
+                          stroke="#888888"
+                          fontSize={10}
+                          tickLine={true}
+                          axisLine={true}
                       />
                       <YAxis
-                        stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(value) => `${value}`}
+
+                          stroke="#888888"
+                          fontSize={10}
+                          tickLine={true}
+                          axisLine={true}
                       />
-                      <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]}/>
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
-              <Card className="col-span-4">
+              <Card className="col-span-3">
                 <CardHeader>
                   <CardTitle>Faturamento por Procedimento</CardTitle>
                   <CardDescription>
@@ -269,17 +327,20 @@ export function AdminDashboard() {
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={examsRevenue}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          data={examsRevenue?.filter((exam) => exam.profit !== 0)}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          outerRadius={70}
+                          fill="#8884d8"
+                          dataKey="percent"
+                          label={({name, percent}: {
+                            name: string;
+                            percent: number
+                          }) => `${name} ${(percent).toFixed(0)}%`}
                       >
-                        {exams.map((_entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        {exams?.map((_entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
                         ))}
                       </Pie>
                     </PieChart>
@@ -306,19 +367,16 @@ export function AdminDashboard() {
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {exams.map((exam) => {
-                      const quantity = Math.floor(Math.random() * 100) + 1;
-                      const totalValue = exam.price * quantity;
-                      const doctorPayment = exam.doctorFee * quantity;
-                      const profit = totalValue - doctorPayment;
+                    {exams?.map((exam) => {
+
                       return (
-                        <TableRow key={exam.name}>
-                          <TableCell className="font-medium">{exam.name}</TableCell>
-                          <TableCell>{quantity}</TableCell>
-                          <TableCell>R$ {totalValue.toFixed(2)}</TableCell>
-                          <TableCell>R$ {doctorPayment.toFixed(2)}</TableCell>
-                          <TableCell>R$ {profit.toFixed(2)}</TableCell>
-                        </TableRow>
+                          <TableRow key={exam.profit}>
+                            <TableCell className="font-medium">{exam.name}</TableCell>
+                            <TableCell>{exam.quantity}</TableCell>
+                            <TableCell>R$ {exam.total.toFixed(2)}</TableCell>
+                            <TableCell>R$ {exam.totalDoctor}</TableCell>
+                            <TableCell>R$ {exam.profit?.toFixed(2)}</TableCell>
+                          </TableRow>
                       );
                     })}
                   </TableBody>
@@ -329,7 +387,7 @@ export function AdminDashboard() {
               <CardHeader>
                 <CardTitle>Valores a receber</CardTitle>
                 <CardDescription>
-                  Informações detalhadas sobre os valores a receber para cada médico.
+                  Informações detalhadas da quantidade de exames realizadas por cada médico.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -338,17 +396,15 @@ export function AdminDashboard() {
                     <TableRow>
                       <TableHead>Nome do Médico</TableHead>
                       <TableHead>Procedimentos Realizados</TableHead>
-                      <TableHead>A Receber</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {examsByDoctor.map((row) => {
+                    {totalInvoiceDoctor?.map((row) => {
                       return (
-                        <TableRow key={row.name}>
-                          <TableCell className="font-medium">{row.name}</TableCell>
-                          <TableCell>{row.quantity}</TableCell>
-                          <TableCell>R$ {row.totalValue.toFixed(2)}</TableCell>
-                        </TableRow>
+                          <TableRow key={row.name}>
+                            <TableCell className="font-medium">{row.name}</TableCell>
+                            <TableCell>{row.quantity}</TableCell>
+                          </TableRow>
                       );
                     })}
                   </TableBody>
@@ -364,18 +420,18 @@ export function AdminDashboard() {
                     CPL
                   </CardTitle>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
                   >
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                    <circle cx="9" cy="7" r="4" />
-                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
@@ -391,16 +447,16 @@ export function AdminDashboard() {
                     CAP
                   </CardTitle>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
                   >
-                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                    <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
@@ -414,17 +470,17 @@ export function AdminDashboard() {
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">ROAS</CardTitle>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
                   >
-                    <rect width="20" height="14" x="2" y="5" rx="2" />
-                    <path d="M2 10h20" />
+                    <rect width="20" height="14" x="2" y="5" rx="2"/>
+                    <path d="M2 10h20"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
@@ -440,16 +496,16 @@ export function AdminDashboard() {
                     LTV
                   </CardTitle>
                   <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    className="h-4 w-4 text-muted-foreground"
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      className="h-4 w-4 text-muted-foreground"
                   >
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
                   </svg>
                 </CardHeader>
                 <CardContent>
@@ -467,22 +523,21 @@ export function AdminDashboard() {
                 </CardHeader>
                 <CardContent className="pl-2">
                   <ResponsiveContainer width="100%" height={350}>
-                    <BarChart data={patientChannels}>
+                    <BarChart data={canalMarketing}>
                       <XAxis
-                        dataKey="name"
-                        stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
+                          dataKey="name"
+                          stroke="#888888"
+                          fontSize={12}
+                          tickLine={true}
+                          axisLine={true}
                       />
                       <YAxis
-                        stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(value) => `${value}`}
+                          stroke="#888888"
+                          fontSize={12}
+                          tickLine={true}
+                          axisLine={true}
                       />
-                      <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]}/>
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -494,13 +549,13 @@ export function AdminDashboard() {
                 <CardContent className="pl-2">
                   <ResponsiveContainer width="100%" height={350}>
                     <FunnelChart width={730} height={250}>
-                      <Tooltip />
+                      <Tooltip/>
                       <Funnel
-                        dataKey="value"
-                        data={funnelData}
-                        isAnimationActive
+                          dataKey="value"
+                          data={funnelData}
+                          isAnimationActive
                       >
-                        <LabelList position="right" fill="#000" stroke="none" dataKey="name" />
+                        <LabelList position="right" fill="#000" stroke="none" dataKey="name"/>
                       </Funnel>
                     </FunnelChart>
                   </ResponsiveContainer>
@@ -519,17 +574,20 @@ export function AdminDashboard() {
                   <ResponsiveContainer width="100%" height={300}>
                     <PieChart>
                       <Pie
-                        data={examsRevenue}
-                        cx="50%"
-                        cy="50%"
-                        labelLine={false}
-                        outerRadius={80}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }: { name: string; percent: number }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          data={examsRevenue?.filter((exam) => exam.percent !== 0)}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="percent"
+                          label={({name, percent}: {
+                            name: string;
+                            percent: number
+                          }) => `${name} ${(percent).toFixed(0)}%`}
                       >
-                        {exams.map((_entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        {exams?.map((_entry, index) => (
+                            <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]}/>
                         ))}
                       </Pie>
                     </PieChart>
@@ -545,20 +603,20 @@ export function AdminDashboard() {
                   <ResponsiveContainer width="100%" height={350}>
                     <BarChart data={marketingMetricData}>
                       <XAxis
-                        dataKey="name"
-                        stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
+                          dataKey="name"
+                          stroke="#888888"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
                       />
                       <YAxis
-                        stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(value) => `${value}`}
+                          stroke="#888888"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(value) => `${value}`}
                       />
-                      <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]}/>
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -602,20 +660,20 @@ export function AdminDashboard() {
                   <ResponsiveContainer width="100%" height={350}>
                     <BarChart data={investmentData}>
                       <XAxis
-                        dataKey="name"
-                        stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
+                          dataKey="name"
+                          stroke="#888888"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
                       />
                       <YAxis
-                        stroke="#888888"
-                        fontSize={12}
-                        tickLine={false}
-                        axisLine={false}
-                        tickFormatter={(value) => `${value}`}
+                          stroke="#888888"
+                          fontSize={12}
+                          tickLine={false}
+                          axisLine={false}
+                          tickFormatter={(value) => `${value}`}
                       />
-                      <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+                      <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]}/>
                     </BarChart>
                   </ResponsiveContainer>
                 </CardContent>
@@ -624,8 +682,7 @@ export function AdminDashboard() {
           </TabsContent>
         </Tabs>
       </div>
-    </div>
-  )
+)
 }
 
 export default AdminDashboard;

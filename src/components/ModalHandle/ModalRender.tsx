@@ -1,18 +1,20 @@
 import React, {useEffect, useState} from 'react'
 import RegisterPatient, {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {registerPatient} from "@/services/loginService.tsx";
-import RegisterBooking, {DadosBooking} from "@/components/Booking/RegisterBooking.tsx";
+import RegisterBooking, {DadosBooking} from "@/components/AdminBooking/RegisterBooking.tsx";
 import ModalFlexivel from "@/components/ModalHandle/ModalFlexivel.tsx";
 import {registerBookingWithPatient, registerPatientExam} from "@/services/patientExamService.tsx";
 import {updatePatient} from "@/services/patientService.tsx";
-import RegisterBookingAndPatient, {BookingWithPatient} from "@/components/Booking/RegisterBookingAndPatient.tsx";
-import BookingConfirmation, {BookingConfirmationState} from "@/components/Booking/BookingConfirmation.tsx";
+import RegisterBookingAndPatient, {BookingWithPatient} from "@/components/AdminBooking/RegisterBookingAndPatient.tsx";
+import BookingConfirmation, {BookingConfirmationState} from "@/components/AdminBooking/BookingConfirmation.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {registerAdmin, updateAdmin} from "@/services/adminsService.tsx";
 import RegisterAdmin from "@/components/AdminRegister/RegisterAdmin.tsx";
 import RegisterDoctor, {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
 import {IAdmin} from "@/types/dto/Admin.ts";
 import {registerDoctor, updateDoctor} from "@/services/doctorService.ts";
+import RegisterCanal, {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
+import {registerCanalMarketing, updateCanalMarketing} from "@/services/marketingService.ts";
 
 
 interface ModalRegisterProps {
@@ -22,14 +24,16 @@ interface ModalRegisterProps {
     modalNewBookingConfirmation?: (message: string) => void;
     modalMessage?: (message: string) => void;
     dadosPaciente?: DadosPaciente
-    data?: IAdmin | IDoctor
+    data?: IAdmin | IDoctor | IMarketing
     type: ModalType
     isDoctor?: boolean
     isStepper?: boolean
+    totalBudget?: number
+
 }
 
 
-const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, title,modalMessage,modalNewBookingConfirmation,dadosPaciente, type, data }: ModalRegisterProps) => {
+const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, totalBudget, title,modalMessage,modalNewBookingConfirmation,dadosPaciente, type, data }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
     const [modalContent,setModalContent] = useState<ModalType>(ModalType.newPatient)
     const [patientData, setPatientData] = useState<BookingConfirmationState>({} as BookingConfirmationState)
@@ -67,6 +71,17 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             console.log(error)
         }
     }
+    const submitNewCanal = async (canalData: IMarketing, tenantId: number) => {
+       const result = await registerCanalMarketing(canalData,tenantId)
+        if(result.data) {
+            return
+        }
+    }
+    const submitUpdateNewCanal = async (canalData: IMarketing, tenantId: number) => {
+        const result = await updateCanalMarketing(canalData,tenantId)
+        if(result.data) {
+            return
+        }    }
     const submitBookintWithPatient = async (bookingDataWithPatient: BookingWithPatient, tenantId: number) => {
         try {
             if (modalNewBookingConfirmation) {
@@ -175,7 +190,8 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
                 return(<RegisterAdmin isAdmin={submitNewAdmin} />)
             case 'editAdmin':
                 return(<RegisterAdmin dadosIniciais={data} isUpdate={submitUpdateAdmin} />)
-
+            case 'newCanal':
+                return(<RegisterCanal totalBudget={totalBudget} isUpdate={submitUpdateNewCanal} isCanal={submitNewCanal}/>)
 
         }
     }

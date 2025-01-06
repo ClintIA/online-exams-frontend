@@ -1,47 +1,64 @@
-export const canaisOptions = [
+export interface CanalOptions { 
+    platform: string
+    id: string
+    amount: number
+}
+
+export const canaisOptions: CanalOptions[] = [
     {
-        name: 'Google',
-        id: 'google'
+        platform: 'Google',
+        id: 'google',
+        amount: 0
     },
     {
-        name: 'Instagram',
-        id: 'instagram'
+        platform: 'Instagram',
+        id: 'instagram',
+        amount: 0
     },
     {
-        name: 'Facebook',
-        id: 'facebook'
+        platform: 'Facebook',
+        id: 'facebook',
+        amount: 0
     },
     {
-        name: 'Matéria em Blog',
-        id: 'blog'
+        platform: 'Matéria em Blog',
+        id: 'blog',
+        amount: 0
     },
     {
-        name: 'Anúncio em Rádio',
-        id: 'radio'
+        platform: 'Anúncio em Rádio',
+        id: 'radio',
+        amount: 0
     },
     {
-        name: 'Anúncio em Televisão',
-        id: 'televisao'
+        platform: 'Anúncio em Televisão',
+        id: 'televisao',
+        amount: 0
     },
     {
-        name: 'Anúncio em Ônibus',
-        id: 'onibus'
+        platform: 'Anúncio em Ônibus',
+        id: 'onibus',
+        amount: 0
     },
     {
-        name: 'Outdoor',
-        id: 'outdoor'
+        platform: 'Outdoor',
+        id: 'outdoor',
+        amount: 0
     },
     {
-        name: 'Indicação',
-        id: 'indicacao'
+        platform: 'Indicação',
+        id: 'indicacao',
+        amount: 0
     },
     {
-        name: 'Passei na Frente do Local',
-        id: 'local'
+        platform: 'Passei na Frente do Local',
+        id: 'local',
+        amount: 0
     },
     {
-        name: 'Encontrei no Plano de Saúde',
-        id: 'plano'
+        platform: 'Encontrei no Plano de Saúde',
+        id: 'plano',
+        amount: 0
     }
 ]
 export const genderOptions = [
@@ -50,7 +67,10 @@ export const genderOptions = [
     { value: 'Prefiro não informar', label: 'Prefiro não identificar' },
     { value: 'Outros', label: 'Outros' }
 ];
-
+export const examOptions = [
+    { value: 'exame', label: 'Exame' },
+    { value: 'consulta', label: 'Consulta' },
+];
 export const roleOptions = [
     { value: 'admin', label: 'Admin', disable: false},
     { value: 'marketing', label: 'Marketing', disable: false },
@@ -75,7 +95,7 @@ export const findCanalOptions = (canal?: string) => {
         let patientCanal;
         canaisOptions.find((option) => {
             if(option.id == canal) {
-                patientCanal = option.name;
+                patientCanal = option.platform;
             }
         })
         return patientCanal

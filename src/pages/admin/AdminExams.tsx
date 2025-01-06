@@ -116,9 +116,9 @@ const AdminExams: React.FC = () =>  {
   };
 
   return (
-      <div className="w-full max-w-6xl p-4 mx-auto">
+      <div className="w-full p-10 mx-auto">
 
-        <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Upload de Exames</h1>
+        <h1 className="text-3xl mb-6 font-bold tracking-tight">Upload de Exames</h1>
         <div className="flex flex-col md:flex-row gap-3 mb-6">
           <Cards name='Agendamentos Pendentes' content={exams?.length}/>
           <Cards name='Agendamentos Concluídos' content={exams?.length}/>

@@ -1,7 +1,7 @@
 import React from 'react'
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import {Button} from "@/components/ui/button.tsx";
-import {Exams} from "@/components/Booking/RegisterBooking.tsx";
+import {Exams} from "@/components/AdminBooking/RegisterBooking.tsx";
 import {CalendarDays, Clock, FileText, User} from "lucide-react";
 import {ModalType} from "@/types/ModalType.ts";
 
@@ -33,7 +33,7 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking,
         <div className="mt-10">
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle className='text-xl text-blue-900'>Agendamento concluído</CardTitle>
+                    <CardTitle className='text-xl text-oxfordBlue'>Agendamento concluído</CardTitle>
                     <CardDescription>
                         Confira os dados do agendamento:
                     </CardDescription>
