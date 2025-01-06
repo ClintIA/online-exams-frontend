@@ -33,7 +33,7 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking,
         <div className="mt-10">
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle className='text-xl text-blue-900'>Agendamento concluído</CardTitle>
+                    <CardTitle className='text-xl text-oxfordBlue'>Agendamento concluído</CardTitle>
                     <CardDescription>
                         Confira os dados do agendamento:
                     </CardDescription>

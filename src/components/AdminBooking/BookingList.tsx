@@ -53,7 +53,7 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos ,loading, 
                              <TableCell>{agendamento?.exam.exam_name}</TableCell>
                              <TableCell>{agendamento?.doctor?.fullName}</TableCell>
                              <TableCell>
-                                 <span className={agendamento.attended == null ? `text-blue-900 font-semibold` : agendamento.attended ? `text-green-700 font-semibold` : `text-red-600 font-semibold`}>{handlePresence(agendamento.attended)}</span>
+                                 <span className={agendamento.attended == null ? `text-oxfordBlue font-semibold` : agendamento.attended ? `text-green-700 font-semibold` : `text-red-600 font-semibold`}>{handlePresence(agendamento.attended)}</span>
                              </TableCell>
                              <TableCell>
                                  <AppointmentConfirmation onCancel={() => handleConfirmarPresenca(agendamento?.id, null)} onConfirm={() => handleConfirmarPresenca(agendamento?.id, true)} onDecline={() => handleConfirmarPresenca(agendamento?.id, false)} status={handlePresence(agendamento.attended)} />

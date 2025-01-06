@@ -23,7 +23,8 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
     const [examData, setExamData] = useState<IExam>({
         exam_name: '',
         price: '',
-        doctorPrice: ''
+        doctorPrice: '',
+        exam_type: ''
     });
     const [selectedDoctors, setSelectedDoctors] = useState<string[]>();
     const [doctors, setDoctors] = useState<IDoctor[]>([])
@@ -119,7 +120,31 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                     <form onSubmit={handleSubmit}>
                         <div className="grid gap-4">
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="exam_name" className="text-right text-blue-800">
+                                <Label htmlFor="exam_type" className="text-right text-oxfordBlue">
+                                    Nome do Exame
+                                </Label>
+                                <Label className="flex mt-1">
+                                    <Input
+                                        type="radio"
+                                        name="exam_type"
+                                        value='exame'
+                                        onChange={handleInputChange}
+                                        className="form-radio h-4 w-4 text-oxfordBlue focus:ring-blue-800 border-gray-300" />
+                                    Exame
+                                </Label>
+                                <Label className="flex mt-1">
+                                    <Input
+                                        type="radio"
+                                        name="exam_type"
+                                        value='consulta'
+                                        onChange={handleInputChange}
+                                        className="form-radio h-4 w-4 text-oxfordBlue focus:ring-blue-800 border-gray-300" />
+                                    Consulta
+                                </Label>
+                            </div>
+
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="exam_name" className="text-right text-oxfordBlue">
                                     Nome do Exame
                                 </Label>
                                 <Input
@@ -130,7 +155,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                                     className="col-span-3"/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label className="text-right text-blue-800" htmlFor="doctorId">Selecione o(s)
+                                <Label className="text-right text-oxfordBlue" htmlFor="doctorId">Selecione o(s)
                                     Médico(s)</Label>
                                 <MultiSelect
                                     options={doctors}
@@ -142,7 +167,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                                 />
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="price" className="text-right text-blue-800">
+                                <Label htmlFor="price" className="text-right text-oxfordBlue">
                                     Preço do Exame
                                 </Label>
                                 <Input
@@ -155,7 +180,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                                     className="col-span-3"/>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="doctorPrice" className="text-right text-blue-800">
+                                <Label htmlFor="doctorPrice" className="text-right text-oxfordBlue">
                                     Valor do Médico
                                 </Label>
                                 <Input
@@ -170,8 +195,10 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
 
                         </div>
                         <div className="flex justify-end mt-6">
-                            {isNewExam && (<Button className="bg-oxfordBlue text-white" type="submit">Cadastrar Exame</Button>)}
-                            {isUpdate && (<Button className="bg-oxfordBlue text-white" type="submit">Atualizar Exame</Button>)}
+                            {isNewExam && (
+                                <Button className="bg-oxfordBlue text-white" type="submit">Cadastrar Exame</Button>)}
+                            {isUpdate && (
+                                <Button className="bg-oxfordBlue text-white" type="submit">Atualizar Exame</Button>)}
 
                         </div>
                     </form>

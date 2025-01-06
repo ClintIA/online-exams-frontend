@@ -174,7 +174,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
 
                <Card className="w-full max-w-2xl mx-auto">
                    <CardHeader>
-                       <CardTitle className='text-blue-900 text-xl'>Cadastro de Paciente</CardTitle>
+                       <CardTitle className='text-oxfordBlue text-xl'>Cadastro de Paciente</CardTitle>
                        <CardDescription>
                            Preencha os detalhes do paciente abaixo. Clique em salvar quando terminar.
                        </CardDescription>
@@ -184,7 +184,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
 
                            <div className="grid gap-4">
                                <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="full_name" className="text-right text-blue-800">
+                                   <Label htmlFor="full_name" className="text-right text-oxfordBlue">
                                        Nome
                                    </Label>
                                    <Input
@@ -195,7 +195,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                        className="col-span-3"/>
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="email" className="text-right text-blue-800">
+                                   <Label htmlFor="email" className="text-right text-oxfordBlue">
                                        Email
                                    </Label>
                                    <Input
@@ -207,7 +207,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                        className="col-span-3"/>
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="phone" className="text-right text-blue-800">
+                                   <Label htmlFor="phone" className="text-right text-oxfordBlue">
                                        Telefone
                                    </Label>
                                    <Input
@@ -219,7 +219,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                        className="col-span-3"/>
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="dob" className="text-right text-blue-800">
+                                   <Label htmlFor="dob" className="text-right text-oxfordBlue">
                                        Data de Nascimento
                                    </Label>
                                    <Input
@@ -231,7 +231,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                        className="col-span-3"/>
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="cpf" className="text-right text-blue-800">
+                                   <Label htmlFor="cpf" className="text-right text-oxfordBlue">
                                        CPF
                                    </Label>
                                    <Input
@@ -242,7 +242,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                        className="col-span-3"/>
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="cep" className="text-right text-blue-800">
+                                   <Label htmlFor="cep" className="text-right text-oxfordBlue">
                                        CEP
                                    </Label>
                                    <Input
@@ -254,7 +254,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                        className="col-span-3"/>
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="gender" className="text-right text-blue-800">
+                                   <Label htmlFor="gender" className="text-right text-oxfordBlue">
                                        Genero
                                    </Label>
                                    <div className="flex flex-row gap-2">
@@ -270,7 +270,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                                value={option.value}
                                                checked={dadosPaciente.gender === option.value}
                                                onChange={handleInputChange}
-                                               className="form-radio h-4 w-4 text-blue-800 focus:ring-blue-800 border-gray-300"
+                                               className="form-radio h-4 w-4 text-oxfordBlue focus:ring-blue-800 border-gray-300"
                                            />
                                            <span className="w-max text-sm text-blue-800">{option.label}</span>
                                        </label>

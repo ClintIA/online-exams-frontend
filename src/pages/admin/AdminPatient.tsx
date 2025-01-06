@@ -105,11 +105,11 @@ const AdminPatient: React.FC = () => {
     const renderRow = (paciente: DadosPaciente) => (
         <>
             <TableCell className="text-oxfordBlue font-bold">{paciente.full_name}</TableCell>
-            <TableCell className="text-blue-900">{paciente.cpf}</TableCell>
-            <TableCell className="text-blue-900">{paciente.phone}</TableCell>
-            <TableCell className="text-blue-900">{formatDate(paciente.dob)}</TableCell>
-            <TableCell className="text-blue-900">{paciente.health_card_number}</TableCell>
-            <TableCell className="text-blue-900 capitalize">{findCanalOptions(paciente.canal)}</TableCell>
+            <TableCell className="text-oxfordBlue">{paciente.cpf}</TableCell>
+            <TableCell className="text-oxfordBlue">{paciente.phone}</TableCell>
+            <TableCell className="text-oxfordBlue">{formatDate(paciente.dob)}</TableCell>
+            <TableCell className="text-oxfordBlue">{paciente.health_card_number}</TableCell>
+            <TableCell className="text-oxfordBlue capitalize">{findCanalOptions(paciente.canal)}</TableCell>
         </>
     );
     const handleDeletePatient = async () => {
@@ -159,8 +159,8 @@ const AdminPatient: React.FC = () => {
     }
 
     return (
-            <div className="w-full max-w-6xl p-4 mx-auto">
-                <h1 className="text-2xl font-bold mb-6 text-oxfordBlue">Pacientes</h1>
+            <div className="w-full p-10 mx-auto">
+                <h1 className="text-3xl mb-6 font-bold tracking-tight">Pacientes</h1>
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
                     <Cards name='Total de Pacientes' content={pacientes?.length}/>
                 </div>

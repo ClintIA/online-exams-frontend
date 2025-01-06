@@ -5,7 +5,7 @@ const Loading: React.FC = () => {
     return (
         <div className="fixed inset-0 flex items-center justify-center z-50">
             <div className="text-center">
-                <Loader2 className="h-16 w-16 animate-spin text-blue-500 mx-auto" />
+                <Loader2 className="h-16 w-16 animate-spin text-oxfordBlue mx-auto" />
                 <p className="mt-4 text-lg font-semibold text-gray-700">Carregando...</p>
             </div>
         </div>

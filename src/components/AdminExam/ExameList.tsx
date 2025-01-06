@@ -12,13 +12,13 @@ interface ExameListProps {
 const ExameList: React.FC<ExameListProps> = ({ exames, onSelect, usuario }) => {
   return (
     <div className="exame-list ml-2 md:ml-6"> {/* Ajustando margem para dispositivos móveis */}
-      <h2 className="font-bold text-xl md:text-2xl mb-2 text-yaleBlue font-sans">Resultado de Exames</h2>
+      <h2 className="font-bold text-xl md:text-2xl mb-2 text-oxfordBlue font-sans">Resultado de Exames</h2>
 
       {/* Informação do usuário logado */}
       <div className="flex items-center mb-6 bg-gray-100 px-4 py-2 rounded-full inline-block">
         <p className="font-semibold text-black mr-2">{usuario}</p>
         <span className="text-gray-400 mr-2">•</span>
-        <button className="text-blue-500 hover:underline">Alterar</button>
+        <button className="text-oxfordBlue hover:underline">Alterar</button>
         <IconButton size="small">
           <KeyboardArrowDown />
         </IconButton>
@@ -36,7 +36,7 @@ const ExameList: React.FC<ExameListProps> = ({ exames, onSelect, usuario }) => {
               <InsertPhoto style={{ fontSize: 30, color: '#fff' }} />
             </div>
             <div className="text-left">
-              <h3 className="font-semibold text-lg text-yaleBlue">{exame.nome}</h3>
+              <h3 className="font-semibold text-lg text-oxfordBlue">{exame.nome}</h3>
               <p className="text-sm text-gray-500">Exames Laboratoriais</p>
               <p className="text-sm text-gray-400">{exame.data} · {exame.horario}</p>
             </div>
@@ -59,7 +59,7 @@ const ExameList: React.FC<ExameListProps> = ({ exames, onSelect, usuario }) => {
         </div>
       ))}
 
-      <h3 className="font-bold text-xl mt-8 text-yaleBlue">Exames Agendados</h3>
+      <h3 className="font-bold text-xl mt-8 text-oxfordBlue">Exames Agendados</h3>
       <div className="mt-4 p-6 bg-gray-50 rounded-lg border border-gray-200">
         <p className="text-sm text-gray-500">
           Não encontrei exames agendados para você ainda.

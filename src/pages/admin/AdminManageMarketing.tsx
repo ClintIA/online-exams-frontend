@@ -135,8 +135,8 @@ const AdminManageMarketing: React.FC = () => {
         ],
     }
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Gerenciamento Financeiro do Marketing</h1>
+        <div className="w-full p-10 mx-auto">
+            <h1 className="text-3xl mb-6 font-bold tracking-tight">Gerenciamento Financeiro do Marketing</h1>
             <Card className="mb-4">
                 <CardHeader>
                     <CardTitle>Total Budget</CardTitle>

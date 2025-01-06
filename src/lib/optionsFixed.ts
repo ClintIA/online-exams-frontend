@@ -67,7 +67,10 @@ export const genderOptions = [
     { value: 'Prefiro não informar', label: 'Prefiro não identificar' },
     { value: 'Outros', label: 'Outros' }
 ];
-
+export const examOptions = [
+    { value: 'exame', label: 'Exame' },
+    { value: 'consulta', label: 'Consulta' },
+];
 export const roleOptions = [
     { value: 'admin', label: 'Admin', disable: false},
     { value: 'marketing', label: 'Marketing', disable: false },
