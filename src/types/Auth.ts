@@ -17,6 +17,7 @@ export type IAuthContextType = {
     userId?: number;
     role: AccessLevel;
     tenantId: number | undefined;
+    isLoading: boolean;
 
 }
 export interface ITokenPayload {

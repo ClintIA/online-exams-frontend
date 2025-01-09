@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import {TableBody, TableCell, TableRow} from "@/components/ui/table.tsx";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover.tsx";
@@ -43,18 +44,23 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
                                                 <Pencil className="mr-1 h-4 w-4"/>
                                                 <span className="text-sm">Editar</span>
                                             </Button>)}
-                                        {Object.prototype.hasOwnProperty.call(data, 'fullName') && (
-                                            <Button onClick={() => openModalEdit(ModalType.editAdmin, data)}
-                                                    className="w-full bg-oxfordBlue text-white">
-                                                <Pencil className="mr-1 h-4 w-4"/>
+                                        {Object.prototype.hasOwnProperty.call(data, 'CRM') ? (
+                                            <Button
+                                                onClick={() => openModalEdit(ModalType.editDoctorAdmin, data)}
+                                                className="w-full bg-oxfordBlue text-white"
+                                            >
+                                                <Pencil className="mr-1 h-4 w-4" />
                                                 <span className="text-sm">Editar</span>
-                                            </Button>)}
-                                        {Object.prototype.hasOwnProperty.call(data, 'CRM') && (
-                                            <Button onClick={() => openModalEdit(ModalType.editDoctorAdmin, data)}
-                                                    className="w-full bg-oxfordBlue text-white">
-                                                <Pencil className="mr-1 h-4 w-4"/>
+                                            </Button>
+                                        ) : Object.prototype.hasOwnProperty.call(data, 'fullName') && (
+                                            <Button
+                                                onClick={() => openModalEdit(ModalType.editAdmin, data)}
+                                                className="w-full bg-oxfordBlue text-white"
+                                            >
+                                                <Pencil className="mr-1 h-4 w-4" />
                                                 <span className="text-sm">Editar</span>
-                                            </Button>)}
+                                            </Button>
+                                        )}
                                         {openModalBooking && (
                                             <Button onClick={() => openModalEdit(ModalType.booking, data)}
                                                     className="w-full bg-oxfordBlue text-white">
@@ -62,11 +68,15 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
                                                 <span className="text-sm">Agendar</span>
                                             </Button>
                                         )}
-                                        <Button onClick={() => deleteData(data.id)}
-                                                className="w-full bg-oxfordBlue text-white">
-                                            <Trash2 className="mr-1 h-4 w-4"/>
-                                            <span className="text-sm">Excluir</span>
-                                        </Button>
+                                        {!Object.prototype.hasOwnProperty.call(data, 'CRM') && (
+                                            <Button
+                                                onClick={() => deleteData(data.id)}
+                                                className="w-full bg-oxfordBlue text-white"
+                                            >
+                                                <Trash2 className="mr-1 h-4 w-4" />
+                                                <span className="text-sm">Excluir</span>
+                                            </Button>
+                                        )}
                                     </div>
                                 </PopoverContent>
                             </Popover>)}

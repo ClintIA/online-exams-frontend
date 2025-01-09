@@ -3,10 +3,9 @@ import {
   Activity,
   Calendar,
   ChevronDown,
-  ChevronRight, CircleUser, Contact2,
+  ChevronRight, Contact2,
   Home, LayoutDashboard, Lightbulb, LogOut, Microscope,
   MonitorCog,
-  User,
   Users
 } from "lucide-react";
 import {useNavigate, Link} from "react-router-dom";
@@ -44,7 +43,6 @@ const AdminSidebar: React.FC = () => {
   }
 
   useEffect(() => {
-    // Check if the current path is within any section and open it
     if (location.pathname.includes('/admin/registrar')) {
       setOpenSections(prev => prev.includes('register') ? prev : [...prev, 'register']);
     }
@@ -54,17 +52,22 @@ const AdminSidebar: React.FC = () => {
   }, []);
   return (
       <aside
-          className={`bg-oxfordBlue text-white w-64 min-h-screen ${menuOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 transition-transform duration-300 ease-in-out fixed left-0 top-0 z-30`}>
+        className={`bg-oxfordBlue text-white w-64 min-h-screen fixed top-0 left-0 z-50 transition-transform duration-300 ease-in-out ${
+          menuOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:translate-x-0`}>
         <div className="flex justify-center py-4">
           <img src={clintiaLogo} className="w-32 h-auto md:w-48 md:h-auto" alt="Logo ClintIA"/>
         </div>
-        <div className="md:hidden absolute top-0 right-0 mt-3 mr-3">
-          <button onClick={toggleMenu} className="text-white">
-            <List size={32}/>
+        <div className="md:hidden absolute top-4 left-4">
+          <button
+            onClick={toggleMenu}
+            className="text-white bg-gray-800 p-2 rounded-full shadow-md hover:bg-gray-700 focus:outline-none"
+          >
+            <List size={32} />
           </button>
         </div>
 
-        <nav className="mt-8 px-4">
+        <nav className="flex-1 mt-8 px-4 flex flex-col justify-center">
           <ul className="space-y-2">
             <li>
               <Link to="/admin/home" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
@@ -87,36 +90,43 @@ const AdminSidebar: React.FC = () => {
             {hasAccess(auth.role, 'default') && (<li>
               <Collapsible open={isOpen('register')} onOpenChange={() => toggleSection('register')}>
                 <CollapsibleTrigger asChild>
-                  <div className="flex w-full p-2 justify-between">
+                  <div className="flex w-full p-2 justify-between cursor-pointer hover:bg-gray-700 transition-colors duration-300 rounded-lg">
                     <div className="flex items-center">
-                      <MonitorCog className="mr-2" size={24}/>
+                      <MonitorCog className="mr-2" size={24} />
                       <span>Cadastros</span>
                     </div>
-                    {isOpen('register') ? <ChevronDown size={24}/> : <ChevronRight size={24}/>}
+                    {isOpen('register') ? <ChevronDown size={24} /> : <ChevronRight size={24} />}
                   </div>
                 </CollapsibleTrigger>
-                <CollapsibleContent className="pl-6 space-y-2">
-                  {hasAccess(auth.role, 'default') &&  (<Link to="/admin/registrar-pacientes" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                    <Users className="mr-2" size={12}/>
+                <CollapsibleContent
+                  className={`pl-6 space-y-2 overflow-hidden transition-all duration-300 ${
+                    isOpen('register') ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <Link
+                    to="/admin/registrar-pacientes"
+                    className="flex items-center p-2 rounded-lg hover:bg-gray-700"
+                  >
+                    <Users className="mr-2" size={12} />
                     <span>Pacientes</span>
-                  </Link>)}
+                  </Link>
                   {hasAccess(auth.role, 'admin') && (
-                      <>
-                        <Link to="/admin/registrar-exames" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                          <Microscope className="mr-2" size={12}/>
-                          <span>Exames</span>
-                        </Link>
-                        <Link to="/admin/registrar-medicos"
-                               className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                          <Contact2 className="mr-2" size={12}/>
-                          <span>Médicos</span>
-                        </Link>
-                        <Link to="/admin/registrar-admin"
-                               className="flex items-center p-2 rounded-lg hover:bg-gray-700">
-                          <CircleUser className="mr-2" size={12}/>
-                          <span>Administradores</span>
-                        </Link>
-                      </>
+                    <>
+                      <Link
+                        to="/admin/registrar-exames"
+                        className="flex items-center p-2 rounded-lg hover:bg-gray-700"
+                      >
+                        <Microscope className="mr-2" size={12} />
+                        <span>Exames</span>
+                      </Link>
+                      <Link
+                        to="/admin/registrar-medicos"
+                        className="flex items-center p-2 rounded-lg hover:bg-gray-700"
+                      >
+                        <Contact2 className="mr-2" size={12} />
+                        <span>Médicos</span>
+                      </Link>
+                    </>
                   )}
                 </CollapsibleContent>
               </Collapsible>
@@ -124,7 +134,7 @@ const AdminSidebar: React.FC = () => {
             {hasAccess(auth.role, 'marketing') && (<li>
               <Collapsible open={isOpen('relatorios')} onOpenChange={() => toggleSection('relatorios')}>
                 <CollapsibleTrigger asChild>
-                  <div className="flex p-2 w-full justify-between">
+                  <div className="flex w-full p-2 justify-between cursor-pointer hover:bg-gray-700 transition-colors duration-300 rounded-lg">
                     <div className="flex items-center">
                       <Activity className="mr-2" size={24}/>
                       <span>Relatórios</span>
@@ -149,8 +159,8 @@ const AdminSidebar: React.FC = () => {
 
         <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between bg-oxfordBlue">
           <button className="flex items-center text-white hover:text-gray-300">
-            <User className="mr-2" size={24}/>
-            <span>Perfil</span>
+            {/* <User className="mr-2" size={24}/>
+            <span>Perfil</span> */}
           </button>
           <button className="flex items-center text-white hover:text-gray-300" onClick={handleLogout}>
             <LogOut className="mr-2" size={24}/>

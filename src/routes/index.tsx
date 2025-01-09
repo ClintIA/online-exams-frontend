@@ -12,15 +12,17 @@ import {DadosCadastrais} from "@/pages/patient/DadosCadastrais";
 import {Exames} from "@/pages/patient/Exames.tsx";
 import Error401 from "../error/Error401.tsx";
 import Error404 from "../error/Error404.tsx";
-import {ProtectedRoute} from "@/components/ProtectedRoute/ProtectedRoute.tsx";
+import {ProtectedRoute} from "@/routes/ProtectedRoute/ProtectedRoute.tsx";
 import Login from "@/pages/auth/Login.tsx";
 import {ProfileRole} from "@/types/ProfileRole.ts";
 import AdminManageMarketing from "@/pages/admin/AdminManageMarketing.tsx";
+import {PublicRoute} from "./PublicRoute/PublicRoute.tsx";
+import { AuthRedirect } from "./AuthRedirect/AuthRedirect.tsx";
 
 export const router = createBrowserRouter([
     {
         path: "/",
-        element: <Navigate to='/login'/>
+        element: <AuthRedirect />
     },
     {
         path: "*/*",
@@ -36,7 +38,10 @@ export const router = createBrowserRouter([
     },
     {
         path: "/login",
-        element: <Login />,
+        element:        
+            <PublicRoute>
+                <Login />
+            </PublicRoute>,
     },
     {
         path: "/paciente",

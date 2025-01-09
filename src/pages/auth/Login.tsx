@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { EyeIcon, EyeOff } from "lucide-react";
-import { Checkbox } from "@mui/material";
 import { useCpf } from "@/hooks/useCpf.tsx";
 
 const Login: React.FC = () => {
@@ -121,7 +120,7 @@ const Login: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="flex flex-col items-start sm:items-center sm:flex-row justify-between">
+                            {/* <div className="flex flex-col items-start sm:items-center sm:flex-row justify-between">
                                 <div className="flex items-center">
                                     <Checkbox id="remember"/>
                                     <label
@@ -137,7 +136,7 @@ const Login: React.FC = () => {
                                 >
                                     Esqueci a senha
                                 </a>
-                            </div>
+                            </div> */}
                             <div className="flex justify-center sm:justify-end">
                                 <Button
                                     type="submit"
