@@ -1,6 +1,7 @@
 import {Button} from "@/components/ui/button.tsx"
 import {Dialog, DialogContent, DialogHeader, DialogTitle} from "@/components/ui/dialog.tsx"
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx"
+import {Table, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx"
+import {Card, CardContent} from "@/components/ui/card.tsx";
 import {useAuth} from "@/hooks/auth.tsx"
 import {listPatientExams, updatePatientExam} from "@/services/patientExamService.tsx"
 import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3"
@@ -9,6 +10,8 @@ import React, {useEffect, useState} from 'react'
 import {toast} from 'react-toastify'
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import Cards from "@/components/Card.tsx";
+import DataTable from "@/components/DataTable.tsx";
+
 
 
 const s3Client = new S3Client({
@@ -80,7 +83,7 @@ const AdminExams: React.FC = () =>  {
       const bucketName = import.meta.env.VITE_AWS_BUCKET_NAME;
       
       if (!bucketName) {
-        throw new Error('Bucket name não configurado');
+        new Error('Bucket name não configurado');
       }
 
       await s3Client.send(new PutObjectCommand({
@@ -114,6 +117,26 @@ const AdminExams: React.FC = () =>  {
       setSelectedExamId(null);
     }
   };
+  const renderRow = (exam: IPatientExam) => (
+      <>
+        <TableCell className="text-oxfordBlue font-bold">{exam?.patient?.full_name}</TableCell>
+        <TableCell className="text-blue-900">{exam?.exam?.exam_name}</TableCell>
+        <TableCell className="text-blue-900">{new Date(exam?.createdAt).toLocaleDateString()}</TableCell>
+        <TableCell className="text-blue-900">{new Date(exam?.examDate).toLocaleDateString()}</TableCell>
+        <TableCell className="text-blue-900">{translateStatus(exam?.status)}</TableCell>
+        <TableCell>
+          <Button
+              onClick={() => {
+                setSelectedExamId(exam?.id);
+                setIsDialogOpen(true);
+              }}
+              disabled={exam?.status === 'Completed'}
+          >
+            <Upload className="mr-2 h-4 w-4"/> Upload
+          </Button>
+        </TableCell>
+      </>
+  );
 
   return (
       <div className="w-full p-10 mx-auto">
@@ -123,9 +146,11 @@ const AdminExams: React.FC = () =>  {
           <Cards name='Agendamentos Pendentes' content={exams?.length}/>
           <Cards name='Agendamentos Concluídos' content={exams?.length}/>
         </div>
-        <Table>
-          <TableHeader>
-            <TableRow>
+        <Card>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
               <TableHead>Paciente</TableHead>
               <TableHead>Tipo de Procedimento</TableHead>
               <TableHead>Data de Criação</TableHead>
@@ -134,30 +159,11 @@ const AdminExams: React.FC = () =>  {
               <TableHead>Ação</TableHead>
             </TableRow>
           </TableHeader>
-          <TableBody>
-            {exams.map((exam) => (
-                <TableRow key={exam?.id}>
-                  <TableCell>{exam?.patient?.full_name}</TableCell>
-                  <TableCell>{exam?.exam?.exam_name}</TableCell>
-                  <TableCell>{new Date(exam?.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell>{new Date(exam?.examDate).toLocaleDateString()}</TableCell>
-                  <TableCell>{translateStatus(exam?.status)}</TableCell>
-                  <TableCell>
-                    <Button
-                        onClick={() => {
-                          setSelectedExamId(exam?.id);
-                          setIsDialogOpen(true);
-                        }}
-                        disabled={exam?.status === 'Completed'}
-                    >
-                      <Upload className="mr-2 h-4 w-4"/> Upload
-                    </Button>
-                  </TableCell>
-                </TableRow>
-            ))}
-          </TableBody>
+          <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={() => {}}
+                     deleteData={() => {}} dataTable={exams}></DataTable>
         </Table>
-
+          </CardContent>
+        </Card>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogContent className="bg-white">
             <DialogHeader>

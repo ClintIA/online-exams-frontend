@@ -112,6 +112,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
             !dadosPaciente.cep ||
             !dadosPaciente.canal ||
             !dadosPaciente.gender ||
+            !dadosPaciente.cpf ||
             !dadosPaciente.health_card_number) {
             setErro('Por favor, preencha todos os campos')
             return
@@ -131,7 +132,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
 
         try {
             if(tenant) {
-                const pacienteDados = { ...dadosPaciente, dob: createDate(dadosPaciente.dob) }
+                const pacienteDados = { ...dadosPaciente, cpf: dadosPaciente.cpf.replace(/\D/g, ''), dob: createDate(dadosPaciente.dob) }
                 if(isUpdate) {
                     await isUpdate(pacienteDados, tenant)
                         .catch((error) => console.log(error))

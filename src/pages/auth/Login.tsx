@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from "react-router-dom";
 import logoClintia from '../../assets/ClintIA-MarcaRGB-Verti-Cor-FundoOxford.png';
 import { useAuth } from "@/hooks/auth.tsx";
@@ -7,18 +7,50 @@ import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { EyeIcon, EyeOff } from "lucide-react";
 import { useCpf } from "@/hooks/useCpf.tsx";
+import Cookies from "js-cookie";
+import {ITokenPayload} from "@/types/Auth.ts";
+import {jwtDecode} from "jwt-decode";
+import {Spinner} from "@/components/ui/Spinner.tsx";
 
 const Login: React.FC = () => {
     const navigate = useNavigate();
     const auth = useAuth();
     const { setCpf } = useCpf();
-
     const [identifier, setIdentifier] = useState(''); 
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
+    useEffect(() => {
+        const checkToken = async () => {
+            try {
+                const tokenFromStorage = Cookies.get('token');
+                const user = Cookies.get('user');
+
+                if (tokenFromStorage && user) {
+                    const decoded: ITokenPayload = jwtDecode(tokenFromStorage);
+                    if (decoded.exp * 1000 < Date.now()) {
+                        auth.logOut();
+                    } else {
+                       if(decoded.role === 'patient') {
+                           return navigate('/paciente/home');
+                       } else {
+                           return navigate('/admin/home');
+                       }
+                    }
+                }
+            } catch (error) {
+                console.error("Erro ao decodificar token:", error);
+                auth.logOut();
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        checkToken().then();
+    }, []);
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -52,6 +84,8 @@ const Login: React.FC = () => {
     };
 
     return (
+        <div>
+        { isLoading ? ( <Spinner /> ) :  (
         <div>
             <main className="min-h-screen flex">
                 <div className="hidden sm:flex-1 bg-oxfordBlue sm:flex flex-col items-center justify-center p-8">
@@ -157,8 +191,11 @@ const Login: React.FC = () => {
                 action="Fechar"
                 error={true}
             />
+        </div>)
+        }
         </div>
     );
+
 };
 
 export default Login;

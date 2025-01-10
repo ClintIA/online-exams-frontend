@@ -258,6 +258,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
 
                        }
                       await submitBookingWithPatient(bookingWithPatient, tenant)
+                          .then(() => setStep(3))
                            .catch((error) =>  {
                                if(isAxiosError(error)) {
                                    setErro('Erro ao Cadastrar Paciente')
@@ -280,6 +281,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
                        const result = await submitBooking(bookingDados,tenant, patientData)
                        if(result.status === 201 && handleModalMessage) {
                            handleModalMessage(ModalType.bookingConfirmation)
+                           setStep(3)
                        }
                    }
                } catch (error) {

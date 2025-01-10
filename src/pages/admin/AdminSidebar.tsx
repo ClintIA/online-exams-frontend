@@ -99,13 +99,13 @@ const AdminSidebar: React.FC = () => {
                   </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent
-                  className={`pl-6 space-y-2 overflow-hidden transition-all duration-300 ${
+                  className={`pl-6 space-y-2 transition-all duration-300 ${
                     isOpen('register') ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
                   }`}
                 >
                   <Link
                     to="/admin/registrar-pacientes"
-                    className="flex items-center p-2 rounded-lg hover:bg-gray-700"
+                    className="flex items-center p-2 mt-2 mr-2 rounded-lg hover:bg-gray-700"
                   >
                     <Users className="mr-2" size={12} />
                     <span>Pacientes</span>
@@ -114,14 +114,14 @@ const AdminSidebar: React.FC = () => {
                     <>
                       <Link
                         to="/admin/registrar-exames"
-                        className="flex items-center p-2 rounded-lg hover:bg-gray-700"
+                        className="flex items-center p-2 mt-2 mr-2 rounded-lg hover:bg-gray-700"
                       >
                         <Microscope className="mr-2" size={12} />
                         <span>Exames</span>
                       </Link>
                       <Link
                         to="/admin/registrar-medicos"
-                        className="flex items-center p-2 rounded-lg hover:bg-gray-700"
+                        className="flex items-center p-2 mt-2 mr-2 rounded-lg hover:bg-gray-700"
                       >
                         <Contact2 className="mr-2" size={12} />
                         <span>Médicos</span>
@@ -131,10 +131,12 @@ const AdminSidebar: React.FC = () => {
                 </CollapsibleContent>
               </Collapsible>
             </li>)}
-            {hasAccess(auth.role, 'marketing') && (<li>
+
+            {hasAccess(auth.role, 'marketing') && (
+                <li>
               <Collapsible open={isOpen('relatorios')} onOpenChange={() => toggleSection('relatorios')}>
                 <CollapsibleTrigger asChild>
-                  <div className="flex w-full p-2 justify-between cursor-pointer hover:bg-gray-700 transition-colors duration-300 rounded-lg">
+                  <div className="flex w-full justify-between cursor-pointer hover:bg-gray-700 transition-colors duration-300 rounded-lg">
                     <div className="flex items-center">
                       <Activity className="mr-2" size={24}/>
                       <span>Relatórios</span>
@@ -143,11 +145,11 @@ const AdminSidebar: React.FC = () => {
                   </div>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pl-6 space-y-2">
-                  <Link to="/admin/dashboard" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
+                  <Link to="/admin/dashboard" className="flex items-center p-2 mt-2 mr-2 rounded-lg hover:bg-gray-700">
                     <LayoutDashboard className="mr-2" size={12}/>
                     <span>Marketing</span>
                   </Link>
-                  <Link to="/admin/gestao" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
+                  <Link to="/admin/gestao" className="flex items-center p-2 mt-2 mr-2 rounded-lg hover:bg-gray-700">
                     <Lightbulb className="mr-2" size={12}/>
                     <span>Gestão</span>
                   </Link>
@@ -159,8 +161,8 @@ const AdminSidebar: React.FC = () => {
 
         <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between bg-oxfordBlue">
           <button className="flex items-center text-white hover:text-gray-300">
-            {/* <User className="mr-2" size={24}/>
-            <span>Perfil</span> */}
+              {/* <User className="mr-2" size={24}/>
+              <span>Perfil</span> */}
           </button>
           <button className="flex items-center text-white hover:text-gray-300" onClick={handleLogout}>
             <LogOut className="mr-2" size={24}/>

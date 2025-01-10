@@ -48,7 +48,7 @@ const AuthProvider = ({ children }: Props) => {
       }
     };
 
-    checkToken();
+    checkToken().then();
   }, []);
 
   const login = async (email: string, password: string): Promise<ILoginAdmin | undefined> => {

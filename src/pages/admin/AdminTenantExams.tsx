@@ -1,8 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
 import Cards from "@/components/Card.tsx";
-import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Button} from "@/components/ui/button.tsx";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
 import DataTable from "@/components/DataTable.tsx";
@@ -31,9 +28,7 @@ const AdminTenantExams: React.FC = () => {
 
     const [exames, setExames] = useState<Exams[]>([])
     const [exame, setExame] = useState<Exams>()
-    const [filterName, setFilterName] = useState<string>()
     const [openModalNewExam, setOpenModalNewExam] = useState<boolean>(false)
-    const [filterDoctor, setFilterDoctor] = useState<string>()
     const [loading, setLoading] = useState<boolean>(false);
     const [type,setType] = useState<ModalType>(ModalType.newExam)
     const [deleteId, setDeleteId] = useState<number>()
@@ -139,31 +134,6 @@ const AdminTenantExams: React.FC = () => {
                     <Cards name='Total de Exames' content={exames?.length}/>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-3 mb-5">
-                    <div className='p-2'>
-                        <Label htmlFor="filtroNome" className="text-oxfordBlue">Nome do Exame</Label>
-                        <Input
-                            className="w-72"
-                            id="filtroNome"
-                            placeholder="Filtrar por Nome do exame"
-                            value={filterName}
-                            onChange={(e) => setFilterName(e.target.value)}/>
-                    </div>
-                    <div className='p-2'>
-                        <Label htmlFor="filtroDoctor" className="text-oxfordBlue">Nome do Médico</Label>
-                        <Input
-                            className="w-72"
-                            id="filtroDoctor"
-                            placeholder="Filtrar por Médico"
-                            value={filterDoctor}
-                            onChange={(e) => setFilterDoctor(e.target.value)}/>
-                    </div>
-                    <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={() => openFlexiveModal(ModalType.newExam)}
-                                className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
-                            Exame</Button>
-                    </div>
-                </div>
                 <Card>
                     <CardContent>
                         <Table>

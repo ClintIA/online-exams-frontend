@@ -1,7 +1,4 @@
 import Cards from "@/components/Card.tsx";
-import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Button} from "@/components/ui/button.tsx";
 import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
@@ -26,8 +23,6 @@ const AdminDoctor: React.FC = () => {
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const [doctors,setDoctors] = useState<IDoctor[]>([]);
-    const [filtroName, setFiltroName] = useState<string>('')
-    const [filtroCRM, setFiltroCRM] = useState<string>('')
     const [deleteId, setDeleteId] = useState<number>()
     const [doctor, setDoctor] = useState<IDoctor>()
     const [doctorsPagination, setDoctorsPagination] = useState({ total: 0, page: 1, take: 1000, skip: 0, remaining: 0 })
@@ -124,32 +119,6 @@ const AdminDoctor: React.FC = () => {
             <h1 className="text-3xl mb-6 font-bold tracking-tight">Médicos</h1>
             <div className="flex flex-col md:flex-row gap-3 mb-6">
                 <Cards name='Total de Médicos' content={doctors?.length}/>
-            </div>
-
-            <div className="flex flex-col md:flex-row gap-3 mb-5">
-                <div className='p-2'>
-                    <Label htmlFor="filtroNome" className="text-oxfordBlue">Nome</Label>
-                    <Input
-                        className="w-72"
-                        id="filtroNome"
-                        placeholder="Filtrar por nome"
-                        value={filtroName}
-                        onChange={(e) => setFiltroName(e.target.value)}/>
-                </div>
-                <div className='p-2'>
-                    <Label htmlFor="filtroCPF" className="text-oxfordBlue">CRM</Label>
-                    <Input
-                        className="w-72"
-                        id="filtroCPF"
-                        placeholder="Filtrar por CRM"
-                        value={filtroCRM}
-                        onChange={(e) => setFiltroCRM(e.target.value)}/>
-                </div>
-                <div className="flex justify-end mt-7 p-1">
-                    <Button onClick={() => openFlexiveModal(ModalType.newDoctorAdmin)}
-                            className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
-                        Médico</Button>
-                </div>
             </div>
 
             <Card>

@@ -21,7 +21,7 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
             {dataTable?.map((data) => (
                 <TableRow key={data.id}>
                     {renderRow(data)}
-                    <TableCell className="text-oxfordBlue">
+                    {Object.prototype.hasOwnProperty.call(data, 'attended') ? '' : <TableCell className="text-oxfordBlue">
                         {data?.role === 'master' ? (
                             <Button disabled={true} className="w-full bg-oxfordBlue text-white">
                                 <span className="text-sm">Master Admin</span>
@@ -81,6 +81,7 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
                                 </PopoverContent>
                             </Popover>)}
                     </TableCell>
+                    }
                 </TableRow>
             ))}
         </TableBody>

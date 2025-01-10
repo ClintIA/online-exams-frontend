@@ -181,7 +181,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             case 'newBookingPatient':
                 return(<RegisterBookingAndPatient setStep={setStep} submitBooking={submitBookintExam} submitBookingWithPatient={submitBookintWithPatient} handleModalMessage={openModal} />)
             case 'bookingConfirmation':
-                return(<BookingConfirmation dadosBooking={patientData} onNewBooking={openModal} />)
+                return(<BookingConfirmation setStep={setStep} dadosBooking={patientData} onNewBooking={openModal} />)
             case 'newDoctorAdmin':
                 return(<RegisterDoctor isDoctor={submitNewDoctor} />)
             case 'editDoctorAdmin':
