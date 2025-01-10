@@ -121,9 +121,9 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                         <div className="grid gap-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="exam_type" className="text-right text-oxfordBlue">
-                                    Nome do Exame
+                                    Tipo do Exame
                                 </Label>
-                                <Label className="flex mt-1">
+                                <Label className="flex mhostmt-1">
                                     <Input
                                         type="radio"
                                         name="exam_type"

@@ -91,14 +91,14 @@ const AdminBooking: React.FC = () =>  {
         fetchPatientExams(date).then()
         setOpenModalNewPatient(false)
     }
-    const handlePresence  = async (examId: number, presence: boolean | null) => {
+    const handlePresence  = async (examId: number, presence: null | 'Sim' | 'Não') => {
         try {
             if(auth.tenantId) {
                 const result = await confirmPatientExam(auth.tenantId, examId, presence)
                 if(result) {
-                    if(presence === null) {
+                    if(presence === 'Não') {
                         handleModalMessage('Paciente Cancelado')
-                    } else if(presence) {
+                    } else if(presence === 'Sim') {
                         handleModalMessage('Paciente Confirmado')
                     } else {
                         handleModalMessage('Paciente Não Compareceu')
@@ -120,7 +120,7 @@ const AdminBooking: React.FC = () =>  {
                 <TabsContent value="lista">
                     <Card className="p-4">
                         <CardTitle className="ml-8 text-oxfordBlue text-xl">
-                            {`Agendamentos do ${formatDate(date.split('T')[0])}`}
+                            {`Agendamentos do dia: ${formatDate(date.split('T')[0])}`}
                         </CardTitle>
                         <CardHeader
                             className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">
@@ -136,6 +136,7 @@ const AdminBooking: React.FC = () =>  {
                                     id="examDate"
                                     name="examDate"
                                     type="date"
+                                    value={new Date(date).toISOString().split('T')[0]}
                                     className="col-span-3 w-48 h-10 font-semibold text-base text-oxfordBlue"
                                     onChange={handleInputChange}
                                 />

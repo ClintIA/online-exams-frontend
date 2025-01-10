@@ -13,7 +13,6 @@ import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
-import {findCanalOptions} from "@/lib/optionsFixed.ts";
 import {ModalType} from "@/types/ModalType.ts";
 
 const AdminPatient: React.FC = () => {
@@ -109,7 +108,6 @@ const AdminPatient: React.FC = () => {
             <TableCell className="text-oxfordBlue">{paciente.phone}</TableCell>
             <TableCell className="text-oxfordBlue">{formatDate(paciente.dob)}</TableCell>
             <TableCell className="text-oxfordBlue">{paciente.health_card_number}</TableCell>
-            <TableCell className="text-oxfordBlue capitalize">{findCanalOptions(paciente.canal)}</TableCell>
         </>
     );
     const handleDeletePatient = async () => {
@@ -199,7 +197,6 @@ const AdminPatient: React.FC = () => {
                                     <TableHead className="text-oxfordBlue">Contato</TableHead>
                                     <TableHead className="text-oxfordBlue">Data de Nascimento</TableHead>
                                     <TableHead className="text-oxfordBlue">Cartão do Plano</TableHead>
-                                    <TableHead className="text-oxfordBlue">Canal de Captação</TableHead>
                                     <TableHead className="text-oxfordBlue">Ação</TableHead>
                                 </TableRow>
                             </TableHeader>
