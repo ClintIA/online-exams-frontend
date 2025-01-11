@@ -10,6 +10,8 @@ import {TableCell} from "@mui/material";
 import ModalTenantExamRender from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {ModalType} from "@/types/ModalType.ts";
+import {Button} from "@/components/ui/button.tsx";
+import NoDataTable from "@/components/NoDataTable.tsx";
 
 export interface Exams {
     id?: number
@@ -133,22 +135,39 @@ const AdminTenantExams: React.FC = () => {
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
                     <Cards name='Total de Exames' content={exames?.length}/>
                 </div>
-
+                <div className="flex justify-items-start ml-2 mb-3">
+                    <div>
+                        <Button onClick={() => openFlexiveModal(ModalType.newExam)}
+                                className="p-4 text-base bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
+                            Procedimento</Button>
+                    </div>
+                </div>
                 <Card>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="text-oxfordBlue">Nome do Procedimento</TableHead>
-                                    <TableHead className="text-oxfordBlue">Médicos</TableHead>
-                                    <TableHead className="text-oxfordBlue">Tipo do Procedimento</TableHead>
-                                    <TableHead className="text-oxfordBlue">Preço do Procedimento</TableHead>
-                                    <TableHead className="text-oxfordBlue">Valor do Médico</TableHead>
-                                    <TableHead className="text-oxfordBlue">Ação</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <DataTable openModalEdit={openFlexiveModal} openModalBooking={false} deleteData={handleConfirmationDelete} dataTable={exames} renderRow={renderRow}></DataTable>
-                        </Table>
+                        {
+                            exames.length === 0 ?
+                                (
+                                    <div className="p-10">
+                                        <NoDataTable message="Não possui exames cadastrados"/>
+                                    </div>
+                                ) : (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-oxfordBlue">Nome do Procedimento</TableHead>
+                                                <TableHead className="text-oxfordBlue">Médicos</TableHead>
+                                                <TableHead className="text-oxfordBlue">Tipo do Procedimento</TableHead>
+                                                <TableHead className="text-oxfordBlue">Preço do Procedimento</TableHead>
+                                                <TableHead className="text-oxfordBlue">Valor do Médico</TableHead>
+                                                <TableHead className="text-oxfordBlue">Ação</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <DataTable openModalEdit={openFlexiveModal} openModalBooking={false}
+                                                   deleteData={handleConfirmationDelete} dataTable={exames}
+                                                   renderRow={renderRow}></DataTable>
+                                    </Table>
+                                )
+                        }
                     </CardContent>
                 </Card>
             </div>

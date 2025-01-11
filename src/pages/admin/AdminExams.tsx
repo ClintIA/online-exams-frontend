@@ -11,6 +11,7 @@ import {toast} from 'react-toastify'
 import {IPatientExam} from "@/pages/admin/AdminHome.tsx";
 import Cards from "@/components/Card.tsx";
 import DataTable from "@/components/DataTable.tsx";
+import NoDataTable from "@/components/NoDataTable.tsx";
 
 
 
@@ -107,6 +108,7 @@ const AdminExams: React.FC = () =>  {
           setExams(updatedExams.data.data.exames[0].patientExams || []);
         }
       }
+
     } catch (error) {
       console.error(error);
       toast.error("Erro ao enviar arquivo");
@@ -148,20 +150,30 @@ const AdminExams: React.FC = () =>  {
         </div>
         <Card>
           <CardContent>
-            <Table>
-              <TableHeader>
-                <TableRow>
-              <TableHead>Paciente</TableHead>
-              <TableHead>Tipo de Procedimento</TableHead>
-              <TableHead>Data de Criação</TableHead>
-              <TableHead>Data de Agendamento</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead>Ação</TableHead>
-            </TableRow>
-          </TableHeader>
-          <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={() => {}}
-                     deleteData={() => {}} dataTable={exams}></DataTable>
-        </Table>
+            {
+              exams.length === 0 ?
+                  (
+                      <div className="p-10">
+                        <NoDataTable message="Não possui exames realizados"/>
+                      </div>
+                  ) : (
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>Paciente</TableHead>
+                            <TableHead>Tipo de Procedimento</TableHead>
+                            <TableHead>Data de Criação</TableHead>
+                            <TableHead>Data de Agendamento</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Ação</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={() => {}}
+                                   deleteData={() => {}} dataTable={exams}></DataTable>
+                      </Table>
+                  )
+            }
+
           </CardContent>
         </Card>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>

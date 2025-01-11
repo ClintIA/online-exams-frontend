@@ -14,6 +14,8 @@ import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
 import {IAdmin} from "@/types/dto/Admin.ts";
 import {findRoleOptions} from "@/lib/optionsFixed.ts";
+import {Button} from "@/components/ui/button.tsx";
+import NoDataTable from "@/components/NoDataTable.tsx";
 
 const AdminList: React.FC = () => {
 
@@ -119,24 +121,39 @@ const AdminList: React.FC = () => {
             <div className="flex flex-col md:flex-row gap-3 mb-6">
                 <Cards name='Total de Adminstradores' content={admins?.length}/>
             </div>
-
+            <div className="flex justify-items-start ml-2 mb-3">
+                <div>
+                    <Button onClick={() => openFlexiveModal(ModalType.newAdmin)}
+                            className="p-4 text-base bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
+                        Administrador</Button>
+                </div>
+            </div>
             <Card>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="text-oxfordBlue">Nome</TableHead>
-                                <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                <TableHead className="text-oxfordBlue">E-mail</TableHead>
-                                <TableHead className="text-oxfordBlue">CEP</TableHead>
-                                <TableHead className="text-oxfordBlue">Contato</TableHead>
-                                <TableHead className="text-oxfordBlue">Perfil de Acesso</TableHead>
-                                <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={openFlexiveModal}
-                                   deleteData={handleConfirmationDelete} dataTable={admins}></DataTable>
-                    </Table>
+                        {
+                            admins.length === 0 ?
+                                (
+                                    <div className="p-10">
+                                        <NoDataTable message="Não possui adminstradores cadastrados"/>
+                                    </div>
+                                ) : (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-oxfordBlue">Nome</TableHead>
+                                                <TableHead className="text-oxfordBlue">CPF</TableHead>
+                                                <TableHead className="text-oxfordBlue">E-mail</TableHead>
+                                                <TableHead className="text-oxfordBlue">CEP</TableHead>
+                                                <TableHead className="text-oxfordBlue">Contato</TableHead>
+                                                <TableHead className="text-oxfordBlue">Perfil de Acesso</TableHead>
+                                                <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={openFlexiveModal}
+                                                   deleteData={handleConfirmationDelete} dataTable={admins}></DataTable>
+                                    </Table>
+                                )
+                        }
                 </CardContent>
             </Card>
 

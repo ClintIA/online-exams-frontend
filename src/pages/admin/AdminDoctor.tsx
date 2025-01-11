@@ -1,12 +1,11 @@
 import Cards from "@/components/Card.tsx";
 import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import {Card, CardContent} from "@/components/ui/card.tsx";
-import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
+import {Table, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import React, {useCallback, useEffect, useState} from "react";
 import {useAuth} from "@/hooks/auth.tsx";
-import {TableCell} from "@mui/material";
 import Loading from "@/components/Loading.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {format} from "date-fns";
@@ -14,6 +13,8 @@ import {ptBR} from "date-fns/locale";
 import {IAdmin} from "@/types/dto/Admin.ts";
 import {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
 import {deleteDoctor, listDoctors} from "@/services/doctorService.ts";
+import {Button} from "@/components/ui/button.tsx";
+import NoDataTable from "@/components/NoDataTable.tsx";
 
 const AdminDoctor: React.FC = () => {
 
@@ -120,23 +121,40 @@ const AdminDoctor: React.FC = () => {
             <div className="flex flex-col md:flex-row gap-3 mb-6">
                 <Cards name='Total de Médicos' content={doctors?.length}/>
             </div>
-
+            <div className="flex justify-items-start ml-2 mb-3">
+                <div>
+                    <Button onClick={() => openFlexiveModal(ModalType.newDoctorAdmin)}
+                            className="p-4 text-base bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
+                        Médico</Button>
+                </div>
+            </div>
             <Card>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="text-oxfordBlue">Nome</TableHead>
-                                <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                <TableHead className="text-oxfordBlue">CEP</TableHead>
-                                <TableHead className="text-oxfordBlue">Email</TableHead>
-                                <TableHead className="text-oxfordBlue">Contato</TableHead>
-                                <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={openFlexiveModal}
-                                   deleteData={handleConfirmationDelete} dataTable={doctors}></DataTable>
-                    </Table>
+                    {
+                        doctors.length === 0 ?
+                            (
+                                <div className="p-10">
+                                    <NoDataTable message="Não possui médicos cadastrados"/>
+                                </div>
+                            ) : (
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="text-oxfordBlue">Nome</TableHead>
+                                            <TableHead className="text-oxfordBlue">CPF</TableHead>
+                                            <TableHead className="text-oxfordBlue">CEP</TableHead>
+                                            <TableHead className="text-oxfordBlue">Email</TableHead>
+                                            <TableHead className="text-oxfordBlue">Contato</TableHead>
+                                            <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+
+                                    <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={openFlexiveModal}
+                                               deleteData={handleConfirmationDelete} dataTable={doctors}></DataTable>
+                                </Table>
+                            )
+                    }
+
                 </CardContent>
             </Card>
 

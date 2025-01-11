@@ -3,7 +3,7 @@ import {
   Activity,
   Calendar,
   ChevronDown,
-  ChevronRight, Contact2,
+  ChevronRight, CircleUser, Contact2,
   Home, LayoutDashboard, Lightbulb, LogOut, Microscope,
   MonitorCog,
   Users
@@ -125,6 +125,11 @@ const AdminSidebar: React.FC = () => {
                       >
                         <Contact2 className="mr-2" size={12} />
                         <span>Médicos</span>
+                      </Link>
+                      <Link to="/admin/registrar-admin"
+                            className="flex items-center p-2 rounded-lg hover:bg-gray-700">
+                        <CircleUser className="mr-2" size={12}/>
+                        <span>Administradores</span>
                       </Link>
                     </>
                   )}

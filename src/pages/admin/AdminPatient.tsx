@@ -14,6 +14,7 @@ import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
 import {ModalType} from "@/types/ModalType.ts";
+import NoDataTable from "@/components/NoDataTable.tsx";
 
 const AdminPatient: React.FC = () => {
 
@@ -189,19 +190,28 @@ const AdminPatient: React.FC = () => {
 
                 <Card>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="text-oxfordBlue">Nome</TableHead>
-                                    <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                    <TableHead className="text-oxfordBlue">Contato</TableHead>
-                                    <TableHead className="text-oxfordBlue">Data de Nascimento</TableHead>
-                                    <TableHead className="text-oxfordBlue">Cartão do Plano</TableHead>
-                                    <TableHead className="text-oxfordBlue">Ação</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <DataTable renderRow={renderRow} openModalBooking={true} openModalEdit={openFlexiveModal}  deleteData={handleConfirmationDelete} dataTable={pacientes}></DataTable>
-                        </Table>
+                        {
+                            pacientes.length === 0 ?
+                                (
+                                    <div className="p-10">
+                                        <NoDataTable message="Não possui pacientes cadastrados"/>
+                                    </div>
+                                ) : (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-oxfordBlue">Nome</TableHead>
+                                                <TableHead className="text-oxfordBlue">CPF</TableHead>
+                                                <TableHead className="text-oxfordBlue">Contato</TableHead>
+                                                <TableHead className="text-oxfordBlue">Data de Nascimento</TableHead>
+                                                <TableHead className="text-oxfordBlue">Cartão do Plano</TableHead>
+                                                <TableHead className="text-oxfordBlue">Ação</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <DataTable renderRow={renderRow} openModalBooking={true} openModalEdit={openFlexiveModal}  deleteData={handleConfirmationDelete} dataTable={pacientes}></DataTable>
+                                    </Table>
+                                )
+                        }
                     </CardContent>
                 </Card>
 
