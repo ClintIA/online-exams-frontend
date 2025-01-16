@@ -64,7 +64,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
                    await updatePatient(patientData, tenantId)
                 }
             const result = await registerPatientExam(bookingDados, tenantId)
-                setPatientData(result.data.data)
+                setPatientData(result.data.data.data)
                 modalNewBookingConfirmation('Paciente Agendado com sucesso')
                 return result
             }
