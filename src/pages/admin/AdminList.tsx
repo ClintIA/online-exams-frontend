@@ -20,6 +20,8 @@ import NoDataTable from "@/components/NoDataTable.tsx";
 const AdminList: React.FC = () => {
 
     const [title,setTitle] = useState("");
+    const [titleModal,setTitleModal] = useState("");
+
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
@@ -33,11 +35,11 @@ const AdminList: React.FC = () => {
     const auth = useAuth()
 
 
-    const openFlexiveModal = (modalType: ModalType, admin?: IAdmin) => {
+    const openFlexiveModal = (title: string, modalType: ModalType, admin?: IAdmin) => {
         if(admin) {
             setAdmin(admin)
         }
-
+        setTitleModal(title)
         setType(modalType)
         setOpenModalNewAdmin(true)
     }
@@ -123,7 +125,7 @@ const AdminList: React.FC = () => {
             </div>
             <div className="flex justify-items-start ml-2 mb-3">
                 <div>
-                    <Button onClick={() => openFlexiveModal(ModalType.newAdmin)}
+                    <Button onClick={() => openFlexiveModal('Cadastrar Administrador',ModalType.newAdmin)}
                             className="p-4 text-base bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
                         Administrador</Button>
                 </div>
@@ -162,7 +164,7 @@ const AdminList: React.FC = () => {
                 isOpen={openModalNewAdmin}
                 onClose={() => setOpenModalNewAdmin(false)}
                 type={type}
-                title="Gerenciamento de Administradores"
+                title={titleModal}
                 data={admin}
                 isDoctor={false}
             />}

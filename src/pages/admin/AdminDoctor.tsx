@@ -19,6 +19,8 @@ import NoDataTable from "@/components/NoDataTable.tsx";
 const AdminDoctor: React.FC = () => {
 
     const [title,setTitle] = useState("");
+    const [titleModal,setTitleModal] = useState("");
+
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
@@ -33,12 +35,13 @@ const AdminDoctor: React.FC = () => {
     const auth = useAuth()
 
 
-    const openFlexiveModal = (modalType: ModalType, doctor?: IDoctor) => {
+    const openFlexiveModal = (title: string, modalType: ModalType, doctor?: IDoctor) => {
         if(doctor) {
             setDoctor(doctor)
         }
 
         setType(modalType)
+        setTitleModal(title)
         setOpenModalNewPatient(true)
     }
 
@@ -123,7 +126,7 @@ const AdminDoctor: React.FC = () => {
             </div>
             <div className="flex justify-items-start ml-2 mb-3">
                 <div>
-                    <Button onClick={() => openFlexiveModal(ModalType.newDoctorAdmin)}
+                    <Button onClick={() => openFlexiveModal('Cadastrar Médico', ModalType.newDoctorAdmin)}
                             className="p-4 text-base bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
                         Médico</Button>
                 </div>
@@ -163,7 +166,7 @@ const AdminDoctor: React.FC = () => {
                 isOpen={openModalNewPatient}
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}
-                title="Gerenciamento de Médicos"
+                title={titleModal}
                 data={doctor}
             />}
 

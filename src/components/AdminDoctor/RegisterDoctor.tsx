@@ -16,6 +16,7 @@ interface RegisterDoctorProps {
     dadosIniciais?: Partial<IDoctor>
     isUpdate?: (adminData: IDoctor, tenant: number) => Promise<void>
     isDoctor?: (adminData: IDoctor, tenant: number) => Promise<void>
+    title: string
 }
 
 export interface IDoctor {
@@ -35,7 +36,7 @@ export interface IDoctor {
     exams?: number[];
 }
 
-const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, isDoctor}: RegisterDoctorProps) => {
+const RegisterDoctor: React.FC<RegisterDoctorProps> = ({title,dadosIniciais, isUpdate, isDoctor}: RegisterDoctorProps) => {
 
     const [doctorData, setDoctorData] = useState<IDoctor>({
         fullName: '',
@@ -150,11 +151,11 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
     }
 
     return (
-        <div className="mt-10">
+        <div className="mt-6">
 
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle className='text-blue-900 text-xl'>{isDoctor ? 'Cadastro de Médicos' : 'Cadastro de Adminstradores'}</CardTitle>
+                    <CardTitle className='text-blue-900 text-xl'>{title}</CardTitle>
                     <CardDescription className="text-gray-500">
                         Preencha os dados abaixo. Clique em salvar para finalizar o cadastro.
                     </CardDescription>

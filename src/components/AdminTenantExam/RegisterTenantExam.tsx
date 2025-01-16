@@ -116,7 +116,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
     }
 
     return (
-        <div className="mt-10">
+        <div className="mt-6">
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
                     <CardTitle className='text-oxfordBlue text-xl'>{title}</CardTitle>

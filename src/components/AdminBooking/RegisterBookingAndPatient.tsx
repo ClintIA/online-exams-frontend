@@ -43,9 +43,10 @@ interface BookingModalProps {
     submitBooking?: (bookingDados: DadosBooking, tenantId: number,patientData: DadosPaciente) => Promise<any>
     setStep: (step: number) => void
     submitBookingWithPatient?: (data: BookingWithPatient, tenant: number) => Promise<any>
+    title: string
 }
 
-const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking, submitBookingWithPatient, setStep }: BookingModalProps) => {
+const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleModalMessage, submitBooking, submitBookingWithPatient, setStep }: BookingModalProps) => {
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [canal, setCanal] = useState<IMarketing[]>([])
     const [selectedExame, setSelectedExame] = useState<string>('')
@@ -291,11 +292,11 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
     }
 
     return (
-        <div className="mt-10">
+        <div className="mt-6">
 
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle className='text-xl text-blue-900'>Agendamento de Exame</CardTitle>
+                    <CardTitle className='text-xl text-blue-900'>{title}</CardTitle>
                     <CardDescription>
                         Preencha os detalhes do paciente abaixo. Clique em salvar para continuar.
                     </CardDescription>

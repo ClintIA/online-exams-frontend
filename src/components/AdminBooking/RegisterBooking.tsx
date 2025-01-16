@@ -24,7 +24,7 @@ interface BookingModalProps {
     dadosPaciente?: DadosPaciente
     isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<any>
     onClose?: () => void
-
+    title: string
     handleModalMessage?: (type: ModalType) => void
     setStep: (step: number) => void
 
@@ -44,7 +44,7 @@ interface Doctor {
     exams?: any[]
 }
 
-const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, isNewBooking, handleModalMessage,setStep}: BookingModalProps ) => {
+const RegisterBooking: React.FC<BookingModalProps> = ({title,dadosPaciente, isNewBooking, handleModalMessage,setStep}: BookingModalProps ) => {
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
     const [selectedDoctor, setSelectedDoctor] = useState<string>('')
@@ -174,11 +174,11 @@ const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, isNewBooki
 
 
     return (
-        <div className="mt-10">
+        <div className="mt-6">
 
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle className='text-xl text-blue-900'>Agendamento do Exame</CardTitle>
+                    <CardTitle className='text-xl text-blue-900'>{title}</CardTitle>
                     <CardDescription>
                         Preencha os detalhes do paciente abaixo. Clique em salvar para continuar.
                     </CardDescription>

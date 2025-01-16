@@ -35,6 +35,8 @@ const AdminTenantExams: React.FC = () => {
     const [type,setType] = useState<ModalType>(ModalType.newExam)
     const [deleteId, setDeleteId] = useState<number>()
     const [title,setTitle] = useState("");
+    const [titleModal,setTitleModal] = useState("");
+
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
@@ -78,11 +80,12 @@ const AdminTenantExams: React.FC = () => {
             <TableCell className="text-oxfordBlue capitalize">{exame.doctorPrice}</TableCell>
         </>
     );
-    const openFlexiveModal = (modalType: ModalType, exams?: Exams) => {
+    const openFlexiveModal = (title: string, modalType: ModalType, exams?: Exams) => {
         if(exams) {
             setExame(exams)
         }
         setType(modalType)
+        setTitleModal(title)
         setOpenModalNewExam(true)
     }
     const handleModalMessage = (message: string) => {
@@ -135,7 +138,7 @@ const AdminTenantExams: React.FC = () => {
                 </div>
                 <div className="flex justify-items-start ml-2 mb-3">
                     <div>
-                        <Button onClick={() => openFlexiveModal(ModalType.newExam)}
+                        <Button onClick={() => openFlexiveModal('Cadastrar Exame',ModalType.newExam)}
                                 className="p-4 text-base bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
                             Procedimento</Button>
                     </div>
@@ -171,7 +174,7 @@ const AdminTenantExams: React.FC = () => {
                 {openModalNewExam && <ModalRender
                     modalMessage={handleModalMessage}
                     isOpen={openModalNewExam}
-                    title="Gerenciamento de Pacientes"
+                    title={titleModal}
                     onClose={() => setOpenModalNewExam(false)}
                     type={type}
                     data={exame}

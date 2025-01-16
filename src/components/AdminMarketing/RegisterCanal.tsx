@@ -2,7 +2,7 @@ import React, {useCallback, useEffect, useState} from "react";
 import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
-import {Card, CardFooter} from "@/components/ui/card.tsx";
+import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
 import { listCanalMarketing} from "@/services/marketingService.ts";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
@@ -19,9 +19,10 @@ export interface RegisterCanalProps {
     isCanal?: (marketingData: IMarketing, tenantID: number) => Promise<void>
     isUpdate?: (marketingData: IMarketing, tenantID: number) => Promise<void>
     totalBudget?: number
+    title: string
 }
 
-const RegisterCanal: React.FC<RegisterCanalProps> = ({ isCanal, isUpdate, totalBudget}:RegisterCanalProps) => {
+const RegisterCanal: React.FC<RegisterCanalProps> = ({title, isCanal, isUpdate, totalBudget}:RegisterCanalProps) => {
 
     const [updateCanalData, setUpdateCanalData] = useState<IMarketing>({} as IMarketing)
     const [newCanalData,setNewCanalData] = useState<IMarketing>({
@@ -102,6 +103,12 @@ const RegisterCanal: React.FC<RegisterCanalProps> = ({ isCanal, isUpdate, totalB
     }
     return (
         <Card className="py-4 px-4">
+            <CardHeader>
+                <CardTitle className='text-blue-900 text-xl'>{title}</CardTitle>
+                <CardDescription>
+                    Gerenciamento de canais
+                </CardDescription>
+            </CardHeader>
             <div className="flex flex-col">
                 <div className="flex flex-row gap-2 p-1">
                     <div className="w-auto sm:w-2/4 flex justify-center">

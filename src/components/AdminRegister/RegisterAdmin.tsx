@@ -15,9 +15,10 @@ interface RegisterAdminProps {
     dadosIniciais?: Partial<IAdmin>
     isUpdate?: (adminData: IAdmin, tenant: number) => Promise<void>
     isAdmin?: (adminData: IAdmin, tenant: number) => Promise<void>
+    title: string
 }
 
-const RegisterAdmin: React.FC<RegisterAdminProps> = ({dadosIniciais, isUpdate, isAdmin}: RegisterAdminProps) => {
+const RegisterAdmin: React.FC<RegisterAdminProps> = ({title, dadosIniciais, isUpdate, isAdmin}: RegisterAdminProps) => {
 
     const [adminData, setAdminData] = useState<IAdmin>({
         fullName: '',
@@ -107,11 +108,11 @@ const RegisterAdmin: React.FC<RegisterAdminProps> = ({dadosIniciais, isUpdate, i
     }
 
    return (
-           <div className="mt-10">
+           <div className="mt-6">
 
                <Card className="w-full max-w-2xl mx-auto">
                    <CardHeader>
-                       <CardTitle className='text-blue-900 text-xl'>Cadastro de Adminstradores</CardTitle>
+                       <CardTitle className='text-blue-900 text-xl'>{title}</CardTitle>
                        <CardDescription>
                            Preencha os dados abaixo. Clique em salvar para finalizar o cadastro.
                        </CardDescription>

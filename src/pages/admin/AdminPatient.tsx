@@ -19,6 +19,8 @@ import NoDataTable from "@/components/NoDataTable.tsx";
 const AdminPatient: React.FC = () => {
 
     const [title,setTitle] = useState("");
+    const [titleModal,setTitleModal] = useState("");
+
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
@@ -146,7 +148,7 @@ const AdminPatient: React.FC = () => {
             setDadosPaciente(paciente)
         }
         setType(modalType)
-        setTitle(title)
+        setTitleModal(title)
         setOpenModalNewPatient(true)
     }
 
@@ -220,7 +222,7 @@ const AdminPatient: React.FC = () => {
             {openModalNewPatient && <ModalRender
                 modalMessage={handleModalMessage}
                 isOpen={openModalNewPatient}
-                title="Gerenciamento de Pacientes"
+                title={titleModal}
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}
                 data={dadosPaciente}

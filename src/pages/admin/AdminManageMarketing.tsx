@@ -25,6 +25,8 @@ const AdminManageMarketing: React.FC = () => {
     const [openModalPlatform, setOpenModalModalPlatform] = useState<boolean>(false)
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const [title,setTitle] = useState("");
+    const [titleModal,setTitleModal] = useState("");
+
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
@@ -64,8 +66,9 @@ const AdminManageMarketing: React.FC = () => {
         }))
     }
 
-    const openFlexiveModal = (modalType: ModalType) => {
+    const openFlexiveModal = (title: string, modalType: ModalType) => {
         setType(modalType)
+        setTitleModal(title)
         setOpenModalModalPlatform(true)
     }
     const handleModalMessage = (message: string) => {
@@ -162,7 +165,7 @@ const AdminManageMarketing: React.FC = () => {
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex justify-between">ORÇAMENTO POR CANAL
-                            <Button onClick={() => openFlexiveModal(ModalType.newCanal)}
+                            <Button onClick={() => openFlexiveModal('Gerenciamento de Canais',ModalType.newCanal)}
                                     className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Gerenciar Canais</Button>
                         </CardTitle>
                     </CardHeader>
@@ -253,7 +256,7 @@ const AdminManageMarketing: React.FC = () => {
                 isOpen={openModalPlatform}
                 onClose={() => setOpenModalModalPlatform(false)}
                 type={type}
-                title="Gerenciamento de Canais"
+                title={titleModal}
                 totalBudget={totalBudget}
             />}
             <GeneralModal

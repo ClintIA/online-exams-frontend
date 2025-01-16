@@ -8,7 +8,7 @@ import {ModalType} from "@/types/ModalType.ts";
 
 interface TableProps<T> {
     dataTable?: any[];
-    openModalEdit: (type: ModalType, data: T) => void;
+    openModalEdit: (title: string, type: ModalType, data: T) => void;
     deleteData: (id: number) => void;
     openModalBooking?: boolean;
     renderRow: (data: any) => React.ReactNode;
@@ -33,20 +33,20 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
                                 <PopoverContent className="w-32">
                                     <div className="p-1 flex flex-col gap-0.5">
                                         {Object.prototype.hasOwnProperty.call(data, 'dob') && (
-                                            <Button onClick={() => openModalEdit(ModalType.editPatient, data)}
+                                            <Button onClick={() => openModalEdit('Editar Paciente',ModalType.editPatient, data)}
                                                     className="w-full bg-oxfordBlue text-white">
                                                 <Pencil className="mr-1 h-4 w-4"/>
                                                 <span className="text-sm">Editar</span>
                                             </Button>)}
                                         {Object.prototype.hasOwnProperty.call(data, 'exam_name') && (
-                                            <Button onClick={() => openModalEdit(ModalType.editExam, data)}
+                                            <Button onClick={() => openModalEdit('Editar Exame',ModalType.editExam, data)}
                                                     className="w-full bg-oxfordBlue text-white">
                                                 <Pencil className="mr-1 h-4 w-4"/>
                                                 <span className="text-sm">Editar</span>
                                             </Button>)}
                                         {Object.prototype.hasOwnProperty.call(data, 'CRM') ? (
                                             <Button
-                                                onClick={() => openModalEdit(ModalType.editDoctorAdmin, data)}
+                                                onClick={() => openModalEdit('Editar Médico',ModalType.editDoctorAdmin, data)}
                                                 className="w-full bg-oxfordBlue text-white"
                                             >
                                                 <Pencil className="mr-1 h-4 w-4" />
@@ -54,7 +54,7 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
                                             </Button>
                                         ) : Object.prototype.hasOwnProperty.call(data, 'fullName') && (
                                             <Button
-                                                onClick={() => openModalEdit(ModalType.editAdmin, data)}
+                                                onClick={() => openModalEdit('Editar Administrador',ModalType.editAdmin, data)}
                                                 className="w-full bg-oxfordBlue text-white"
                                             >
                                                 <Pencil className="mr-1 h-4 w-4" />
@@ -62,7 +62,7 @@ const DataTable = <T,>({ dataTable, openModalEdit, deleteData, openModalBooking,
                                             </Button>
                                         )}
                                         {openModalBooking && (
-                                            <Button onClick={() => openModalEdit(ModalType.booking, data)}
+                                            <Button onClick={() => openModalEdit('Editar Agendamento',ModalType.booking, data)}
                                                     className="w-full bg-oxfordBlue text-white">
                                                 <Calendar className="h-4 w-4"/>
                                                 <span className="text-sm">Agendar</span>
