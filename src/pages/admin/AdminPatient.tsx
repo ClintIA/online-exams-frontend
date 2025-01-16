@@ -86,7 +86,9 @@ const AdminPatient: React.FC = () => {
 
        fetchPatients().then()
     }, [fetchPatients])
-
+    const handleConfirmationBooking = () => {
+        openFlexiveModal('Confirmação de Agendamento', ModalType.bookingConfirmation)
+    }
     const handleConfirmationDelete = (id: number) => {
         setGeneralMessage("Deseja deletar o paciente selecionado?")
         setTitle('Confirmação de Exclusão')
@@ -139,12 +141,12 @@ const AdminPatient: React.FC = () => {
         setIsGeneralModalOpen(true)
     }
 
-    const openFlexiveModal = (modalType: ModalType, paciente?: DadosPaciente) => {
+    const openFlexiveModal = (title: string, modalType: ModalType, paciente?: DadosPaciente) => {
         if(paciente) {
             setDadosPaciente(paciente)
         }
-
         setType(modalType)
+        setTitle(title)
         setOpenModalNewPatient(true)
     }
 
@@ -184,7 +186,7 @@ const AdminPatient: React.FC = () => {
                             onChange={(e) => setFiltroCPF(e.target.value)}/>
                     </div>
                     <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={() => openFlexiveModal(ModalType.newPatient)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
+                        <Button onClick={() => openFlexiveModal('Cadastro de Paciente', ModalType.newPatient)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
                     </div>
                 </div>
 
@@ -222,6 +224,7 @@ const AdminPatient: React.FC = () => {
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}
                 data={dadosPaciente}
+                modalNewBookingConfirmation={handleConfirmationBooking}
             />}
 
             <GeneralModal

@@ -173,7 +173,7 @@ const AdminBooking: React.FC = () =>  {
                 title={title}
                 type={type}
                 isStepper={true}
-                dadosPaciente={dadosPaciente}
+                data={dadosPaciente}
                 onClose={handleClose}
                 modalMessage={handleModalMessage}
                 modalNewBookingConfirmation={handleConfirmationBooking}

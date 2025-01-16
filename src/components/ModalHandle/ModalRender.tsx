@@ -57,14 +57,15 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         setOpen(false)
         onClose()
     }
-    const submitBookintExam = async (bookingDados: DadosBooking, tenantId: number, patientData?: DadosPaciente) => {
+    const submitBookingExam = async (bookingDados: DadosBooking, tenantId: number, patientData?: DadosPaciente) => {
         try {
             if (modalNewBookingConfirmation) {
                 if(patientData) {
                    await updatePatient(patientData, tenantId)
                 }
             const result = await registerPatientExam(bookingDados, tenantId)
-                setPatientData(result.data.data.data)
+                setPatientData(result.data.data)
+                console.log(result.data)
                 modalNewBookingConfirmation('Paciente Agendado com sucesso')
                 return result
             }
@@ -83,7 +84,8 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         const result = await updateCanalMarketing(canalData,tenantId)
         if(result.data) {
             return
-        }    }
+        }
+    }
     const submitBookintWithPatient = async (bookingDataWithPatient: BookingWithPatient, tenantId: number) => {
         try {
             if (modalNewBookingConfirmation) {
@@ -194,14 +196,14 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
     const renderModalContent = () => {
         switch (modalContent) {
             case 'booking':
-                return (<RegisterBooking onClose={handleClose} dadosPaciente={data} isNewBooking={submitBookintExam} />)
+                return (<RegisterBooking setStep={setStep} handleModalMessage={openModal} onClose={handleClose} dadosPaciente={data} isNewBooking={submitBookingExam} />)
             case 'newPatient':
                 return(<RegisterPatient isNewPatient={submitNewPatient}/>)
             case 'editPatient':
                 return(<RegisterPatient dadosIniciais={data} isUpdate={submitUpdatePatient} />
                 )
             case 'newBookingPatient':
-                return(<RegisterBookingAndPatient setStep={setStep} submitBooking={submitBookintExam} submitBookingWithPatient={submitBookintWithPatient} handleModalMessage={openModal} />)
+                return(<RegisterBookingAndPatient setStep={setStep} submitBooking={submitBookingExam} submitBookingWithPatient={submitBookintWithPatient} handleModalMessage={openModal} />)
             case 'bookingConfirmation':
                 return(<BookingConfirmation setStep={setStep} dadosBooking={patientData} onNewBooking={openModal} />)
             case 'newDoctorAdmin':

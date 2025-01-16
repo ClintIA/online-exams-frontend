@@ -82,7 +82,6 @@ const AdminTenantExams: React.FC = () => {
         if(exams) {
             setExame(exams)
         }
-
         setType(modalType)
         setOpenModalNewExam(true)
     }

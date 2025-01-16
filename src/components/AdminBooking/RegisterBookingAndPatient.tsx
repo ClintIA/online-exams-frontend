@@ -9,10 +9,7 @@ import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/c
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {listDoctorByExam, listTenantExam} from "@/services/tenantExamService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import Loading from "@/components/Loading.tsx";
-import {useNavigate} from "react-router-dom";
 import {validarCPF} from "@/lib/utils.ts";
 import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
 import {ModalType} from "@/types/ModalType.ts";
@@ -49,7 +46,6 @@ interface BookingModalProps {
 }
 
 const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMessage, submitBooking, submitBookingWithPatient, setStep }: BookingModalProps) => {
-    const [tenant, setTenant] = useState<number | undefined>()
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [canal, setCanal] = useState<IMarketing[]>([])
     const [selectedExame, setSelectedExame] = useState<string>('')
@@ -63,11 +59,9 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
     const [notFoundCpf, setNotFoundCpf] = useState<boolean>(false)
     const [showForm, setShowForm] = useState<boolean>(false)
     const [patientData, setPatientData] = useState<DadosPaciente>()
-    const [userId, setUserId] = useState<number | undefined>(undefined)
     const [selectedCanal, setSelectedCanal] = useState<string | undefined>('')
     const [isNewPatient, setIsNewPatient] = useState<boolean>(false)
     const auth = useAuth()
-    const navigate = useNavigate()
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setPatientData(prev => ({ ...prev, [name]: value }))
@@ -103,22 +97,13 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
     useEffect(   () => {
         fetchCanal().then()
     }, [fetchCanal]);
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenant(decoded.tenantId)
-                setUserId(decoded.userId)
-            }
-        }
-        getTenant()
-    },[auth.token, navigate])
+
     useEffect( () => {
         const fetchExams = async () => {
             try {
-                if(tenant) {
+                if(auth.tenantId) {
                     setLoading(true)
-                    const result = await listTenantExam(tenant)
+                    const result = await listTenantExam(auth.tenantId)
                     if(result?.data.data.length === 0 ) {
                         setErro('Não possui exames cadastrados')
                         setLoading(false)
@@ -137,15 +122,15 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
             }
         }
         fetchExams().then()
-    }, [tenant]);
+    }, [auth.tenantId]);
     useEffect( () => {
         const fetchDoctors = async () => {
             try {
-                if(tenant && selectedExame) {
+                if(auth.tenantId && selectedExame) {
                     setIsLoading(true)
                     const exam = exames.find((exam) => exam.id === parseInt(selectedExame))
                     if(exam) {
-                        const result = await listDoctorByExam(tenant,exam.exam_name)
+                        const result = await listDoctorByExam(auth.tenantId,exam.exam_name)
                         if(result?.data.status === "success") {
                             if(result?.data.data.length === 0) {
                                 setDoctors(undefined)
@@ -167,7 +152,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
             }
         }
         fetchDoctors().then()
-    }, [exames, selectedExame, tenant]);
+    }, [exames, selectedExame, auth.tenantId]);
 
 
     const handleInputCpf = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -188,8 +173,8 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
         }
         const numericCPF = cpf.replace(/\D/g, '')
         try {
-            if(tenant) {
-                const result = await getPatientByCpfAndTenant(numericCPF, tenant)
+            if(auth.tenantId) {
+                const result = await getPatientByCpfAndTenant(numericCPF, auth.tenantId)
 
                 if(result?.message?.includes("não encontrado")) {
                    setStep(1)
@@ -227,7 +212,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
        setErro(null)
        dadosBooking.examId = parseInt(selectedExame)
        dadosBooking.patientId = patientData?.id;
-       dadosBooking.userId = userId;
+       dadosBooking.userId = auth.userId;
        dadosBooking.doctorId = parseInt(selectedDoctor)
 
        if (!dadosBooking.examDate ||
@@ -243,7 +228,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
        }
        const doctorSelected = doctors?.find(e => e.id === dadosBooking.doctorId);
        try {
-           if (tenant && userId) {
+           if (auth.tenantId && auth.userId) {
                if(isNewPatient && submitBookingWithPatient) {
                    if(patientData) {
                        patientData.cpf = cpf;
@@ -252,12 +237,12 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
                        const bookingWithPatient: BookingWithPatient = {
                            patientData: {...patientData, dob: createDate(patientData.dob)},
                            examId: parseInt(selectedExame),
-                           userId: userId,
+                           userId: auth.userId,
                            doctorId: parseInt(selectedDoctor),
                            examDate: createDate(dadosBooking.examDate),
 
                        }
-                      await submitBookingWithPatient(bookingWithPatient, tenant)
+                      await submitBookingWithPatient(bookingWithPatient, auth.tenantId)
                           .then(() => setStep(3))
                            .catch((error) =>  {
                                if(isAxiosError(error)) {
@@ -278,7 +263,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
                        patientData.cpf = cpf;
                        patientData.canal = selectedCanal
 
-                       const result = await submitBooking(bookingDados,tenant, patientData)
+                       const result = await submitBooking(bookingDados,auth.tenantId, patientData)
                        if(result.status === 201 && handleModalMessage) {
                            handleModalMessage(ModalType.bookingConfirmation)
                            setStep(3)
@@ -520,17 +505,17 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({handleModalMess
                         </div>
                     </form>
                 </CardContent>
-    <CardFooter>
-        {erro && (
-            <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4"/>
-                <AlertTitle>Erro</AlertTitle>
-                <AlertDescription>{erro}</AlertDescription>
-            </Alert>
-        )}
-    </CardFooter>
-</Card>
-</div>
+                <CardFooter>
+                    {erro && (
+                        <Alert variant="destructive">
+                            <AlertCircle className="h-4 w-4"/>
+                            <AlertTitle>Erro</AlertTitle>
+                            <AlertDescription>{erro}</AlertDescription>
+                        </Alert>
+                    )}
+                </CardFooter>
+            </Card>
+        </div>
 
 )
 }

@@ -18,7 +18,7 @@ export interface IExam {
     price: string
     exam_type?: string
     doctorPrice?: string
-    doctors?: string[]
+    doctors?: number[]
     createdAt?: Date
 }
 interface RegisterExamProps {
@@ -35,27 +35,27 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
         doctorPrice: '',
         exam_type: ''
     });
-    const [selectedDoctors, setSelectedDoctors] = useState<string[]>();
+    const [selectedDoctors, setSelectedDoctors] = useState<number[]>();
     const [doctors, setDoctors] = useState<IDoctor[]>([])
     const [erro, setErro] = useState<string | null>(null)
-    const [doctorIDs, setDoctorsIDs] = useState<string[]>([])
+    const [doctorIDs, setDoctorsIDs ] = useState<number[]>([])
     const auth = useAuth()
 
     useEffect(() => {
         const getDoctorsId = () => {
             if(dadosIniciais) {
-                dadosIniciais.doctors?.map(doctor => {
-                    if(doctor) {
-                            doctorIDs.push(doctor.id.toString())
+                dadosIniciais.doctors?.map((doctor) => {
+                    if(!doctorIDs?.includes(doctor.id)) {
+                        doctorIDs.push(doctor.id)
                     }
                 })
                 setDoctorsIDs(doctorIDs)
             }
+            console.log(doctorIDs)
         }
         getDoctorsId()
-        setSelectedDoctors(doctorIDs)
         examData.id = dadosIniciais?.id
-        const newDados = {...dadosIniciais, doctors: doctorIDs}
+        const newDados = {...dadosIniciais, doctors: selectedDoctors}
         setExamData(prevDados => ({
             ...prevDados,
             ...newDados
@@ -81,10 +81,10 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target
+            const { name, value } = e.target
         setExamData(prev => ({ ...prev, [name]: value }))
     }
-    const handleSelectedDoctors = (doctorIDs: string[]) => {
+    const handleSelectedDoctors = (doctorIDs: number[]) => {
         setSelectedDoctors(doctorIDs)
     }
     const handleSubmit = async (e: React.FormEvent) => {

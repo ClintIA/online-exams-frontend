@@ -1,9 +1,3 @@
-export interface CanalOptions { 
-    platform: string
-    id: string
-    amount: number
-}
-
 export const genderOptions = [
     { value: 'Masculino', label: 'Masculino' },
     { value: 'Feminino', label: 'Feminino' },

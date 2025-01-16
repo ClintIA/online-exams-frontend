@@ -5,15 +5,12 @@ import {Label} from "@/components/ui/label.tsx"
 import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle,} from "@/components/ui/card.tsx"
 import {AlertCircle} from "lucide-react"
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx"
-import {registerPatientExam} from "@/services/patientExamService.tsx";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select.tsx"
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {listDoctorByExam, listTenantExam} from "@/services/tenantExamService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
-import {ITokenPayload} from "@/types/Auth.ts";
-import {jwtDecode} from "jwt-decode";
 import Loading from "@/components/Loading.tsx";
-import {useNavigate} from "react-router-dom";
+import {ModalType} from "@/types/ModalType.ts";
 
 export interface DadosBooking {
     patientId: number | undefined
@@ -25,9 +22,12 @@ export interface DadosBooking {
 }
 interface BookingModalProps {
     dadosPaciente?: DadosPaciente
-    onAgendamentoConcluido?: (exam: Exams, dados: DadosPaciente, dadosBooking: DadosBooking) => void
-    isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<void>
+    isNewBooking?: (bookingDados: DadosBooking, tenant: number) => Promise<any>
     onClose?: () => void
+
+    handleModalMessage?: (type: ModalType) => void
+    setStep: (step: number) => void
+
 }
 export interface Exams {
     id: number
@@ -44,8 +44,7 @@ interface Doctor {
     exams?: any[]
 }
 
-const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendamentoConcluido, isNewBooking}: BookingModalProps ) => {
-    const [tenantId, setTenantID] = useState<number | undefined>()
+const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, isNewBooking, handleModalMessage,setStep}: BookingModalProps ) => {
     const [dadosBooking, setDadosBooking] = useState<DadosBooking>({} as DadosBooking);
     const [selectedExame, setSelectedExame] = useState<string>('')
     const [selectedDoctor, setSelectedDoctor] = useState<string>('')
@@ -54,27 +53,14 @@ const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendame
     const [doctors, setDoctors] = useState<Doctor[] | undefined>(undefined)
     const [loading, setLoading] = useState<boolean>(false);
     const auth = useAuth()
-    const navigate = useNavigate()
-    const [userId, setUserId] = useState<number | undefined>(undefined)
-
-    useEffect(() => {
-        const getTenant = () => {
-            if(auth?.token) {
-                const decoded: ITokenPayload = jwtDecode(auth.token?.toString())
-                setTenantID(decoded.tenantId)
-                setUserId(decoded.userId)
-            }
-        }
-        getTenant()
-    },[auth.token, navigate])
 
     useEffect( () => {
         const fetchExams = async () => {
             try {
-                if(tenantId) {
+                if(auth.tenantId) {
                     setLoading(true)
 
-                    const result = await listTenantExam(tenantId)
+                    const result = await listTenantExam(auth.tenantId)
                     if(result?.data.data.length === 0 ) {
                       setErro('Não possui exames cadastrados')
                         setLoading(false)
@@ -93,15 +79,15 @@ const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendame
             }
         }
         fetchExams().then()
-    }, [tenantId]);
+    }, [auth.tenantId]);
     useEffect( () => {
         const fetchDoctors = async () => {
             try {
-                if(tenantId && selectedExame) {
+                if(auth.tenantId && selectedExame) {
                     setLoading(true)
                     const exam = exames.find((exam) => exam.id === parseInt(selectedExame))
                     if(exam) {
-                        const result = await listDoctorByExam(tenantId,exam.exam_name)
+                        const result = await listDoctorByExam(auth.tenantId,exam.exam_name)
                         if(result?.data.status === "success") {
                             if(result?.data.data.length === 0) {
                                 setDoctors(undefined)
@@ -125,7 +111,7 @@ const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendame
             }
         }
         fetchDoctors().then()
-    }, [exames, selectedExame, tenantId]);
+    }, [exames, selectedExame, auth.tenantId]);
 
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -141,9 +127,8 @@ const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendame
         }
         dadosBooking.examId = parseInt(selectedExame)
         dadosBooking.patientId = dadosPaciente?.id;
-        dadosBooking.userId = userId;
+        dadosBooking.userId = auth.userId;
         dadosBooking.doctorId = parseInt(selectedDoctor)
-
         if (!dadosBooking.examDate ||
             !dadosBooking.examId) {
             setErro('Por favor, preencha todos os campos')
@@ -153,24 +138,23 @@ const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, onAgendame
             const dateArray = date.split('-')
             return dateArray[0] + "-" + dateArray[1] + "-" + dateArray[2]
         }
-        const selectedExam = exames.find(e => e.id === dadosBooking.examId);
-        const doctorSelected = doctors?.find(e => e.id === dadosBooking.doctorId);
 
         try {
-            if(tenantId) {
-                const bookingDados = { ...dadosBooking, examDate: createDate(dadosBooking.examDate), doctor: doctorSelected }
+            if(auth.tenantId) {
+                const bookingDados = { ...dadosBooking, examDate: createDate(dadosBooking.examDate) }
+                console.log(bookingDados)
                 if(isNewBooking) {
                     try {
-                        await isNewBooking(bookingDados, tenantId)
-
+                        const result = await isNewBooking(bookingDados, auth.tenantId)
+                        console.log(result)
+                            if(result.status === 201 && handleModalMessage) {
+                                handleModalMessage(ModalType.bookingConfirmation)
+                                setStep(3)
+                            }
                     } catch (error) {
                         console.error(error)
                     }
 
-                }
-                const result = await registerPatientExam(bookingDados, tenantId)
-                if(result?.data.status === "success" && selectedExam && dadosPaciente && onAgendamentoConcluido) {
-                    onAgendamentoConcluido(selectedExam, dadosPaciente, bookingDados)
                 }
                 setDadosBooking({
                     examDate: '',
