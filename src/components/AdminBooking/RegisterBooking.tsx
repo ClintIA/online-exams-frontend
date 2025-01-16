@@ -142,7 +142,6 @@ const RegisterBooking: React.FC<BookingModalProps> = ({dadosPaciente, isNewBooki
         try {
             if(auth.tenantId) {
                 const bookingDados = { ...dadosBooking, examDate: createDate(dadosBooking.examDate) }
-                console.log(bookingDados)
                 if(isNewBooking) {
                     try {
                         const result = await isNewBooking(bookingDados, auth.tenantId)

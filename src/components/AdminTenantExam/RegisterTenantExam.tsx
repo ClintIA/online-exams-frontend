@@ -51,7 +51,6 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                 })
                 setDoctorsIDs(doctorIDs)
             }
-            console.log(doctorIDs)
         }
         getDoctorsId()
         examData.id = dadosIniciais?.id

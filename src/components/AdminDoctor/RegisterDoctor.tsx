@@ -32,7 +32,7 @@ export interface IDoctor {
     sessionToken?: string;
     created_at?: string;
     tenant?: any[];
-    exams?: string[];
+    exams?: number[];
 }
 
 const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, isDoctor}: RegisterDoctorProps) => {
@@ -50,7 +50,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
 
     })
     const [exames,  setExames] = useState<Exams[]>([])
-    const [selectedExame, setSelectedExame] = useState<string[] | undefined>([]);
+    const [selectedExame, setSelectedExame] = useState<number[] | undefined>([]);
     const [examesIDs, setExamesIDs] = useState<string[]>([])
     const [addExam, setAddExam] = useState<boolean>(false)
     const [erro, setErro] = useState<string | null>(null)
@@ -90,7 +90,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
         }
         fetchExams().then()
     }, [auth.tenantId]);
-    const handleSelectedExames = (exames: string[]) => {
+    const handleSelectedExames = (exames: number[]) => {
         setSelectedExame(exames)
     }
     const handleSubmit = async (e: React.FormEvent) => {
