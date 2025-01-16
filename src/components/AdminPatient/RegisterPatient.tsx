@@ -172,7 +172,6 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
 
    return (
            <div className="mt-10">
-
                <Card className="w-full max-w-2xl mx-auto">
                    <CardHeader>
                        <CardTitle className='text-oxfordBlue text-xl'>Cadastro de Paciente</CardTitle>
@@ -273,7 +272,7 @@ const RegisterPatient: React.FC<RegisterPatientProps> = ({dadosIniciais, onCadas
                                                onChange={handleInputChange}
                                                className="form-radio h-4 w-4 text-oxfordBlue focus:ring-blue-800 border-gray-300"
                                            />
-                                           <span className="w-max text-sm text-blue-800">{option.label}</span>
+                                           <span className="w-max text-sm text-oxfordBlue">{option.label}</span>
                                        </label>
                                    ))}
                                    </div>

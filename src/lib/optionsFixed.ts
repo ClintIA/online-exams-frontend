@@ -4,63 +4,6 @@ export interface CanalOptions {
     amount: number
 }
 
-export const canaisOptions: CanalOptions[] = [
-    {
-        platform: 'Google',
-        id: 'google',
-        amount: 0
-    },
-    {
-        platform: 'Instagram',
-        id: 'instagram',
-        amount: 0
-    },
-    {
-        platform: 'Facebook',
-        id: 'facebook',
-        amount: 0
-    },
-    {
-        platform: 'Matéria em Blog',
-        id: 'blog',
-        amount: 0
-    },
-    {
-        platform: 'Anúncio em Rádio',
-        id: 'radio',
-        amount: 0
-    },
-    {
-        platform: 'Anúncio em Televisão',
-        id: 'televisao',
-        amount: 0
-    },
-    {
-        platform: 'Anúncio em Ônibus',
-        id: 'onibus',
-        amount: 0
-    },
-    {
-        platform: 'Outdoor',
-        id: 'outdoor',
-        amount: 0
-    },
-    {
-        platform: 'Indicação',
-        id: 'indicacao',
-        amount: 0
-    },
-    {
-        platform: 'Passei na Frente do Local',
-        id: 'local',
-        amount: 0
-    },
-    {
-        platform: 'Encontrei no Plano de Saúde',
-        id: 'plano',
-        amount: 0
-    }
-]
 export const genderOptions = [
     { value: 'Masculino', label: 'Masculino' },
     { value: 'Feminino', label: 'Feminino' },
@@ -90,15 +33,4 @@ export const findRoleOptions = (canal?: string) => {
     }
 }
 
-export const findCanalOptions = (canal?: string) => {
-    if(canal) {
-        let patientCanal;
-        canaisOptions.find((option) => {
-            if(option.id == canal) {
-                patientCanal = option.platform;
-            }
-        })
-        return patientCanal
-    }
-}
 export const steps = ['CPF', 'Cadastro','Agendamento']

@@ -7,11 +7,11 @@ import {deleteExam, listTenantExam} from "@/services/tenantExamService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import Loading from "@/components/Loading.tsx";
 import {TableCell} from "@mui/material";
-import ModalTenantExamRender from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {Button} from "@/components/ui/button.tsx";
 import NoDataTable from "@/components/NoDataTable.tsx";
+import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 
 export interface Exams {
     id?: number
@@ -129,7 +129,6 @@ const AdminTenantExams: React.FC = () => {
         return <Loading />
     }
     return (
-        <>
             <div className="w-full p-10 mx-auto">
                 <h1 className="text-3xl mb-6 font-bold tracking-tight">Tipos de Procedimentos da Clínica</h1>
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
@@ -170,26 +169,23 @@ const AdminTenantExams: React.FC = () => {
                         }
                     </CardContent>
                 </Card>
-            </div>
-            {openModalNewExam && (
-                <ModalTenantExamRender
-                    modalNewExam={handleModalMessage}
+                {openModalNewExam && <ModalRender
+                    modalMessage={handleModalMessage}
                     isOpen={openModalNewExam}
+                    title="Gerenciamento de Pacientes"
                     onClose={() => setOpenModalNewExam(false)}
                     type={type}
-                    title="Gerenciamento de Exames da Clínica"
-                    dadosExam={exame}/>
-            )
-            }
-            <GeneralModal
-                title={title}
-                action={action}
-                error={isError}
-                isOpen={isGeneralModalOpen}
-                isDelete={deletePatient}
-                onClose={handleClose}
-                message={generalMessage}/>
-        </>
+                    data={exame}
+                />}
+                <GeneralModal
+                    title={title}
+                    action={action}
+                    error={isError}
+                    isOpen={isGeneralModalOpen}
+                    isDelete={deletePatient}
+                    onClose={handleClose}
+                    message={generalMessage}/>
+            </div>
     )
 }
 

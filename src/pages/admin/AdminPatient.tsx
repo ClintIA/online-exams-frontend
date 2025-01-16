@@ -221,7 +221,7 @@ const AdminPatient: React.FC = () => {
                 title="Gerenciamento de Pacientes"
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}
-                dadosPaciente={dadosPaciente}
+                data={dadosPaciente}
             />}
 
             <GeneralModal

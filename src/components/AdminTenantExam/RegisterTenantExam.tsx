@@ -6,15 +6,24 @@ import {Button} from "@/components/ui/button.tsx";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
 import {AlertCircle} from "lucide-react";
 import {useAuth} from "@/hooks/auth.tsx";
-import {IExam} from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
 import {MultiSelect} from "@/components/ui/MultiSelect.tsx";
 import {listDoctors} from "@/services/doctorService.ts";
 import {IDoctor} from "@/components/AdminDoctor/RegisterDoctor.tsx";
+import {examOptions} from "@/lib/optionsFixed.ts";
 
+export interface IExam {
+    id?: number
+    exam_name: string
+    price: string
+    exam_type?: string
+    doctorPrice?: string
+    doctors?: string[]
+    createdAt?: Date
+}
 interface RegisterExamProps {
-    dadosIniciais?: Exams
-    title: string
+    dadosIniciais?: Partial<Exams>
+    title?: string
     isUpdate?: (examData: IExam, tenant: number) => Promise<void>
     isNewExam?: (examData: IExam, tenant: number) => Promise<void>
 }
@@ -70,8 +79,8 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
     fetchDoctors().then()
     }, [fetchDoctors]);
 
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        e.preventDefault()
         const { name, value } = e.target
         setExamData(prev => ({ ...prev, [name]: value }))
     }
@@ -111,7 +120,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
         <div className="mt-10">
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle className='text-blue-900 text-xl'>{title}</CardTitle>
+                    <CardTitle className='text-oxfordBlue text-xl'>{title}</CardTitle>
                     <CardDescription>
                         Preencha os dados do exame. Clique em salvar quando terminar.
                     </CardDescription>
@@ -119,30 +128,6 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                 <CardContent>
                     <form onSubmit={handleSubmit}>
                         <div className="grid gap-4">
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="exam_type" className="text-right text-oxfordBlue">
-                                    Tipo do Exame
-                                </Label>
-                                <Label className="flex mhostmt-1">
-                                    <Input
-                                        type="radio"
-                                        name="exam_type"
-                                        value='exame'
-                                        onChange={handleInputChange}
-                                        className="form-radio h-4 w-4 text-oxfordBlue focus:ring-blue-800 border-gray-300" />
-                                    Exame
-                                </Label>
-                                <Label className="flex mt-1">
-                                    <Input
-                                        type="radio"
-                                        name="exam_type"
-                                        value='consulta'
-                                        onChange={handleInputChange}
-                                        className="form-radio h-4 w-4 text-oxfordBlue focus:ring-blue-800 border-gray-300" />
-                                    Consulta
-                                </Label>
-                            </div>
-
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="exam_name" className="text-right text-oxfordBlue">
                                     Nome do Exame
@@ -153,6 +138,30 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                                     value={examData?.exam_name}
                                     onChange={handleInputChange}
                                     className="col-span-3"/>
+                            </div>
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="exam_type" className="text-right text-oxfordBlue">
+                                    Tipo do Exame
+                                </Label>
+                                <div className="flex flex-row gap-2">
+                                    {examOptions.map((option) => (
+
+                                        <label
+                                            key={option.value}
+                                            className="flex items-center space-x-3 cursor-pointer"
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="exam_type"
+                                                value={option.value}
+                                                checked={examData.exam_type === option.value}
+                                                onChange={handleInputChange}
+                                                className="form-radio h-4 w-4 text-oxfordBlue border-gray-300"
+                                            />
+                                            <span className="w-max text-sm text-oxfordBlue">{option.label}</span>
+                                        </label>
+                                    ))}
+                                </div>
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label className="text-right text-oxfordBlue" htmlFor="doctorId">Selecione o(s)
