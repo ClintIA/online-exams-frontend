@@ -52,6 +52,24 @@ export const deleteDoctor = async (doctorID: number, tenantId: number) => {
     }
 }
 
+export const getDoctorData = async (doctorID: number, tenantId: number) => {
+
+    try {
+        return await apiClient.get(`admin/doctor/`, {
+            headers: {
+                'x-tenant-id': tenantId
+            },
+            params: {
+                doctorID: doctorID
+            }
+        })
+
+    } catch (error) {
+        if (isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+}
 export const listDoctors = async (tenantId: number, page?: number, perPage?: number) => {
     try {
         return await apiClient.get('admin/doctors/', {

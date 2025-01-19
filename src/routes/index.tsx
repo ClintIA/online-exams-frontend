@@ -18,6 +18,7 @@ import {ProfileRole} from "@/types/ProfileRole.ts";
 import AdminManageMarketing from "@/pages/admin/AdminManageMarketing.tsx";
 import {PublicRoute} from "./PublicRoute/PublicRoute.tsx";
 import { AuthRedirect } from "./AuthRedirect/AuthRedirect.tsx";
+import AdminProfile from "@/pages/admin/AdminProfile.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -74,6 +75,10 @@ export const router = createBrowserRouter([
             {
                 path:'home',
                 element:(<ProtectedRoute role={ProfileRole.default}> <AdminHome /> </ProtectedRoute>),
+            },
+            {
+                path:'profile',
+                element:(<ProtectedRoute role={ProfileRole.default}> <AdminProfile /> </ProtectedRoute>),
             },
             {
                 path:'agendamento',

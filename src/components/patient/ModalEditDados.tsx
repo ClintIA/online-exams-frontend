@@ -5,17 +5,17 @@ import {X} from "phosphor-react";
 
 type PersonalInfo = {
   label: string;
-  value: string;
+  value?: string;
 };
 
 interface ModalEditDadosProps {
-  info: PersonalInfo;
+  info?: PersonalInfo;
   isOpen: boolean;
   onClose: () => void;
 }
 
 export function ModalEditDados({ info, isOpen, onClose }: ModalEditDadosProps) {
-  const [newValue, setNewValue] = useState(info.value);
+  const [newValue, setNewValue] = useState(info?.value);
 
   const handleSave = () => {
     console.log("Salvar nova informação:", newValue);
@@ -29,7 +29,7 @@ export function ModalEditDados({ info, isOpen, onClose }: ModalEditDadosProps) {
 
         <Dialog.Content className={styles.content}>
           <Dialog.Title className={styles.title}>
-            Editar {info.label}
+            Editar {info?.label}
           </Dialog.Title>
 
           <Dialog.Close className={styles.close} onClick={onClose}>
@@ -37,13 +37,13 @@ export function ModalEditDados({ info, isOpen, onClose }: ModalEditDadosProps) {
           </Dialog.Close>
 
           <div className={styles.body}>
-            <p>Valor atual: {info.value || '---'}</p>
+            <p>Valor atual: {info?.value || '---'}</p>
             <input 
               type="text" 
               value={newValue} 
               onChange={(e) => setNewValue(e.target.value)} 
               className={styles.input}
-              placeholder={`Novo valor para ${info.label}`} 
+              placeholder={`Novo valor para ${info?.label}`}
             />
           </div>
 

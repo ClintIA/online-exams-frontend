@@ -5,7 +5,7 @@ import {
   ChevronDown,
   ChevronRight, CircleUser, Contact2,
   Home, LayoutDashboard, Lightbulb, LogOut, Microscope,
-  MonitorCog,
+  MonitorCog, User,
   Users
 } from "lucide-react";
 import {useNavigate, Link} from "react-router-dom";
@@ -14,7 +14,6 @@ import {Collapsible, CollapsibleContent, CollapsibleTrigger} from "@radix-ui/rea
 import clintiaLogo from "@/assets/logoClintia.png";
 import {List} from "phosphor-react";
 import {hasAccess} from "@/lib/controlAccessLevel.ts";
-import {CloseButton} from "react-toastify";
 import {Close} from "@mui/icons-material";
 
 
@@ -174,9 +173,9 @@ const AdminSidebar: React.FC = () => {
           </nav>
 
           <div className="absolute bottom-0 left-0 right-0 p-4 flex justify-between bg-oxfordBlue">
-            <button className="flex items-center text-white hover:text-gray-300">
-              {/* <User className="mr-2" size={24}/>
-    <span>Perfil</span> */}
+            <button onClick={() => navigate('/admin/profile')} className="flex items-center text-white hover:text-gray-300">
+              <User className="mr-2" size={24}/>
+              <span>Perfil</span>
             </button>
             <button className="flex items-center text-white hover:text-gray-300" onClick={handleLogout}>
               <LogOut className="mr-2" size={24}/>
