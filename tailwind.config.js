@@ -10,7 +10,7 @@ module.exports = {
     			imageHome: "url('./src/assets/logoClintia.png')"
     		},
     		fontFamily: {
-    			sans: ['Red Hat Display', 'sans-serif']
+				sams: "https://fonts.google.com/specimen/Inter",
     		},
 			screens: {
 				'xxsm': '250px',
