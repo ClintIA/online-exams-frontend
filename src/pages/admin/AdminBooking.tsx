@@ -21,7 +21,7 @@ const AdminBooking: React.FC = () =>  {
     const [type,setType] = useState<ModalType>(ModalType.newPatient)
     const [exams, setExams] = useState<IPatientExam[]>([])
     const [title, setTitle] = useState<string>("")
-    const [date, setDate] = useState(new Date().toISOString())
+    const [date, setDate] = useState(new Date().toISOString().split('T')[0])
     const [dadosPaciente, setDadosPaciente] = useState<DadosPaciente>({
         full_name: '',
         email: '',
