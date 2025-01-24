@@ -205,9 +205,6 @@ export function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">R$ {totalInvoice.toString().replace('.', ',')}</div>
-                  <p className="text-xs text-muted-foreground">
-                    +20,1% desde o mês passado
-                  </p>
                 </CardContent>
               </Card>
               <Card>
@@ -232,9 +229,6 @@ export function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{totalPatient}</div>
-                  <p className="text-xs text-muted-foreground">
-                    +180 desde o mês passado
-                  </p>
                 </CardContent>
               </Card>
               <Card>
@@ -257,9 +251,6 @@ export function AdminDashboard() {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{totalExams}</div>
-                  <p className="text-xs text-muted-foreground">
-                    +201 desde a semana passada
-                  </p>
                 </CardContent>
               </Card>
               <Card>
@@ -282,9 +273,6 @@ export function AdminDashboard() {
                 <CardContent>
                   <div
                       className="text-2xl font-bold">R$ {(Number(totalInvoice) - Number(totalDoctorInvoice)).toFixed(2)}</div>
-                  <p className="text-xs text-muted-foreground">
-                    +19% desde o mês passado
-                  </p>
                 </CardContent>
               </Card>
 

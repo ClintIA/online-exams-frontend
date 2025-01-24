@@ -9,6 +9,8 @@ export interface BookingConfirmationProps {
     exame?: Exams,
     dadosBooking: BookingConfirmationState,
     onNewBooking?: (type: ModalType) => void
+    setStep: (step: number) => void
+
 }
 export interface BookingConfirmationState {
     exam_name?: string
@@ -17,12 +19,13 @@ export interface BookingConfirmationState {
     patientName?: string
     patientPhone?: string
 }
-const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking, onNewBooking}: BookingConfirmationProps) => {
+const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking, onNewBooking, setStep}: BookingConfirmationProps) => {
 
 
     const newBooking = () => {
         if (onNewBooking) {
             onNewBooking(ModalType.newBookingPatient);
+            setStep(0)
         }
     }
     const createDate = (date: string) => {
@@ -30,7 +33,7 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking,
         return dateArray[2] + "/" + dateArray[1] + "/" + dateArray[0]
     }
      return (
-        <div className="mt-10">
+        <div className="mt-6">
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
                     <CardTitle className='text-xl text-oxfordBlue'>Agendamento concluído</CardTitle>
@@ -69,11 +72,8 @@ const BookingConfirmation: React.FC<BookingConfirmationProps> = ({ dadosBooking,
                 </CardContent>
                 <CardFooter>
                     <div className="flex flex-row gap-2">
-                        <Button disabled={true} className="bg-skyBlue text-white">
-                            Enviar por Whatsapp
-                        </Button>
                         <Button onClick={newBooking} className="bg-skyBlue text-white">
-                            Fazer outro agendamento
+                            Finalizar agendamento
                         </Button>
                     </div>
 

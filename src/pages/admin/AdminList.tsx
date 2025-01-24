@@ -1,7 +1,4 @@
 import Cards from "@/components/Card.tsx";
-import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Button} from "@/components/ui/button.tsx";
 import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
@@ -17,16 +14,19 @@ import {format} from "date-fns";
 import {ptBR} from "date-fns/locale";
 import {IAdmin} from "@/types/dto/Admin.ts";
 import {findRoleOptions} from "@/lib/optionsFixed.ts";
+import {Button} from "@/components/ui/button.tsx";
+import NoDataTable from "@/components/NoDataTable.tsx";
 
 const AdminList: React.FC = () => {
 
     const [title,setTitle] = useState("");
+    const [titleModal,setTitleModal] = useState("");
+
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
     const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
     const [admins,setAdmins] = useState<IAdmin[]>([]);
-    const [filtroName, setFiltroName] = useState<string>('')
     const [deleteId, setDeleteId] = useState<number>()
     const [admin, setAdmin] = useState<IAdmin>()
     const [openModalNewAdmin, setOpenModalNewAdmin] = useState<boolean>(false)
@@ -35,11 +35,11 @@ const AdminList: React.FC = () => {
     const auth = useAuth()
 
 
-    const openFlexiveModal = (modalType: ModalType, admin?: IAdmin) => {
+    const openFlexiveModal = (title: string, modalType: ModalType, admin?: IAdmin) => {
         if(admin) {
             setAdmin(admin)
         }
-
+        setTitleModal(title)
         setType(modalType)
         setOpenModalNewAdmin(true)
     }
@@ -123,42 +123,39 @@ const AdminList: React.FC = () => {
             <div className="flex flex-col md:flex-row gap-3 mb-6">
                 <Cards name='Total de Adminstradores' content={admins?.length}/>
             </div>
-
-            <div className="flex flex-col md:flex-row gap-3 mb-5">
-                <div className='p-2'>
-                    <Label htmlFor="filtroNome" className="text-oxfordBlue">Nome</Label>
-                    <Input
-                        className="w-72"
-                        id="filtroNome"
-                        placeholder="Filtrar por nome"
-                        value={filtroName}
-                        onChange={(e) => setFiltroName(e.target.value)}/>
-                </div>
-
-                <div className="flex justify-end mt-7 p-1">
-                    <Button onClick={() => openFlexiveModal(ModalType.newAdmin)}
-                            className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
-                        Administradores</Button>
+            <div className="flex justify-items-start ml-2 mb-3">
+                <div>
+                    <Button onClick={() => openFlexiveModal('Cadastrar Administrador',ModalType.newAdmin)}
+                            className="p-4 text-base bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
+                        Administrador</Button>
                 </div>
             </div>
-
             <Card>
                 <CardContent>
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead className="text-oxfordBlue">Nome</TableHead>
-                                <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                <TableHead className="text-oxfordBlue">E-mail</TableHead>
-                                <TableHead className="text-oxfordBlue">CEP</TableHead>
-                                <TableHead className="text-oxfordBlue">Contato</TableHead>
-                                <TableHead className="text-oxfordBlue">Perfil de Acesso</TableHead>
-                                <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={openFlexiveModal}
-                                   deleteData={handleConfirmationDelete} dataTable={admins}></DataTable>
-                    </Table>
+                        {
+                            admins.length === 0 ?
+                                (
+                                    <div className="p-10">
+                                        <NoDataTable message="Não possui adminstradores cadastrados"/>
+                                    </div>
+                                ) : (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-oxfordBlue">Nome</TableHead>
+                                                <TableHead className="text-oxfordBlue">CPF</TableHead>
+                                                <TableHead className="text-oxfordBlue">E-mail</TableHead>
+                                                <TableHead className="text-oxfordBlue">CEP</TableHead>
+                                                <TableHead className="text-oxfordBlue">Contato</TableHead>
+                                                <TableHead className="text-oxfordBlue">Perfil de Acesso</TableHead>
+                                                <TableHead className="text-oxfordBlue">Data de Cadastro</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={openFlexiveModal}
+                                                   deleteData={handleConfirmationDelete} dataTable={admins}></DataTable>
+                                    </Table>
+                                )
+                        }
                 </CardContent>
             </Card>
 
@@ -167,7 +164,7 @@ const AdminList: React.FC = () => {
                 isOpen={openModalNewAdmin}
                 onClose={() => setOpenModalNewAdmin(false)}
                 type={type}
-                title="Gerenciamento de Administradores"
+                title={titleModal}
                 data={admin}
                 isDoctor={false}
             />}

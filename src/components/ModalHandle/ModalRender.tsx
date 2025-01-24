@@ -15,16 +15,18 @@ import {IAdmin} from "@/types/dto/Admin.ts";
 import {registerDoctor, updateDoctor} from "@/services/doctorService.ts";
 import RegisterCanal, {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
 import {registerCanalMarketing, updateCanalMarketing} from "@/services/marketingService.ts";
+import {createExam, updateExam} from "@/services/tenantExamService.tsx";
+import RegisterTenantExam, {IExam} from "@/components/AdminTenantExam/RegisterTenantExam.tsx";
+import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
 
 
 interface ModalRegisterProps {
     isOpen: boolean;
     onClose: () => void;
-    title?: string;
+    title: string;
     modalNewBookingConfirmation?: (message: string) => void;
     modalMessage?: (message: string) => void;
-    dadosPaciente?: DadosPaciente
-    data?: IAdmin | IDoctor | IMarketing
+    data?: IAdmin | IDoctor | IMarketing | Exams | DadosPaciente
     type: ModalType
     isDoctor?: boolean
     isStepper?: boolean
@@ -33,7 +35,7 @@ interface ModalRegisterProps {
 }
 
 
-const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, totalBudget, title,modalMessage,modalNewBookingConfirmation,dadosPaciente, type, data }: ModalRegisterProps) => {
+const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, onClose, totalBudget, title,modalMessage,modalNewBookingConfirmation, type, data }: ModalRegisterProps) => {
     const [open, setOpen] = useState(isOpen)
     const [modalContent,setModalContent] = useState<ModalType>(ModalType.newPatient)
     const [patientData, setPatientData] = useState<BookingConfirmationState>({} as BookingConfirmationState)
@@ -55,7 +57,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         setOpen(false)
         onClose()
     }
-    const submitBookintExam = async (bookingDados: DadosBooking, tenantId: number, patientData?: DadosPaciente) => {
+    const submitBookingExam = async (bookingDados: DadosBooking, tenantId: number, patientData?: DadosPaciente) => {
         try {
             if (modalNewBookingConfirmation) {
                 if(patientData) {
@@ -81,7 +83,8 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
         const result = await updateCanalMarketing(canalData,tenantId)
         if(result.data) {
             return
-        }    }
+        }
+    }
     const submitBookintWithPatient = async (bookingDataWithPatient: BookingWithPatient, tenantId: number) => {
         try {
             if (modalNewBookingConfirmation) {
@@ -169,29 +172,53 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             }
         }
     }
+    const submitNewExam = async (examData: IExam, tenantId: number) => {
+        if(modalMessage) {
+            const result =  await createExam(examData, tenantId)
+            modalMessage('Exame cadastrado com sucesso')
+            return result
+        }
+    }
+    const submitUpdateExam = async (examData: IExam, tenantId: number) => {
+        if (modalMessage) {
+            await updateExam(examData, tenantId)
+                .then((result) => {
+                    if (result.data.status === "success") {
+                        modalMessage('Exame Atualizado com sucesso')
+                        onClose()
+                    } else {
+                        return new Error('Não foi possível atualizar exame' + result.message)
+                    }
+                }).catch(error => {console.log(error)})
+        }
+    }
     const renderModalContent = () => {
         switch (modalContent) {
             case 'booking':
-                return (<RegisterBooking onClose={handleClose} dadosPaciente={dadosPaciente} isNewBooking={submitBookintExam} />)
+                return (<RegisterBooking title={title} setStep={setStep} handleModalMessage={openModal} onClose={handleClose} dadosPaciente={data} isNewBooking={submitBookingExam} />)
             case 'newPatient':
-                return(<RegisterPatient isNewPatient={submitNewPatient}/>)
+                return(<RegisterPatient title={title} isNewPatient={submitNewPatient}/>)
             case 'editPatient':
-                return(<RegisterPatient dadosIniciais={dadosPaciente} isUpdate={submitUpdatePatient} />
+                return(<RegisterPatient title={title} dadosIniciais={data} isUpdate={submitUpdatePatient} />
                 )
             case 'newBookingPatient':
-                return(<RegisterBookingAndPatient setStep={setStep} submitBooking={submitBookintExam} submitBookingWithPatient={submitBookintWithPatient} handleModalMessage={openModal} />)
+                return(<RegisterBookingAndPatient title={title} setStep={setStep} submitBooking={submitBookingExam} submitBookingWithPatient={submitBookintWithPatient} handleModalMessage={openModal} />)
             case 'bookingConfirmation':
-                return(<BookingConfirmation dadosBooking={patientData} onNewBooking={openModal} />)
+                return(<BookingConfirmation setStep={setStep} dadosBooking={patientData} onNewBooking={openModal} />)
             case 'newDoctorAdmin':
-                return(<RegisterDoctor isDoctor={submitNewDoctor} />)
+                return(<RegisterDoctor title={title} isDoctor={submitNewDoctor} />)
             case 'editDoctorAdmin':
-                return(<RegisterDoctor dadosIniciais={data} isUpdate={submitUpdateDoctor} />)
+                return(<RegisterDoctor title={title} dadosIniciais={data} isUpdate={submitUpdateDoctor} />)
             case 'newAdmin':
-                return(<RegisterAdmin isAdmin={submitNewAdmin} />)
+                return(<RegisterAdmin title={title} isAdmin={submitNewAdmin} />)
             case 'editAdmin':
-                return(<RegisterAdmin dadosIniciais={data} isUpdate={submitUpdateAdmin} />)
+                return(<RegisterAdmin title={title} dadosIniciais={data} isUpdate={submitUpdateAdmin} />)
             case 'newCanal':
-                return(<RegisterCanal totalBudget={totalBudget} isUpdate={submitUpdateNewCanal} isCanal={submitNewCanal}/>)
+                return(<RegisterCanal title={title} totalBudget={totalBudget} isUpdate={submitUpdateNewCanal} isCanal={submitNewCanal}/>)
+            case 'editExam':
+                return (<RegisterTenantExam title={title} isUpdate={submitUpdateExam} dadosIniciais={data} />)
+            case 'newExam':
+                return(<RegisterTenantExam title={title} isNewExam={submitNewExam}/>)
 
         }
     }
@@ -201,7 +228,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
                 isStepper={isStepper}
                 currentStep={currentStep}
                 onClose={handleClose}
-                title={title}>
+                title="Gerenciamento">
                 {renderModalContent()}
             </ModalFlexivel>
     )

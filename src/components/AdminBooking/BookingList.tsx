@@ -6,7 +6,7 @@ import AppointmentConfirmation from "@/components/ConfirmButtons.tsx";
 
 interface ListaAgendamentosProps {
     agendamentos: IPatientExam[]
-    onConfirmarPresenca?: (id: number, presence: boolean | null) => void
+    onConfirmarPresenca?: (id: number, presence: null | 'Sim' | 'Não') => void
     loading: boolean
 }
 
@@ -18,18 +18,18 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos ,loading, 
         return (<p className="text-base font-semibold">Não possuí exames para o dia selecionado</p>)
     }
 
-    const handleConfirmarPresenca = (id: number, presence: boolean | null) => {
+    const handleConfirmarPresenca = (id: number, presence: null | 'Sim' | 'Não') => {
         if (onConfirmarPresenca) {
             onConfirmarPresenca(id,presence);
         }
     }
-    const handlePresence = (attended: boolean) => {
+    const handlePresence = (attended: null | 'Sim' | 'Não') => {
         switch(attended) {
             case null:
                 return 'Aguardando'
-            case true:
+            case 'Sim':
                 return 'Confirmado'
-            case false:
+            case 'Não':
                 return 'Não Compareceu'
         }
     }
@@ -56,7 +56,7 @@ const BookingList: React.FC<ListaAgendamentosProps> = ({ agendamentos ,loading, 
                                  <span className={agendamento.attended == null ? `text-oxfordBlue font-semibold` : agendamento.attended ? `text-green-700 font-semibold` : `text-red-600 font-semibold`}>{handlePresence(agendamento.attended)}</span>
                              </TableCell>
                              <TableCell>
-                                 <AppointmentConfirmation onCancel={() => handleConfirmarPresenca(agendamento?.id, null)} onConfirm={() => handleConfirmarPresenca(agendamento?.id, true)} onDecline={() => handleConfirmarPresenca(agendamento?.id, false)} status={handlePresence(agendamento.attended)} />
+                                 <AppointmentConfirmation onCancel={() => handleConfirmarPresenca(agendamento?.id, null)} onConfirm={() => handleConfirmarPresenca(agendamento?.id, 'Sim')} onDecline={() => handleConfirmarPresenca(agendamento?.id, 'Não')} status={handlePresence(agendamento.attended)} />
                              </TableCell>
                          </TableRow>
                      ))}

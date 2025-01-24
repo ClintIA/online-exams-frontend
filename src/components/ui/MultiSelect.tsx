@@ -48,7 +48,7 @@ interface MultiSelectProps
      * Callback function triggered when the selected values change.
      * Receives an array of the new selected values.
      */
-    onValueChange: (value: string[]) => void;
+    onValueChange: (value: number[]) => void;
 
     /** The default selected values when the component mounts. */
     defaultValue?: any[];
@@ -113,7 +113,7 @@ export const MultiSelect = React.forwardRef<
         ref
     ) => {
         const [selectedValues, setSelectedValues] =
-            React.useState<string[]>(defaultValue);
+            React.useState<number[]>(defaultValue);
         const [isPopoverOpen, setIsPopoverOpen] = React.useState(false);
 
         const handleInputKeyDown = (
@@ -130,8 +130,8 @@ export const MultiSelect = React.forwardRef<
         };
 
         const toggleOption = (option: number) => {
-            const newSelectedValues = selectedValues.includes(option.toString()) ? selectedValues.filter((value) => value !== option.toString())
-                : [...selectedValues, option.toString()];
+            const newSelectedValues = selectedValues.includes(option) ? selectedValues.filter((value) => value !== option)
+                : [...selectedValues, option];
             setSelectedValues(newSelectedValues);
             onValueChange(newSelectedValues);
         };
@@ -160,7 +160,7 @@ export const MultiSelect = React.forwardRef<
                             <div className="flex justify-between items-center w-max">
                                 <div className="flex flex-wrap items-center">
                                     {selectedValues.slice(0, maxCount).map((value) => {
-                                        const option = options.find((o) => o.id === parseInt(value));
+                                        const option = options.find((o) => o.id === value);
                                         return (
                                             <Badge
                                                 key={value}
@@ -202,7 +202,7 @@ export const MultiSelect = React.forwardRef<
                             <CommandEmpty>No results found.</CommandEmpty>
                             <CommandGroup>
                                 {options.map((option) => {
-                                    const isSelected = selectedValues.includes(option.id.toString());
+                                    const isSelected = selectedValues.includes(option.id);
 
                                     return (
                                         <CommandItem

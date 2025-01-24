@@ -19,7 +19,7 @@ export interface IPatientExam {
   examDate: string
   uploadedAt: string | null
   status: string
-  attended: boolean
+  attended: null | 'Sim' | 'Não'
   exam: {
     id: number
     exam_name: string
@@ -156,14 +156,7 @@ const AdminHome: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-full min-h-screen overflow-x-hidden mx-auto">
-      <header className="px-4 lg:px-6 h-14 flex items-center justify-end mt-[2px]">
-        <div className="flex items-center space-x-2">
-          <Button
-                  className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Cadastrar
-            Paciente</Button>
-        </div>
-      </header>
+    <div className="w-full max-w-full min-h-screen flex flex-col justify-center mx-auto">
       <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
         <div className="max-w-full mx-auto space-y-6">
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-4">

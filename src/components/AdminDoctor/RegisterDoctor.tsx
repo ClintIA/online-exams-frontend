@@ -16,6 +16,7 @@ interface RegisterDoctorProps {
     dadosIniciais?: Partial<IDoctor>
     isUpdate?: (adminData: IDoctor, tenant: number) => Promise<void>
     isDoctor?: (adminData: IDoctor, tenant: number) => Promise<void>
+    title: string
 }
 
 export interface IDoctor {
@@ -32,10 +33,10 @@ export interface IDoctor {
     sessionToken?: string;
     created_at?: string;
     tenant?: any[];
-    exams?: string[];
+    exams?: number[];
 }
 
-const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate, isDoctor}: RegisterDoctorProps) => {
+const RegisterDoctor: React.FC<RegisterDoctorProps> = ({title,dadosIniciais, isUpdate, isDoctor}: RegisterDoctorProps) => {
 
     const [doctorData, setDoctorData] = useState<IDoctor>({
         fullName: '',
@@ -50,7 +51,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
 
     })
     const [exames,  setExames] = useState<Exams[]>([])
-    const [selectedExame, setSelectedExame] = useState<string[] | undefined>([]);
+    const [selectedExame, setSelectedExame] = useState<number[] | undefined>([]);
     const [examesIDs, setExamesIDs] = useState<string[]>([])
     const [addExam, setAddExam] = useState<boolean>(false)
     const [erro, setErro] = useState<string | null>(null)
@@ -90,7 +91,7 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
         }
         fetchExams().then()
     }, [auth.tenantId]);
-    const handleSelectedExames = (exames: string[]) => {
+    const handleSelectedExames = (exames: number[]) => {
         setSelectedExame(exames)
     }
     const handleSubmit = async (e: React.FormEvent) => {
@@ -150,11 +151,11 @@ const RegisterDoctor: React.FC<RegisterDoctorProps> = ({dadosIniciais, isUpdate,
     }
 
     return (
-        <div className="mt-10">
+        <div className="mt-6">
 
             <Card className="w-full max-w-2xl mx-auto">
                 <CardHeader>
-                    <CardTitle className='text-blue-900 text-xl'>{isDoctor ? 'Cadastro de Médicos' : 'Cadastro de Adminstradores'}</CardTitle>
+                    <CardTitle className='text-blue-900 text-xl'>{title}</CardTitle>
                     <CardDescription className="text-gray-500">
                         Preencha os dados abaixo. Clique em salvar para finalizar o cadastro.
                     </CardDescription>

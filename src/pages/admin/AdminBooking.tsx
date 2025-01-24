@@ -13,6 +13,7 @@ import { formatDate} from "@/lib/utils.ts";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import Cards from "@/components/Card.tsx";
+import NoDataTable from "@/components/NoDataTable.tsx";
 
 const AdminBooking: React.FC = () =>  {
 
@@ -91,14 +92,14 @@ const AdminBooking: React.FC = () =>  {
         fetchPatientExams(date).then()
         setOpenModalNewPatient(false)
     }
-    const handlePresence  = async (examId: number, presence: boolean | null) => {
+    const handlePresence  = async (examId: number, presence: null | 'Sim' | 'Não') => {
         try {
             if(auth.tenantId) {
                 const result = await confirmPatientExam(auth.tenantId, examId, presence)
                 if(result) {
-                    if(presence === null) {
+                    if(presence === 'Não') {
                         handleModalMessage('Paciente Cancelado')
-                    } else if(presence) {
+                    } else if(presence === 'Sim') {
                         handleModalMessage('Paciente Confirmado')
                     } else {
                         handleModalMessage('Paciente Não Compareceu')
@@ -116,49 +117,63 @@ const AdminBooking: React.FC = () =>  {
             <div className="flex flex-col md:flex-row gap-3 mb-6">
                 <Cards name='Total de Agendamentos' content={exams?.length}/>
             </div>
-            <Tabs defaultValue="lista" className="space-y-4">
-                <TabsContent value="lista">
-                    <Card className="p-4">
-                        <CardTitle className="ml-8 text-oxfordBlue text-xl">
-                            {`Agendamentos do ${formatDate(date.split('T')[0])}`}
-                        </CardTitle>
-                        <CardHeader
-                            className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">
-                            <div className="mt-1.5 flex gap-2">
-                                <Button
-                                    onClick={() => openFlexiveModal('Agendamento de Exame', ModalType.newBookingPatient)}
-                                    className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Realizar
-                                    Agendamento
-                                </Button>
-                            </div>
-                            <div>
-                                <Input
-                                    id="examDate"
-                                    name="examDate"
-                                    type="date"
-                                    className="col-span-3 w-48 h-10 font-semibold text-base text-oxfordBlue"
-                                    onChange={handleInputChange}
-                                />
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="ml-4">
-                                <BookingList
-                                    onConfirmarPresenca={handlePresence}
-                                    loading={loading}
-                                    agendamentos={exams}
-                                />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </TabsContent>
-            </Tabs>
+
+                    <div>
+                        <Tabs defaultValue="lista" className="space-y-4">
+                        <TabsContent value="lista">
+                            <Card className="p-10">
+                                <CardTitle className="ml-8 text-oxfordBlue text-xl">
+                                    {`Agendamentos do dia: ${formatDate(date.split('T')[0])}`}
+                                </CardTitle>
+                                <CardHeader
+                                    className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">
+                                    <div className="mt-1.5 flex gap-2">
+                                        <Button
+                                            onClick={() => openFlexiveModal('Agendamento de Exame', ModalType.newBookingPatient)}
+                                            className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Realizar
+                                            Agendamento
+                                        </Button>
+                                    </div>
+                                    <div>
+                                        <Input
+                                            id="examDate"
+                                            name="examDate"
+                                            type="date"
+                                            value={new Date(date).toISOString().split('T')[0]}
+                                            className="col-span-3 w-48 h-10 font-semibold text-base text-oxfordBlue"
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </CardHeader>
+                                {
+                                    exams.length === 0 ?
+                                        (
+                                            <div>
+                                                <NoDataTable message="Não possui agendamentos para o dia de hoje"/>
+                                            </div>
+                                        ) : (
+                                            <CardContent>
+                                                <div className="ml-4">
+                                                    <BookingList
+                                                        onConfirmarPresenca={handlePresence}
+                                                        loading={loading}
+                                                        agendamentos={exams}
+                                                    />
+                                                </div>
+                                            </CardContent>
+                                        )
+                                }
+                            </Card>
+                        </TabsContent>
+                    </Tabs>
+                    </div>
+
             {openModalNewPatient && <ModalRender
                 isOpen={openModalNewPatient}
                 title={title}
                 type={type}
                 isStepper={true}
-                dadosPaciente={dadosPaciente}
+                data={dadosPaciente}
                 onClose={handleClose}
                 modalMessage={handleModalMessage}
                 modalNewBookingConfirmation={handleConfirmationBooking}

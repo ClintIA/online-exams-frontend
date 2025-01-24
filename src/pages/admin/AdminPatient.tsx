@@ -13,12 +13,14 @@ import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 import DataTable from "@/components/DataTable.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {TableCell} from "@mui/material";
-import {findCanalOptions} from "@/lib/optionsFixed.ts";
 import {ModalType} from "@/types/ModalType.ts";
+import NoDataTable from "@/components/NoDataTable.tsx";
 
 const AdminPatient: React.FC = () => {
 
     const [title,setTitle] = useState("");
+    const [titleModal,setTitleModal] = useState("");
+
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
@@ -86,7 +88,9 @@ const AdminPatient: React.FC = () => {
 
        fetchPatients().then()
     }, [fetchPatients])
-
+    const handleConfirmationBooking = () => {
+        openFlexiveModal('Confirmação de Agendamento', ModalType.bookingConfirmation)
+    }
     const handleConfirmationDelete = (id: number) => {
         setGeneralMessage("Deseja deletar o paciente selecionado?")
         setTitle('Confirmação de Exclusão')
@@ -109,7 +113,6 @@ const AdminPatient: React.FC = () => {
             <TableCell className="text-oxfordBlue">{paciente.phone}</TableCell>
             <TableCell className="text-oxfordBlue">{formatDate(paciente.dob)}</TableCell>
             <TableCell className="text-oxfordBlue">{paciente.health_card_number}</TableCell>
-            <TableCell className="text-oxfordBlue capitalize">{findCanalOptions(paciente.canal)}</TableCell>
         </>
     );
     const handleDeletePatient = async () => {
@@ -140,12 +143,12 @@ const AdminPatient: React.FC = () => {
         setIsGeneralModalOpen(true)
     }
 
-    const openFlexiveModal = (modalType: ModalType, paciente?: DadosPaciente) => {
+    const openFlexiveModal = (title: string, modalType: ModalType, paciente?: DadosPaciente) => {
         if(paciente) {
             setDadosPaciente(paciente)
         }
-
         setType(modalType)
+        setTitleModal(title)
         setOpenModalNewPatient(true)
     }
 
@@ -185,36 +188,45 @@ const AdminPatient: React.FC = () => {
                             onChange={(e) => setFiltroCPF(e.target.value)}/>
                     </div>
                     <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={() => openFlexiveModal(ModalType.newPatient)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
+                        <Button onClick={() => openFlexiveModal('Cadastro de Paciente', ModalType.newPatient)} className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar Paciente</Button>
                     </div>
                 </div>
 
                 <Card>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="text-oxfordBlue">Nome</TableHead>
-                                    <TableHead className="text-oxfordBlue">CPF</TableHead>
-                                    <TableHead className="text-oxfordBlue">Contato</TableHead>
-                                    <TableHead className="text-oxfordBlue">Data de Nascimento</TableHead>
-                                    <TableHead className="text-oxfordBlue">Cartão do Plano</TableHead>
-                                    <TableHead className="text-oxfordBlue">Canal de Captação</TableHead>
-                                    <TableHead className="text-oxfordBlue">Ação</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <DataTable renderRow={renderRow} openModalBooking={true} openModalEdit={openFlexiveModal}  deleteData={handleConfirmationDelete} dataTable={pacientes}></DataTable>
-                        </Table>
+                        {
+                            pacientes.length === 0 ?
+                                (
+                                    <div className="p-10">
+                                        <NoDataTable message="Não possui pacientes cadastrados"/>
+                                    </div>
+                                ) : (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-oxfordBlue">Nome</TableHead>
+                                                <TableHead className="text-oxfordBlue">CPF</TableHead>
+                                                <TableHead className="text-oxfordBlue">Contato</TableHead>
+                                                <TableHead className="text-oxfordBlue">Data de Nascimento</TableHead>
+                                                <TableHead className="text-oxfordBlue">Cartão do Plano</TableHead>
+                                                <TableHead className="text-oxfordBlue">Ação</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <DataTable renderRow={renderRow} openModalBooking={true} openModalEdit={openFlexiveModal}  deleteData={handleConfirmationDelete} dataTable={pacientes}></DataTable>
+                                    </Table>
+                                )
+                        }
                     </CardContent>
                 </Card>
 
             {openModalNewPatient && <ModalRender
                 modalMessage={handleModalMessage}
                 isOpen={openModalNewPatient}
-                title="Gerenciamento de Pacientes"
+                title={titleModal}
                 onClose={() => setOpenModalNewPatient(false)}
                 type={type}
-                dadosPaciente={dadosPaciente}
+                data={dadosPaciente}
+                modalNewBookingConfirmation={handleConfirmationBooking}
             />}
 
             <GeneralModal

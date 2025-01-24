@@ -1,8 +1,5 @@
 import React, {useCallback, useEffect, useState} from "react";
 import Cards from "@/components/Card.tsx";
-import {Label} from "@/components/ui/label.tsx";
-import {Input} from "@/components/ui/input.tsx";
-import {Button} from "@/components/ui/button.tsx";
 import {Card, CardContent} from "@/components/ui/card.tsx";
 import {Table, TableHead, TableHeader, TableRow} from "@/components/ui/table.tsx";
 import DataTable from "@/components/DataTable.tsx";
@@ -10,9 +7,11 @@ import {deleteExam, listTenantExam} from "@/services/tenantExamService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import Loading from "@/components/Loading.tsx";
 import {TableCell} from "@mui/material";
-import ModalTenantExamRender from "@/components/AdminTenantExam/ModalTenantExamRender.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {ModalType} from "@/types/ModalType.ts";
+import {Button} from "@/components/ui/button.tsx";
+import NoDataTable from "@/components/NoDataTable.tsx";
+import ModalRender from "@/components/ModalHandle/ModalRender.tsx";
 
 export interface Exams {
     id?: number
@@ -31,13 +30,13 @@ const AdminTenantExams: React.FC = () => {
 
     const [exames, setExames] = useState<Exams[]>([])
     const [exame, setExame] = useState<Exams>()
-    const [filterName, setFilterName] = useState<string>()
     const [openModalNewExam, setOpenModalNewExam] = useState<boolean>(false)
-    const [filterDoctor, setFilterDoctor] = useState<string>()
     const [loading, setLoading] = useState<boolean>(false);
     const [type,setType] = useState<ModalType>(ModalType.newExam)
     const [deleteId, setDeleteId] = useState<number>()
     const [title,setTitle] = useState("");
+    const [titleModal,setTitleModal] = useState("");
+
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
     const [generalMessage, setGeneralMessage] = useState<string>('')
@@ -81,12 +80,12 @@ const AdminTenantExams: React.FC = () => {
             <TableCell className="text-oxfordBlue capitalize">{exame.doctorPrice}</TableCell>
         </>
     );
-    const openFlexiveModal = (modalType: ModalType, exams?: Exams) => {
+    const openFlexiveModal = (title: string, modalType: ModalType, exams?: Exams) => {
         if(exams) {
             setExame(exams)
         }
-
         setType(modalType)
+        setTitleModal(title)
         setOpenModalNewExam(true)
     }
     const handleModalMessage = (message: string) => {
@@ -132,75 +131,63 @@ const AdminTenantExams: React.FC = () => {
         return <Loading />
     }
     return (
-        <>
             <div className="w-full p-10 mx-auto">
                 <h1 className="text-3xl mb-6 font-bold tracking-tight">Tipos de Procedimentos da Clínica</h1>
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
                     <Cards name='Total de Exames' content={exames?.length}/>
                 </div>
-
-                <div className="flex flex-col md:flex-row gap-3 mb-5">
-                    <div className='p-2'>
-                        <Label htmlFor="filtroNome" className="text-oxfordBlue">Nome do Exame</Label>
-                        <Input
-                            className="w-72"
-                            id="filtroNome"
-                            placeholder="Filtrar por Nome do exame"
-                            value={filterName}
-                            onChange={(e) => setFilterName(e.target.value)}/>
-                    </div>
-                    <div className='p-2'>
-                        <Label htmlFor="filtroDoctor" className="text-oxfordBlue">Nome do Médico</Label>
-                        <Input
-                            className="w-72"
-                            id="filtroDoctor"
-                            placeholder="Filtrar por Médico"
-                            value={filterDoctor}
-                            onChange={(e) => setFilterDoctor(e.target.value)}/>
-                    </div>
-                    <div className="flex justify-end mt-7 p-1">
-                        <Button onClick={() => openFlexiveModal(ModalType.newExam)}
-                                className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
-                            Exame</Button>
+                <div className="flex justify-items-start ml-2 mb-3">
+                    <div>
+                        <Button onClick={() => openFlexiveModal('Cadastrar Exame',ModalType.newExam)}
+                                className="p-4 text-base bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
+                            Procedimento</Button>
                     </div>
                 </div>
                 <Card>
                     <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="text-oxfordBlue">Nome do Procedimento</TableHead>
-                                    <TableHead className="text-oxfordBlue">Médicos</TableHead>
-                                    <TableHead className="text-oxfordBlue">Tipo do Procedimento</TableHead>
-                                    <TableHead className="text-oxfordBlue">Preço do Procedimento</TableHead>
-                                    <TableHead className="text-oxfordBlue">Valor do Médico</TableHead>
-                                    <TableHead className="text-oxfordBlue">Ação</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <DataTable openModalEdit={openFlexiveModal} openModalBooking={false} deleteData={handleConfirmationDelete} dataTable={exames} renderRow={renderRow}></DataTable>
-                        </Table>
+                        {
+                            exames.length === 0 ?
+                                (
+                                    <div className="p-10">
+                                        <NoDataTable message="Não possui exames cadastrados"/>
+                                    </div>
+                                ) : (
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="text-oxfordBlue">Nome do Procedimento</TableHead>
+                                                <TableHead className="text-oxfordBlue">Médicos</TableHead>
+                                                <TableHead className="text-oxfordBlue">Tipo do Procedimento</TableHead>
+                                                <TableHead className="text-oxfordBlue">Preço do Procedimento</TableHead>
+                                                <TableHead className="text-oxfordBlue">Valor do Médico</TableHead>
+                                                <TableHead className="text-oxfordBlue">Ação</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <DataTable openModalEdit={openFlexiveModal} openModalBooking={false}
+                                                   deleteData={handleConfirmationDelete} dataTable={exames}
+                                                   renderRow={renderRow}></DataTable>
+                                    </Table>
+                                )
+                        }
                     </CardContent>
                 </Card>
-            </div>
-            {openModalNewExam && (
-                <ModalTenantExamRender
-                    modalNewExam={handleModalMessage}
+                {openModalNewExam && <ModalRender
+                    modalMessage={handleModalMessage}
                     isOpen={openModalNewExam}
+                    title={titleModal}
                     onClose={() => setOpenModalNewExam(false)}
                     type={type}
-                    title="Gerenciamento de Exames da Clínica"
-                    dadosExam={exame}/>
-            )
-            }
-            <GeneralModal
-                title={title}
-                action={action}
-                error={isError}
-                isOpen={isGeneralModalOpen}
-                isDelete={deletePatient}
-                onClose={handleClose}
-                message={generalMessage}/>
-        </>
+                    data={exame}
+                />}
+                <GeneralModal
+                    title={title}
+                    action={action}
+                    error={isError}
+                    isOpen={isGeneralModalOpen}
+                    isDelete={deletePatient}
+                    onClose={handleClose}
+                    message={generalMessage}/>
+            </div>
     )
 }
 

@@ -34,6 +34,24 @@ export const registerAdmin = async (adminData: IAdmin, tenantId:  number) => {
         }
     }
 }
+export const getAdminData = async (adminID: number, tenantId:  number) => {
+
+    try {
+        return await apiClient.get(`admin/adminId/`, {
+            headers: {
+                'x-tenant-id': tenantId
+            },
+            params: {
+                adminID: adminID
+            }
+        })
+
+    } catch (error) {
+        if (isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+}
 export const updateAdmin = async (adminData: IAdmin, tenantId:  number) => {
 
     try {
