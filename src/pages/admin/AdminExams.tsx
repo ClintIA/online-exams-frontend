@@ -143,7 +143,7 @@ const AdminExams: React.FC = () =>  {
   return (
       <div className="w-full p-10 mx-auto">
 
-        <h1 className="text-3xl mb-6 font-bold tracking-tight">Upload de Exames</h1>
+        <h1 className="text-3xl mb-6 font-bold tracking-tight">Upload de Resultados</h1>
         <div className="flex flex-col md:flex-row gap-3 mb-6">
           <Cards name='Agendamentos Pendentes' content={exams?.length}/>
           <Cards name='Agendamentos Concluídos' content={exams?.length}/>
@@ -154,7 +154,7 @@ const AdminExams: React.FC = () =>  {
               exams.length === 0 ?
                   (
                       <div className="p-10">
-                        <NoDataTable message="Não possui exames realizados"/>
+                        <NoDataTable message="Não possui procedimentos realizados"/>
                       </div>
                   ) : (
                       <Table>

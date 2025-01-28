@@ -338,9 +338,9 @@ export function AdminDashboard() {
             </div>
             <Card>
               <CardHeader>
-                <CardTitle>Detalhes dos Exames Realizados</CardTitle>
+                <CardTitle>Detalhes dos Procedimentos Realizados</CardTitle>
                 <CardDescription>
-                  Informações detalhadas sobre exames, pagamentos e lucros.
+                  Informações detalhadas sobre procedimentos, pagamentos e lucros.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -375,7 +375,7 @@ export function AdminDashboard() {
               <CardHeader>
                 <CardTitle>Valores a receber</CardTitle>
                 <CardDescription>
-                  Informações detalhadas da quantidade de exames realizadas por cada médico.
+                  Informações detalhadas da quantidade de procedimentos realizadas por cada médico.
                 </CardDescription>
               </CardHeader>
               <CardContent>

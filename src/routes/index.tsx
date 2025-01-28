@@ -19,6 +19,7 @@ import AdminManageMarketing from "@/pages/admin/AdminManageMarketing.tsx";
 import {PublicRoute} from "./PublicRoute/PublicRoute.tsx";
 import { AuthRedirect } from "./AuthRedirect/AuthRedirect.tsx";
 import AdminProfile from "@/pages/admin/AdminProfile.tsx";
+import AdminSelectTenant from "@/components/AdminSelectTenant/AdminSelectTenant.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -43,6 +44,13 @@ export const router = createBrowserRouter([
             <PublicRoute>
                 <Login />
             </PublicRoute>,
+    },
+    {
+        path:'select-tenant',
+        element:
+            <PublicRoute>
+            <AdminSelectTenant />
+            </PublicRoute>
     },
     {
         path: "/paciente",

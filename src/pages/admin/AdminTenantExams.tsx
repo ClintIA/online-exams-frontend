@@ -76,8 +76,8 @@ const AdminTenantExams: React.FC = () => {
             }
             </TableCell>
             <TableCell className="text-oxfordBlue capitalize">{exame.exam_type}</TableCell>
-            <TableCell className="text-oxfordBlue">{exame.price}</TableCell>
-            <TableCell className="text-oxfordBlue capitalize">{exame.doctorPrice}</TableCell>
+            <TableCell className="text-oxfordBlue">R$ {exame.price}</TableCell>
+            <TableCell className="text-oxfordBlue capitalize">R$ {exame.doctorPrice}</TableCell>
         </>
     );
     const openFlexiveModal = (title: string, modalType: ModalType, exams?: Exams) => {
@@ -134,7 +134,7 @@ const AdminTenantExams: React.FC = () => {
             <div className="w-full p-10 mx-auto">
                 <h1 className="text-3xl mb-6 font-bold tracking-tight">Tipos de Procedimentos da Clínica</h1>
                 <div className="flex flex-col md:flex-row gap-3 mb-6">
-                    <Cards name='Total de Exames' content={exames?.length}/>
+                    <Cards name='Total de Procedimentos' content={exames?.length}/>
                 </div>
                 <div className="flex justify-items-start ml-2 mb-3">
                     <div>

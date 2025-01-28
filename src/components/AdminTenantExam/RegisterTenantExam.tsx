@@ -121,7 +121,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                 <CardHeader>
                     <CardTitle className='text-oxfordBlue text-xl'>{title}</CardTitle>
                     <CardDescription>
-                        Preencha os dados do exame. Clique em salvar quando terminar.
+                        Preencha os dados do procedimento. Clique em salvar quando terminar.
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -129,7 +129,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                         <div className="grid gap-4">
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="exam_name" className="text-right text-oxfordBlue">
-                                    Nome do Exame
+                                    Nome do Procedimento
                                 </Label>
                                 <Input
                                     id="exam_name"
@@ -140,7 +140,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="exam_type" className="text-right text-oxfordBlue">
-                                    Tipo do Exame
+                                    Tipo do Procedimento
                                 </Label>
                                 <div className="flex flex-row gap-2">
                                     {examOptions.map((option) => (
@@ -176,7 +176,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                             </div>
                             <div className="grid grid-cols-4 items-center gap-4">
                                 <Label htmlFor="price" className="text-right text-oxfordBlue">
-                                    Preço do Exame
+                                    Preço do Procedimento
                                 </Label>
                                 <Input
                                     id="price"
@@ -204,9 +204,9 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
                         </div>
                         <div className="flex justify-end mt-6">
                             {isNewExam && (
-                                <Button className="bg-oxfordBlue text-white" type="submit">Cadastrar Exame</Button>)}
+                                <Button className="bg-oxfordBlue text-white" type="submit">Cadastrar Procedimento</Button>)}
                             {isUpdate && (
-                                <Button className="bg-oxfordBlue text-white" type="submit">Atualizar Exame</Button>)}
+                                <Button className="bg-oxfordBlue text-white" type="submit">Atualizar Procedimento</Button>)}
 
                         </div>
                     </form>

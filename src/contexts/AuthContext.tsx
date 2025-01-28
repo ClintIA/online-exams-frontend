@@ -1,6 +1,6 @@
 import { createContext, useEffect, useState } from "react";
-import { IAuthContextType, ILoginAdmin, ITokenPayload, Props } from "../types/Auth.ts";
-import { loginService } from "../services/loginService.tsx";
+import {IAuthContextType, ILoginAdmin, ILoginAdminWithTenant, ITokenPayload, Props} from "../types/Auth.ts";
+import {loginService, loginServiceWithTenant} from "../services/loginService.tsx";
 import { jwtDecode } from "jwt-decode";
 import Cookies from 'js-cookie';
 import { AccessLevel } from "@/lib/controlAccessLevel.ts";
@@ -19,6 +19,8 @@ const AuthProvider = ({ children }: Props) => {
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState<number>();
   const [tenantId, setTenantID] = useState<number>();
+  const [tenantName, setTenantName] = useState<string>();
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +40,7 @@ const AuthProvider = ({ children }: Props) => {
             setUserId(decoded.userId);
             setTenantID(decoded.tenantId);
             setRole(decoded.role);
+            setTenantName(decoded.tenantName)
           }
         }
       } catch (error) {
@@ -51,8 +54,8 @@ const AuthProvider = ({ children }: Props) => {
     checkToken().then();
   }, []);
 
-  const login = async (email: string, password: string): Promise<ILoginAdmin | undefined> => {
-    const res = await loginService(email, password);
+  const login = async (email: string, tenant: number): Promise<ILoginAdmin | undefined> => {
+    const res = await loginServiceWithTenant(email, tenant);
     if (res?.status === 'success' && res?.data?.token) {
       const decoded: ITokenPayload = jwtDecode(res.data.token);
       saveStorage(decoded, res.data.token);
@@ -61,8 +64,16 @@ const AuthProvider = ({ children }: Props) => {
       setRole(decoded.role);
       setUserId(decoded.userId);
       setTenantID(decoded.tenantId);
+      setTenantName(decoded.tenantName)
+
     }
     return res;
+  };
+  const loginToTenant = async (email: string, password: string): Promise<ILoginAdminWithTenant | undefined> => {
+    const res = await loginService(email, password);
+    if (res?.status === 'success') {
+      return res
+    }
   };
 
   const logOut = () => {
@@ -81,9 +92,11 @@ const AuthProvider = ({ children }: Props) => {
         isAuthenticated, 
         role, 
         token, 
-        login, 
+        login,
+        loginToTenant,
         logOut, 
         userId,
+        tenantName,
         isLoading
       }}
     >

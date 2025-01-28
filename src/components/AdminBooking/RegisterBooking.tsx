@@ -62,7 +62,7 @@ const RegisterBooking: React.FC<BookingModalProps> = ({title,dadosPaciente, isNe
 
                     const result = await listTenantExam(auth.tenantId)
                     if(result?.data.data.length === 0 ) {
-                      setErro('Não possui exames cadastrados')
+                      setErro('Não possui procedimentos cadastrados')
                         setLoading(false)
                         return
                     }
@@ -74,7 +74,7 @@ const RegisterBooking: React.FC<BookingModalProps> = ({title,dadosPaciente, isNe
                     }
                 }
             } catch (error) {
-                setErro("Não possível carregar os exames")
+                setErro("Não possível carregar os procedimentos")
                 console.error(error)
             }
         }
@@ -145,7 +145,6 @@ const RegisterBooking: React.FC<BookingModalProps> = ({title,dadosPaciente, isNe
                 if(isNewBooking) {
                     try {
                         const result = await isNewBooking(bookingDados, auth.tenantId)
-                        console.log(result)
                             if(result.status === 201 && handleModalMessage) {
                                 handleModalMessage(ModalType.bookingConfirmation)
                                 setStep(3)
