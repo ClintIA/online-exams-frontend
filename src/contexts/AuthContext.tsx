@@ -19,6 +19,8 @@ const AuthProvider = ({ children }: Props) => {
   const [token, setToken] = useState('');
   const [userId, setUserId] = useState<number>();
   const [tenantId, setTenantID] = useState<number>();
+  const [tenantName, setTenantName] = useState<string>();
+
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -38,6 +40,7 @@ const AuthProvider = ({ children }: Props) => {
             setUserId(decoded.userId);
             setTenantID(decoded.tenantId);
             setRole(decoded.role);
+            setTenantName(decoded.tenantName)
           }
         }
       } catch (error) {
@@ -61,6 +64,8 @@ const AuthProvider = ({ children }: Props) => {
       setRole(decoded.role);
       setUserId(decoded.userId);
       setTenantID(decoded.tenantId);
+      setTenantName(decoded.tenantName)
+
     }
     return res;
   };
@@ -91,7 +96,7 @@ const AuthProvider = ({ children }: Props) => {
         loginToTenant,
         logOut, 
         userId,
-
+        tenantName,
         isLoading
       }}
     >

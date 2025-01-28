@@ -157,6 +157,9 @@ const AdminHome: React.FC = () => {
 
   return (
     <div className="w-full max-w-full min-h-screen flex flex-col justify-center mx-auto">
+      <div className="flex justify-end mt-2 mr-12">
+        <p className="text-oxfordBlue font-medium">Unidade: <strong>{auth.tenantName} </strong></p>
+      </div>
       <main className="flex-1 p-4 md:p-6 overflow-x-hidden">
         <div className="max-w-full mx-auto space-y-6">
           <div className="grid gap-6 grid-cols-1 lg:grid-cols-4">

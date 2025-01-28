@@ -24,6 +24,7 @@ export type IAuthContextType = {
     role: AccessLevel;
     tenantId: number | undefined;
     isLoading: boolean;
+    tenantName?: string
 
 }
 export interface ITokenPayload {
@@ -32,6 +33,7 @@ export interface ITokenPayload {
     role: ProfileRole;
     exp: number;
     iat: number;
+    tenantName?: string;
 }
 export type Props = {
     children?: React.ReactNode;
