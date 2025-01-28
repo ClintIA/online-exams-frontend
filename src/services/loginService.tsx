@@ -1,10 +1,10 @@
 import {isAxiosError} from 'axios';
-import {ILoginAdmin} from "@/types/Auth.ts";
+import {ILoginAdmin, ILoginAdminWithTenant} from "@/types/Auth.ts";
 import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import apiClient from "@/lib/interceptor.ts";
 
 
-export const loginService = async (user: string, password: string): Promise<ILoginAdmin | undefined> => {
+export const loginService = async (user: string, password: string): Promise<ILoginAdminWithTenant | undefined> => {
     try {
         const data = {
             user: user,
@@ -18,6 +18,25 @@ export const loginService = async (user: string, password: string): Promise<ILog
 
 
         const response = await apiClient.post('auth/login', data);
+        return response.data;
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+};
+export const loginServiceWithTenant = async (user: string, tenant: number): Promise<ILoginAdmin | undefined> => {
+    try {
+        const data = {
+            user: user,
+            tenantId: tenant
+        }
+        if(user.includes('@')) {
+            data.user = user
+        } else {
+            data.user = user.replace(/\D/g, '')
+        }
+        const response = await apiClient.post('auth/select-tenant', data);
         return response.data;
     } catch (error) {
         if(isAxiosError(error)) {

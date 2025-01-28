@@ -267,7 +267,7 @@ const AdminHome: React.FC = () => {
                   ))
                 ) : (
                   <div className="col-span-full flex items-center justify-center h-40">
-                    <p className="text-center">Não há exames agendados para hoje</p>
+                    <p className="text-center">Não há agendamentos para hoje</p>
                   </div>
                 )}
               </div>

@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import logoClintia from '../../assets/ClintIA-MarcaRGB-Verti-Cor-FundoOxford.png';
 import { useAuth } from "@/hooks/auth.tsx";
 import { Button } from "@/components/ui/button.tsx";
 import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import { Input } from "@/components/ui/input.tsx";
 import { EyeIcon, EyeOff } from "lucide-react";
-import { useCpf } from "@/hooks/useCpf.tsx";
 import Cookies from "js-cookie";
 import {ITokenPayload} from "@/types/Auth.ts";
 import {jwtDecode} from "jwt-decode";
@@ -15,8 +14,7 @@ import {Spinner} from "@/components/ui/Spinner.tsx";
 const Login: React.FC = () => {
     const navigate = useNavigate();
     const auth = useAuth();
-    const { setCpf } = useCpf();
-    const [identifier, setIdentifier] = useState(''); 
+    const [identifier, setIdentifier] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
@@ -51,6 +49,7 @@ const Login: React.FC = () => {
 
         checkToken().then();
     }, []);
+
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -60,26 +59,26 @@ const Login: React.FC = () => {
             return;
         }
 
-        const result = await auth.login(identifier, password);
+        const result = await auth.loginToTenant(identifier, password);
+        setIsLoading(true)
         if (!result) {
             setErrorMessage('Erro ao realizar login');
             setIsErrorModalOpen(true);
+            setIsLoading(false)
             return;
         }
 
         if (result.status === "error") {
             setErrorMessage(result.message);
             setIsErrorModalOpen(true);
+            setIsLoading(false)
+
             return;
         }
 
         if (result.status === "success" && result.data !== null) {
-            if (identifier.includes('@')) {
-                return navigate('/admin/home');
-            } else {
-                setCpf(identifier);
-                return navigate('/paciente/home');
-            }
+            setIsLoading(false)
+            return navigate('/select-tenant', { state: result.data });
         }
     };
 
@@ -191,8 +190,8 @@ const Login: React.FC = () => {
                 action="Fechar"
                 error={true}
             />
-        </div>)
-        }
+        </div>
+        )}
         </div>
     );
 

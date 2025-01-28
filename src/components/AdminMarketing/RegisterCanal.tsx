@@ -3,9 +3,10 @@ import {Input} from "@/components/ui/input.tsx";
 import {Button} from "@/components/ui/button.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import {Card, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card.tsx";
-import { listCanalMarketing} from "@/services/marketingService.ts";
+import {deleteCanalMarketing, listCanalMarketing} from "@/services/marketingService.ts";
 import {Alert, AlertDescription, AlertTitle} from "@/components/ui/alert.tsx";
-import {AlertCircle} from "lucide-react";
+import {AlertCircle, Trash2} from "lucide-react";
+import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 
 export interface IMarketing {
     id?: number
@@ -31,7 +32,12 @@ const RegisterCanal: React.FC<RegisterCanalProps> = ({title, isCanal, isUpdate, 
     })
     const [ totalBudgetUsed, setTotalBudgetUsed ] = useState(0)
     const [erro, setErro] = useState<string | null>(null)
-
+    const [titleModal,setTitleModal] = useState("");
+    const [action,setAction] = useState("");
+    const [isError, setIsError] = useState(false);
+    const [generalMessage, setGeneralMessage] = useState<string>('')
+    const [isGeneralModalOpen, setIsGeneralModalOpen] = useState(false)
+    const [deleteId, setDeleteId] = useState<number>()
     const [listCanal, setListCanal] = useState<IMarketing[]>([])
     const auth = useAuth();
     const handleInputChangeNew = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -55,8 +61,16 @@ const RegisterCanal: React.FC<RegisterCanalProps> = ({title, isCanal, isUpdate, 
 
     useEffect(   () => {
     fetchCanal().then()
-    }, [fetchCanal]);
+    }, []);
+    const handleConfirmationDelete = (id: number | undefined) => {
+        setGeneralMessage("Deseja deletar o canal selecionado?")
+        setTitleModal('Confirmação de Exclusão')
+        setAction('Excluir')
+        setIsError(true)
+        setDeleteId(id)
+        setIsGeneralModalOpen(true)
 
+    }
     const handleNewCanalSubmit = async (event: React.FormEvent) => {
         event.preventDefault()
         if(!newCanalData.canal || !newCanalData.budgetCanal){
@@ -80,6 +94,17 @@ const RegisterCanal: React.FC<RegisterCanalProps> = ({title, isCanal, isUpdate, 
                 })
                 .catch((error) => console.log(error))
         }
+    }
+    const deleteCanal = async () => {
+        try {
+            await deleteCanalMarketing(auth.tenantId, deleteId)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const handleClose = () => {
+        setIsGeneralModalOpen(false)
+        fetchCanal().then()
     }
     const handleUpdateCanalSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -134,9 +159,14 @@ const RegisterCanal: React.FC<RegisterCanalProps> = ({title, isCanal, isUpdate, 
                                        placeholder={canal.budgetCanal?.toString()}/>
                             </div>
                             <div className="w-auto sm:w-1/4">
-                                <Button
-                                    className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Atualizar
-                                </Button>
+                                <div className="flex flex-row space-x-3">
+                                    <Button
+                                        className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Atualizar
+                                    </Button>
+                                    <Button className="" onClick={() => handleConfirmationDelete(canal.id)}><Trash2 color='red'/>
+                                    </Button>
+                                </div>
+
                             </div>
                         </div>
                     </form>
@@ -166,6 +196,15 @@ const RegisterCanal: React.FC<RegisterCanalProps> = ({title, isCanal, isUpdate, 
                     </div>
                 </form>
             </div>
+            <GeneralModal
+                title={titleModal}
+                action={action}
+                error={isError}
+                isOpen={isGeneralModalOpen}
+                isDelete={deleteCanal}
+                onClose={handleClose}
+                message={generalMessage}/>
+
             <CardFooter className="mt-3 flex justify-center">
                 {erro && (
                     <Alert variant="destructive">

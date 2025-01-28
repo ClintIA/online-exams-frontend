@@ -9,9 +9,15 @@ export interface ILoginAdmin {
         token?:string
     }
 }
+export interface ILoginAdminWithTenant {
+    status: string;
+    message: string;
+    data?: any[]
+}
 export type IAuthContextType = {
     token?: string;
-    login: (user: string, password:string) => Promise<ILoginAdmin | undefined>;
+    loginToTenant: (user: string, password: string) => Promise<ILoginAdminWithTenant | undefined>;
+    login: (user: string, tenant: number) => Promise<ILoginAdmin | undefined>;
     logOut: () => void;
     isAuthenticated: boolean;
     userId?: number;

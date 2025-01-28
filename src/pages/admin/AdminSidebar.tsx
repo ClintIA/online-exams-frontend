@@ -122,7 +122,7 @@ const AdminSidebar: React.FC = () => {
                               className="flex items-center p-2 mt-2 mr-2 rounded-lg hover:bg-gray-700"
                           >
                             <Microscope className="mr-2" size={12}/>
-                            <span>Exames</span>
+                            <span>Procedimentos</span>
                           </Link>
                           <Link
                               to="/admin/registrar-medicos"
