@@ -304,7 +304,7 @@ export function AdminDashboard() {
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
-              <Card className="col-span-3">
+              <Card className="col-span-4 lg:col-span-3">
                 <CardHeader>
                   <CardTitle>Faturamento por Procedimento</CardTitle>
                   <CardDescription>
@@ -530,7 +530,7 @@ export function AdminDashboard() {
                   </ResponsiveContainer>
                 </CardContent>
               </Card>
-              <Card className="col-span-3">
+              <Card className="col-span-4 lg:col-span-3">
                 <CardHeader>
                   <CardTitle>Funil de Marketing</CardTitle>
                 </CardHeader>
@@ -583,7 +583,7 @@ export function AdminDashboard() {
                 </CardContent>
               </Card>
 
-              <Card className="col-span-3">
+              <Card className="col-span-4 lg:col-span-3">
                 <CardHeader>
                   <CardTitle>Métricas (CPL , CPC, Ticket Médio)</CardTitle>
                 </CardHeader>
@@ -640,7 +640,7 @@ export function AdminDashboard() {
                   </Table>
                 </CardContent>
               </Card>
-              <Card className="col-span-3">
+              <Card className="col-span-4 lg:col-span-3">
                 <CardHeader>
                   <CardTitle>Investimento e ROAS</CardTitle>
                 </CardHeader>

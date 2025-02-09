@@ -53,7 +53,7 @@ const AdminSidebar: React.FC = () => {
   }, []);
   return (
       <div>
-        <div className="md:hidden fixed top-4 right-5">
+        <div className="md:hidden fixed top-4 right-5 z-50">
           <button
               onClick={toggleMenu}
               className="text-white bg-oxfordBlue p-2 rounded-full shadow-md hover:bg-gray-700 focus:outline-none"
@@ -66,13 +66,13 @@ const AdminSidebar: React.FC = () => {
           <div className="flex justify-center py-4">
             <img src={clintiaLogo} className="w-32 h-auto md:w-48 md:h-auto" alt="Logo ClintIA"/>
           </div>
-          <div className="md:hidden fixed top-4 left-4">
+          {/* <div className="md:hidden fixed top-4 left-4">
             <button
                 onClick={toggleMenu}
                 className="text-white bg-oxfordBlue p-2 rounded-full shadow-md hover:bg-gray-700 focus:outline-none"
             >
             </button>
-          </div>
+          </div> */}
           <nav className="flex-1 mt-8 px-4 flex flex-col justify-center">
             <ul className="space-y-2">
               <li>
@@ -147,7 +147,7 @@ const AdminSidebar: React.FC = () => {
                     <Collapsible open={isOpen('relatorios')} onOpenChange={() => toggleSection('relatorios')}>
                       <CollapsibleTrigger asChild>
                         <div
-                            className="flex w-full justify-between cursor-pointer hover:bg-gray-700 transition-colors duration-300 rounded-lg">
+                            className="flex w-full p-2 justify-between cursor-pointer hover:bg-gray-700 transition-colors duration-300 rounded-lg">
                           <div className="flex items-center">
                             <Activity className="mr-2" size={24}/>
                             <span>Relatórios</span>
