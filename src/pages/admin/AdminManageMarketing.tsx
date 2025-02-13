@@ -1,9 +1,9 @@
 import React, {useCallback, useEffect, useState} from "react";
 import {ArcElement, Chart as ChartJS, Legend, Tooltip} from 'chart.js'
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
+import {Card, CardContent} from "@/components/ui/card"
 import {Input} from "@/components/ui/input"
 import {Button} from "@/components/ui/button"
-import {Pie} from 'react-chartjs-2'
+import { Doughnut } from 'react-chartjs-2'
 import {useToast} from "@/hooks/use-toast"
 import {Toaster} from "@/components/ui/toaster.tsx";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
@@ -14,18 +14,23 @@ import {getBudgetCanal, listCanalMarketing, updateBudgetCanal} from "@/services/
 import {useAuth} from "@/hooks/auth.tsx";
 import {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
 import {TooltipManual} from "@/components/ui/TooltipManual.tsx";
+import {Label} from "@/components/ui/label.tsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend,ChartDataLabels)
 
 const AdminManageMarketing: React.FC = () => {
 
-    const [ totalBudget, setTotalBudget] = useState(0)
+    const [totalBudget, setTotalBudget] = useState(0)
     const [newTotalBudget, setNewTotalBudget] = useState(0)
+    const [marketingMetrics, setMarketingMetrics] = useState({})
+    const [clicks, setClicks] = useState(605)
+    const [leads, setLeads] = useState(903)
+    const [costs, setCosts] = useState(1424)
     const [allocations, setAllocations] = useState<IMarketing[]>([])
     const [openModalPlatform, setOpenModalModalPlatform] = useState<boolean>(false)
-    const [type,setType] = useState<ModalType>(ModalType.newPatient)
-    const [title,setTitle] = useState("");
-    const [titleModal,setTitleModal] = useState("");
+    const [type, setType] = useState<ModalType>(ModalType.newPatient)
+    const [title, setTitle] = useState("");
+    const [titleModal, setTitleModal] = useState("");
 
     const [action,setAction] = useState("");
     const [isError, setIsError] = useState(false);
@@ -36,25 +41,35 @@ const AdminManageMarketing: React.FC = () => {
     const fetchCanal = useCallback(async () => {
         if (auth.tenantId) {
             const result = await listCanalMarketing(auth.tenantId)
-
             if (result.data) {
                 setAllocations(result.data.data)
             }
-
         }
     },[auth.tenantId])
-    useEffect(   () => {
-    fetchCanal().then()
-    }, [fetchCanal]);
+
     const fetchBudget = useCallback(async () => {
         if(auth.tenantId) {
-            const result = await getBudgetCanal(auth.tenantId)
-            setTotalBudget(result.data.data.budget)
+           await getBudgetCanal(auth.tenantId).
+                then(
+                (result) => {
+                    toast({
+                        title: 'ClintIA',
+                        description: 'Orçamento total atualizado'
+                        }
+                    )
+                    setTotalBudget(result.data.data.budget)
+
+                }
+            )
         }
     },[auth.tenantId])
+
     useEffect(() => {
         fetchBudget().then()
     }, [fetchBudget]);
+    useEffect(   () => {
+        fetchCanal().then()
+    }, [fetchCanal]);
 
     const calculateTotalAllocation = () => allocations.reduce((sum, alloc) => Number(sum) + Number(alloc.budgetCanal), 0)
 
@@ -83,23 +98,6 @@ const AdminManageMarketing: React.FC = () => {
         setIsGeneralModalOpen(false)
     }
 
-    const updateAllocation = (platform: string, amount: number) => {
-        const newAllocations = allocations.map(alloc =>
-            alloc.canal === platform ? { ...alloc, amount } : alloc
-        )
-        const newTotal = newAllocations.reduce((sum, alloc) => sum + Number(alloc.budgetCanal), 0)
-
-        if (newTotal > totalBudget) {
-            toast({
-                title: "Orçamento excedido",
-                description: "O total das alocações não pode ser maior que o orçamento total.",
-                variant: "destructive",
-
-            })
-        } else {
-            setAllocations(newAllocations)
-        }
-    }
     const updateBudgetTenant = async () => {
       if(auth.tenantId) {
         const result = await updateBudgetCanal(Number(newTotalBudget), auth.tenantId)
@@ -118,21 +116,10 @@ const AdminManageMarketing: React.FC = () => {
             {
                 data: allocations.map(a => a.budgetCanal),
                 backgroundColor: [
-                    'rgb(255, 0, 0)',
-                    'rgb(0, 255, 0)',
-                    'rgb(0, 0, 255)',
-                    'rgb(255, 255, 0)',
-                    'rgb(255, 0, 255)',
-                    'rgb(0, 255, 255)',
-                    'rgb(255, 128, 0)',
-                    'rgb(128, 0, 128)',
-                    'rgb(128, 255, 0)',
-                    'rgb(255, 105, 180)',
-                    'rgb(64, 224, 208)',
-                    'rgb(128, 0, 32)',
-                    'rgb(128, 128, 0)',
-                    'rgb(0, 0, 128)',
-                    'rgb(139, 69, 19)',
+                    'rgb(3, 30, 50,1)',
+                    'rgba(5, 166, 205, 1)',
+                    'rgb(2,120,220,1)',
+                    'rgb(3, 30, 50,1)'
                 ],
             },
         ],
@@ -140,117 +127,218 @@ const AdminManageMarketing: React.FC = () => {
     return (
         <div className="w-full p-10 mx-auto">
             <h1 className="text-3xl mb-6 font-bold tracking-tight">Gerenciamento Financeiro do Marketing</h1>
-            <Card className="mb-4">
-                <CardHeader>
-                    <CardTitle>Total Budget</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex items-center">
-                        <Input
-                            type="text"
-                            placeholder={`R$ ${newTotalBudget !== 0 ? newTotalBudget : totalBudget}`}
-                            onChange={(e) => {
-                                const value = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
-                                setNewTotalBudget(Number(value));
-                            }}
-
-                            className="mr-2"
-                        />
-                        <Button onClick={updateBudgetTenant}>Atualizar</Button>
-                    </div>
-                </CardContent>
-            </Card>
-
-            <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex justify-between">ORÇAMENTO POR CANAL
-                            <Button onClick={() => openFlexiveModal('Gerenciamento de Canais',ModalType.newCanal)}
-                                    className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Gerenciar Canais</Button>
-                        </CardTitle>
-                    </CardHeader>
+            <div className="flex flex-col xl:flex-row space-x-3">
+                <Card className="drop-shadow-lg shadow-gray-300 col-span-2 mb-4 w-max p-1">
                     <CardContent>
-                        {calculatePercentages().map((allocation) => (
-                            <div key={allocation.canal} className="mb-2 flex items-center">
-                                <span className="min-w-40 text-right mr-4">{allocation.canal}</span>
-                                <TooltipManual text={'Clique em Gerenciar Canais para editar'}>
+                        <div className="flex justify-between space-x-2 items-center p-2">
+                            <div className="flex flex-col">
+                                <Label htmlFor="totalBudget" className="my-2 font-bold text-base text-oxfordBlue">
+                                    Total Budget
+                                </Label>
                                 <Input
+                                    name="budgetCanal"
                                     type="text"
-                                    placeholder={allocation.formattedAmount}
+
+                                    placeholder={`R$ ${newTotalBudget !== 0 ? (newTotalBudget).toLocaleString('pt-BR', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    }) : (totalBudget).toLocaleString('pt-BR', {
+                                        minimumFractionDigits: 2,
+                                        maximumFractionDigits: 2
+                                    })}`}
                                     onChange={(e) => {
                                         const value = e.target.value.replace(/[^0-9,]/g, '').replace(',', '.');
-                                        updateAllocation(allocation.canal, Number(value));
-                                    }
-                                }
-                                    disabled={true}
-                                    readOnly={true}
-                                    className="placeholder-black text-black mr-2"
+                                        setNewTotalBudget(Number(value));
+                                    }}
+                                    className="w-full mr-2"
                                 />
-                                </TooltipManual>
-                                <span className="hidden xl:flex w-10 text-right">{Number(allocation.percentage) ? allocation.percentage+'%' : ''}</span>
                             </div>
-                        ))}
-                        <div className="flex justify-between mt-8">
-                            <p><strong>Total Distribuído:</strong> R$ {calculateTotalAllocation()}</p>
-                            <p><strong>Orçamento Restante:</strong> R$ {(totalBudget - calculateTotalAllocation()).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
+                            <Button className="mt-10" onClick={updateBudgetTenant}>Atualizar</Button>
                         </div>
                     </CardContent>
                 </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Grafico de Distribuição</CardTitle>
-                    </CardHeader>
+                <Card className="drop-shadow-lg shadow-gray-300 col-span-2 mb-4 w-max p-1">
                     <CardContent>
-                        <Pie
-                            data={chartData}
-                            options={{
-                                plugins: {
-                                    tooltip: {
-                                        callbacks: {
-                                            label: function(context) {
-                                                const label = context.label || '';
-                                                const value = context.parsed || 0;
-                                                const percentage = ((value / totalBudget) * 100).toFixed(1);
-                                                const formattedValue = `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                                                return `${label}: ${formattedValue} (${percentage}%)`;
-                                            }
-                                        }
-                                    },
-                                    datalabels: {
-                                        formatter: (value) => {
-                                            if((value / totalBudget * 100)) {
-                                                return (value / totalBudget * 100).toFixed(1) + "%"
-                                            } else {
-                                                return ''
-                                            }
-                                        },
-                                        color: '#000',
-                                        font: {
-                                            weight: 'bold',
-                                            size: 12,
-                                        }
-                                    },
-                                    legend: {
-                                        position: 'bottom',
-                                        labels: {
-                                            boxWidth: 10,
-                                            padding: 12
-                                        },
-                                        display: true,
-                                        align: 'center'
-                                    }
-                                },
-                                layout: {
-                                    padding: {
-                                        bottom: 30
-                                    }
-                                }
-                            }}
-                        />
+                        <div className="flex justify-between space-x-2 items-center p-2">
+                            <div className="flex flex-col">
+                                <Label htmlFor="total" className="my-2 font-bold text-base text-oxfordBlue">
+                                    Total Distriuído
+                                </Label>
+                                <div className="flex justify-between mt-2 text-nowrap">
+                                    <div className="flex flex-row">
+                                        <p className="align-text-top font-bold">R$</p> <p
+                                        className="text-3xl ml-1 font-bold">
+                                        {calculateTotalAllocation().toLocaleString('pt-BR', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        })}</p>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </CardContent>
+                </Card>
+                <Card className="drop-shadow-lg shadow-gray-300 col-span-2 mb-4 w-max p-1">
+                    <CardContent>
+                        <div className="flex justify-between space-x-2 items-center p-2">
+                            <div className="flex flex-col">
+                                <Label htmlFor="budgetCanal" className="my-2 font-bold text-base text-oxfordBlue">
+                                    Orçamento Restante
+                                </Label>
+                                <div className="flex justify-between mt-2 text-nowrap">
+                                    <div className="flex flex-row">
+                                        <p className="align-text-top font-bold">R$</p> <p
+                                        className="text-3xl ml-1 font-bold">
+                                        {(totalBudget - calculateTotalAllocation()).toLocaleString('pt-BR', {
+                                            minimumFractionDigits: 2,
+                                            maximumFractionDigits: 2
+                                        })}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </CardContent>
                 </Card>
             </div>
+            <div className="flex flex-row space-x-5 p-8">
+                <h2 className="text-2xl font-bold tracking-tight">ORÇAMENTO POR CANAL</h2><Button
+                onClick={() => openFlexiveModal('Gerenciamento de Canais', ModalType.newCanal)}
+                className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Gerenciar
+                Canais</Button>
+            </div>
+
+            <div className="p-8 flex flex-row space-x-5">
+                <Button onClick={() => openFlexiveModal('Gerenciamento de Canais', ModalType.newCanal)}
+                        className="bg-oxfordBlue w-36 h-10 uppercase font-bold text-white hover:bg-blue-900" type="submit">Facebook
+                </Button>
+                <Button onClick={() => openFlexiveModal('Gerenciamento de Canais', ModalType.newCanal)}
+                        className="bg-lightBlue text-oxfordBlue uppercase font-bold w-36 h-10 hover:bg-blue-900" type="submit">Google
+                </Button>
+            </div>
+
+
+            <div className="grid grid-cols-2 gap-2">
+                        <div className="flex flex-col md:flex-row space-x-3">
+                            <Card className="drop-shadow-lg shadow-gray-300 col-span-2 mb-4 w-48 h-max p-1">
+                                <CardContent>
+                                    <div className="flex justify-between space-x-2 items-center p-2">
+                                        <div className="flex flex-col">
+                                            <Label htmlFor="total" className="my-2 font-bold text-base text-oxfordBlue">
+                                                Clicks
+                                            </Label>
+                                            <div className="flex justify-between mt-2 text-nowrap">
+                                                <div className="flex flex-row">
+                                                   <p className="text-3xl ml-1 font-bold">
+                                                    {costs}
+                                                   </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="drop-shadow-lg shadow-gray-300 col-span-2 mb-4 w-48 h-max p-1">
+                                <CardContent>
+                                    <div className="flex justify-between space-x-2 items-center p-2">
+                                        <div className="flex flex-col">
+                                            <Label htmlFor="total" className="my-2 font-bold text-base text-oxfordBlue">
+                                                Custo
+                                            </Label>
+                                            <div className="flex justify-between mt-2 text-nowrap">
+                                                <div className="flex flex-row">
+                                                    <p className="align-text-top font-bold">R$</p> <p
+                                                    className="text-3xl ml-1 font-bold">
+                                                    {(totalBudget - calculateTotalAllocation()).toLocaleString('pt-BR', {
+                                                        minimumFractionDigits: 2,
+                                                        maximumFractionDigits: 2
+                                                    })}</p>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                            <Card className="drop-shadow-lg shadow-gray-300 col-span-2 mb-4 h-max w-48 p-1">
+                                <CardContent>
+                                    <div className="flex justify-between space-x-2 items-center p-2">
+                                        <div className="flex flex-col">
+                                            <Label htmlFor="total" className="my-2 font-bold text-base text-oxfordBlue">
+                                                Leads
+                                            </Label>
+                                            <div className="flex justify-between mt-2 text-nowrap">
+                                                <div className="flex flex-row">
+                                                  <p className="text-3xl ml-1 font-bold">
+                                                        {leads}
+                                                  </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        </div>
+
+                <div>
+                    <p className="my-2 font-bold text-base text-oxfordBlue">Grafico de Distribuição</p>
+                    <Card className="w-max p-10">
+                        <CardContent>
+                            <Doughnut
+                                data={chartData}
+                                options={{
+                                    plugins: {
+                                        tooltip: {
+                                            callbacks: {
+                                                label: function (context) {
+                                                    const label = context.label || '';
+                                                    const value = context.parsed || 0;
+                                                    const percentage = ((Number(value) / totalBudget) * 100).toFixed(1);
+                                                    const formattedValue = `R$ ${value}`;
+                                                    return `${label}: ${formattedValue} (${percentage}%)`;
+                                                }
+                                            }
+                                        },
+                                        datalabels: {
+                                            formatter: (value) => {
+                                                if ((value / totalBudget * 100)) {
+                                                    return (value / totalBudget * 100).toFixed(1) + "%"
+                                                } else {
+                                                    return ''
+                                                }
+                                            },
+                                            display: "block",
+                                            backgroundColor: '#ECEAF8',
+                                            color: '#051E32',
+                                            borderRadius: 50,
+                                            anchor: "center",
+                                            font: {
+                                                weight: 'bold',
+                                                size: 15,
+                                            },
+                                            padding: 10
+                                        },
+                                        legend: {
+                                            position: 'bottom',
+                                            labels: {
+                                                boxWidth: 15,
+                                                padding: 12
+                                            },
+                                            display: true,
+                                            align: 'center'
+                                        }
+                                    },
+                                    layout: {
+                                        padding: {
+                                            bottom: 10
+                                        }
+                                    }
+                                }}
+                            />
+                        </CardContent>
+                    </Card>
+                </div>
+                </div>
             {openModalPlatform && <ModalRender
                 modalMessage={handleModalMessage}
                 isOpen={openModalPlatform}

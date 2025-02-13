@@ -21,7 +21,6 @@ export const listCanalMarketing = async (tenantID: number) => {
         }
     })
 }
-
 export const getBudgetCanal = async(tenantID: number ) => {
     return await apiClient.get('/admin/marketing/tenantBudget', {
         headers: {
