@@ -13,7 +13,6 @@ import GeneralModal from "@/components/ModalHandle/GeneralModal.tsx";
 import {getBudgetCanal, listCanalMarketing, updateBudgetCanal} from "@/services/marketingService.ts";
 import {useAuth} from "@/hooks/auth.tsx";
 import {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
-import {TooltipManual} from "@/components/ui/TooltipManual.tsx";
 import {Label} from "@/components/ui/label.tsx";
 
 ChartJS.register(ArcElement, Tooltip, Legend,ChartDataLabels)
@@ -22,10 +21,9 @@ const AdminManageMarketing: React.FC = () => {
 
     const [totalBudget, setTotalBudget] = useState(0)
     const [newTotalBudget, setNewTotalBudget] = useState(0)
-    const [marketingMetrics, setMarketingMetrics] = useState({})
-    const [clicks, setClicks] = useState(605)
-    const [leads, setLeads] = useState(903)
-    const [costs, setCosts] = useState(1424)
+    const [clicks, setClicks] = useState(0)
+    const [leads, setLeads] = useState(0)
+    const [costs, setCosts] = useState(0)
     const [allocations, setAllocations] = useState<IMarketing[]>([])
     const [openModalPlatform, setOpenModalModalPlatform] = useState<boolean>(false)
     const [type, setType] = useState<ModalType>(ModalType.newPatient)
@@ -43,6 +41,9 @@ const AdminManageMarketing: React.FC = () => {
             const result = await listCanalMarketing(auth.tenantId)
             if (result.data) {
                 setAllocations(result.data.data)
+                setClicks(524)
+                setLeads(343)
+                setCosts(543.34)
             }
         }
     },[auth.tenantId])
@@ -230,7 +231,7 @@ const AdminManageMarketing: React.FC = () => {
                                             <div className="flex justify-between mt-2 text-nowrap">
                                                 <div className="flex flex-row">
                                                    <p className="text-3xl ml-1 font-bold">
-                                                    {costs}
+                                                    {clicks}
                                                    </p>
                                                 </div>
                                             </div>
@@ -249,7 +250,7 @@ const AdminManageMarketing: React.FC = () => {
                                                 <div className="flex flex-row">
                                                     <p className="align-text-top font-bold">R$</p> <p
                                                     className="text-3xl ml-1 font-bold">
-                                                    {(totalBudget - calculateTotalAllocation()).toLocaleString('pt-BR', {
+                                                    {costs.toLocaleString('pt-BR', {
                                                         minimumFractionDigits: 2,
                                                         maximumFractionDigits: 2
                                                     })}</p>
