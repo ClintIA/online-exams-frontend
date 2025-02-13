@@ -156,7 +156,7 @@ const AdminHome: React.FC = () => {
   }
 
   return (
-    <div className="w-full max-w-full min-h-screen flex flex-col justify-center mx-auto">
+    <div className="pt-16 w-full max-w-full min-h-screen flex flex-col justify-center mx-auto">
       <div className="flex justify-end mt-2 mr-12">
         <p className="text-oxfordBlue font-medium">Unidade: <strong>{auth.tenantName} </strong></p>
       </div>

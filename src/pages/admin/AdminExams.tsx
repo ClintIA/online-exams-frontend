@@ -157,7 +157,8 @@ const AdminExams: React.FC = () =>  {
                         <NoDataTable message="Não possui procedimentos realizados"/>
                       </div>
                   ) : (
-                      <Table>
+                    <div className="overflow-x-auto w-full">
+                      <Table className="min-w-full">
                         <TableHeader>
                           <TableRow>
                             <TableHead>Paciente</TableHead>
@@ -171,6 +172,7 @@ const AdminExams: React.FC = () =>  {
                         <DataTable renderRow={renderRow} openModalBooking={false} openModalEdit={() => {}}
                                    deleteData={() => {}} dataTable={exams}></DataTable>
                       </Table>
+                    </div>
                   )
             }
 
