@@ -1,4 +1,4 @@
-import React, { useEffect, useState} from 'react'
+import React, { useState} from 'react'
 import {Button} from "@/components/ui/button.tsx"
 import {Input} from "@/components/ui/input.tsx"
 import {Label} from "@/components/ui/label.tsx"
@@ -14,33 +14,27 @@ import {genderOptions} from "@/lib/optionsFixed.ts";
 export interface LeadRegisterDTO {
     full_name: string;
     phone: string;
-    diagnostic?: string;
     obs?: string;
     canal?: string;
-    isPatient?: boolean;
     gender?: string;
-    tenants?: any[];
+    tenants?: any;
 }
 
-interface RegisterPatientProps {
-    dadosIniciais?: Partial<LeadRegisterDTO>
+interface LeadRegisterProps {
     newLead?: (pacienteDados: LeadRegisterDTO, tenant: number) => Promise<any>
     title: string
 }
 
-const LeadRegister: React.FC<RegisterPatientProps> = ({title, dadosIniciais, newLead}: RegisterPatientProps) => {
+const LeadRegister: React.FC<LeadRegisterProps> = ({title, newLead}: LeadRegisterProps) => {
 
     const [leadRegister, setLeadRegister] = useState<LeadRegisterDTO>({
         full_name: '',
         phone: '',
-        diagnostic: '',
         obs: '',
         canal: '',
-        isPatient: false,
         gender: '',
     })
     const [erro, setErro] = useState<string | null>(null)
-    const [selectedCanal, setSelectedCanal] = useState<string | undefined>('')
 
     const auth = useAuth()
 
@@ -50,27 +44,10 @@ const LeadRegister: React.FC<RegisterPatientProps> = ({title, dadosIniciais, new
     }
 
 
-    useEffect(() => {
-        if(dadosIniciais) {
-            setSelectedCanal(dadosIniciais?.canal)
-            setLeadRegister(prevDados => ({
-                ...prevDados,
-                ...dadosIniciais
-            }))
-        }
-    }, [dadosIniciais])
-
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
-        leadRegister.canal = selectedCanal;
-        if (!leadRegister.full_name ||
-            !leadRegister.phone ||
-            !leadRegister.obs ||
-            !leadRegister.canal ||
-            !leadRegister.gender ||
-            !leadRegister.diagnostic) {
+        if (!leadRegister.full_name || !leadRegister.phone) {
             setErro('Por favor, preencha todos os campos')
             return
         }
@@ -96,7 +73,6 @@ const LeadRegister: React.FC<RegisterPatientProps> = ({title, dadosIniciais, new
                     phone: '',
                     obs: '',
                     canal: '',
-                    diagnostic: '',
                     gender: '',
                 })
         } catch (error) {
@@ -144,6 +120,18 @@ const LeadRegister: React.FC<RegisterPatientProps> = ({title, dadosIniciais, new
                                </div>
                                <div className="grid grid-cols-4 items-center gap-4">
                                    <Label htmlFor="obs" className="text-right text-oxfordBlue">
+                                       Canal
+                                   </Label>
+                                   <Input
+                                       id="canal"
+                                       name="canal"
+                                       type="text"
+                                       value={leadRegister.canal}
+                                       onChange={handleInputChange}
+                                       className="col-span-3"/>
+                               </div>
+                               <div className="grid grid-cols-4 items-center gap-4">
+                                   <Label htmlFor="obs" className="text-right text-oxfordBlue">
                                        Observação
                                    </Label>
                                    <Input
@@ -152,33 +140,8 @@ const LeadRegister: React.FC<RegisterPatientProps> = ({title, dadosIniciais, new
                                        type="text"
                                        value={leadRegister.obs}
                                        onChange={handleInputChange}
-                                       className="col-span-3"/>
-                               </div>
-                               <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="obs" className="text-right text-oxfordBlue">
-                                       Canal
-                                   </Label>
-                                   <Input
-                                       id="obs"
-                                       name="obs"
-                                       type="text"
-                                       value={leadRegister.canal}
-                                       onChange={handleInputChange}
-                                       className="col-span-3"/>
-                               </div>
-                               <div className="grid grid-cols-4 items-center gap-4">
-                                   <Label htmlFor="diagnostic" className="text-right text-oxfordBlue">
-                                       Diagnóstico
-                                   </Label>
-                                   <Input
-                                       id="diagnostic"
-                                       name="diagnostic"
-                                       type="text"
-                                       value={leadRegister.diagnostic}
-                                       onChange={handleInputChange}
                                        className="col-span-3 h-20"/>
                                </div>
-
                                <div className="grid grid-cols-4 items-center gap-4">
                                    <Label htmlFor="gender" className="text-right text-oxfordBlue">
                                        Genero
