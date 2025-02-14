@@ -181,8 +181,8 @@ const AdminHome: React.FC = () => {
   return (
       <div className="pt-8 w-full max-w-full min-h-screen flex flex-col justify-center mx-auto">
         <div className="flex justify-start mt-2 ml-4 md:ml-6">
-          <Button onClick={() => openFlexiveModal('Gerenciamento de Canais',ModalType.newCanal)}
-                  className="bg-oxfordBlue w-44 h-14 text-white hover:bg-blue-900" type="submit">Gerenciar Canais</Button>
+          <Button onClick={() => openFlexiveModal('Registro de Lead',ModalType.newLead)}
+                  className="bg-oxfordBlue w-44 h-14 text-white font-bold p-2 hover:bg-blue-900" type="submit">REGISTRAR CONTATO</Button>
         </div>
         <div className="flex justify-end mt-2 mr-12">
           <p className="text-oxfordBlue font-medium">Unidade: <strong>{auth.tenantName} </strong></p>

@@ -11,5 +11,5 @@ export enum ModalType {
     newAdmin = 'newAdmin',
     editAdmin = 'editAdmin',
     newCanal = 'newCanal',
-    editCanal = 'editCanal'
+    newLead = 'newLead'
 }

@@ -18,6 +18,7 @@ import {registerCanalMarketing, updateCanalMarketing} from "@/services/marketing
 import {createExam, updateExam} from "@/services/tenantExamService.tsx";
 import RegisterTenantExam, {IExam} from "@/components/AdminTenantExam/RegisterTenantExam.tsx";
 import {Exams} from "@/pages/admin/AdminTenantExams.tsx";
+import LeadRegister, {LeadRegisterDTO} from "@/components/AdminLeadRegister/LeadRegister.tsx";
 
 
 interface ModalRegisterProps {
@@ -125,6 +126,21 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
                     ).catch(error => console.log(error))
             }
     }
+    const submitNewLead = async (patientData: LeadRegisterDTO, tenantId: number) => {
+        if (modalMessage) {
+            return await registerPatient(patientData, tenantId)
+                .then(
+                    (result) => {
+                        if (result.status === 201) {
+                            modalMessage('Paciente cadastrado com sucesso')
+                            onClose()
+                        } else {
+                            throw new Error('Não foi possível cadastrar paciente' + result.message)
+                        }
+                    }
+                ).catch(error => console.log(error))
+        }
+    }
     const submitNewAdmin = async (adminData: IAdmin,tenantId: number) => {
         if(modalMessage) {
             const result = await registerAdmin(adminData,tenantId)
@@ -219,6 +235,8 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
                 return (<RegisterTenantExam title={title} isUpdate={submitUpdateExam} dadosIniciais={data} />)
             case 'newExam':
                 return(<RegisterTenantExam title={title} isNewExam={submitNewExam}/>)
+            case 'newLead':
+                return(<LeadRegister title={title} newLead={submitNewLead}/>)
 
         }
     }
