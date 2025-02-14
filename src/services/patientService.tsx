@@ -24,6 +24,23 @@ export const getPatientByCpfAndTenant = async (cpf: string, tenantId: number) =>
         }
     }
 }
+export const getPatientByPhoneAndTenant = async (cpf: string, tenantId: number) => {
+    const data = {
+        phone: cpf,
+    }
+    try {
+        return await apiClient.get('patient/phone',{
+            headers: {
+                'x-patient-id': tenantId
+            },
+            params: data
+        })
+    } catch (error) {
+        if(isAxiosError(error)) {
+            return error.response?.data
+        }
+    }
+}
 export const listPatientsByTenant = async (tenantId: number, filters?: PatientFilters) => {
 
     try {

@@ -10,8 +10,8 @@ import {DadosPaciente} from "@/components/AdminPatient/RegisterPatient.tsx";
 import {listDoctorByExam, listTenantExam} from "@/services/tenantExamService.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 import Loading from "@/components/Loading.tsx";
-import {validarCPF} from "@/lib/utils.ts";
-import {getPatientByCpfAndTenant} from "@/services/patientService.tsx";
+import { validarTelefone} from "@/lib/utils.ts";
+import { getPatientByPhoneAndTenant} from "@/services/patientService.tsx";
 import {ModalType} from "@/types/ModalType.ts";
 import {Spinner} from "@/components/ui/Spinner.tsx";
 import {genderOptions} from "@/lib/optionsFixed.ts";
@@ -19,6 +19,7 @@ import {isAxiosError} from "axios";
 import {DadosBooking} from "@/components/AdminBooking/RegisterBooking.tsx";
 import {IMarketing} from "@/components/AdminMarketing/RegisterCanal.tsx";
 import {listCanalMarketing} from "@/services/marketingService.ts";
+import {toast} from "@/hooks/use-toast.ts";
 
 export interface Exams {
     id: number
@@ -52,12 +53,12 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
     const [selectedExame, setSelectedExame] = useState<string>('')
     const [selectedDoctor, setSelectedDoctor] = useState<string>('')
     const [exames, setExames] = useState<Exams[]>([])
-    const [cpf, setCpf] = useState<string>('')
+    const [phone, setPhone] = useState<string>('')
     const [erro, setErro] = useState<string | null>(null)
     const [doctors, setDoctors] = useState<Doctor[] | undefined>(undefined)
     const [loading, setLoading] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [notFoundCpf, setNotFoundCpf] = useState<boolean>(false)
+    const [notFoundPhone, setNotFoundPhone] = useState<boolean>(false)
     const [showForm, setShowForm] = useState<boolean>(false)
     const [patientData, setPatientData] = useState<DadosPaciente>()
     const [selectedCanal, setSelectedCanal] = useState<string | undefined>('')
@@ -75,14 +76,15 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
             phone: '',
             dob: '',
             cpf: '',
+            diagnostic: '',
             canal:'',
             cep:'',
             gender: '',
             health_card_number: '',
         })
-        setNotFoundCpf(false)
+        setNotFoundPhone(false)
         setShowForm(false)
-        setCpf('')
+        setPhone('')
         setStep(0)
     }
     const fetchCanal = useCallback(async () => {
@@ -157,31 +159,31 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
 
 
     const handleInputCpf = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setCpf(e.target.value)
+        setPhone(e.target.value)
     }
 
-    const handleCPFSubmit = async (e: React.FormEvent) => {
+    const handlePhoneCheck = async (e: React.FormEvent) => {
         e.preventDefault()
         setErro(null)
-        const checkCPF = validarCPF(cpf)
-        if (!cpf) {
-            setErro('Por favor, insira um CPF')
+        const checkPhone = validarTelefone(phone)
+        if (!checkPhone) {
+            setErro('Por favor, insira um Telefone')
             return
         }
-         if (!checkCPF) {
+         if (!checkPhone) {
             setErro('CPF Inválido')
             return
         }
-        const numericCPF = cpf.replace(/\D/g, '')
+        const numericPhone = phone.replace(/\D/g, '')
         try {
             if(auth.tenantId) {
-                const result = await getPatientByCpfAndTenant(numericCPF, auth.tenantId)
+                const result = await getPatientByPhoneAndTenant(numericPhone, auth.tenantId)
 
                 if(result?.message?.includes("não encontrado")) {
                    setStep(1)
                     setIsNewPatient(true)
                     setShowForm(true)
-                    setNotFoundCpf(true)
+                    setNotFoundPhone(true)
                     return
                 }
                 const data = result?.data.data
@@ -192,7 +194,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
                     setSelectedCanal(data.canal)
                     setPatientData(data)
                     setShowForm(true)
-                    setNotFoundCpf(true)
+                    setNotFoundPhone(true)
                     setStep(2)
                 }
             }
@@ -232,7 +234,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
            if (auth.tenantId && auth.userId) {
                if(isNewPatient && submitBookingWithPatient) {
                    if(patientData) {
-                       patientData.cpf = cpf;
+                       patientData.phone = phone
                        patientData.canal = selectedCanal
 
                        const bookingWithPatient: BookingWithPatient = {
@@ -261,10 +263,18 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
                }
                try {
                    if (submitBooking && patientData) {
-                       patientData.cpf = cpf;
+                       patientData.phone = phone
                        patientData.canal = selectedCanal
 
                        const result = await submitBooking(bookingDados,auth.tenantId, patientData)
+                       if(result.status !== 201) {
+                           setErro('Erro ao salvar paciente, verifique os dados')
+                           toast({
+                               title:'Clintia',
+                               description: 'Erro ao salvar paciente, verifique os dados'
+                           })
+
+                       }
                        if(result.status === 201 && handleModalMessage) {
                            handleModalMessage(ModalType.bookingConfirmation)
                            setStep(3)
@@ -307,15 +317,16 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
                             <div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="cpf" className="text-right text-blue-800">
-                                        CPF
+                                        Telefone
                                     </Label>
                                     <Input
-                                        id="cpf"
-                                        name="cpf"
-                                        value={cpf}
+                                        id="phone"
+                                        name="phone"
+                                        placeholder="22999999999"
+                                        value={phone}
                                         onChange={handleInputCpf}
                                         className="col-span-3"
-                                       disabled={notFoundCpf}
+                                       disabled={notFoundPhone}
                                     />
                                 </div>
                                 {showForm ? (
@@ -326,7 +337,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
                                 ) : (
                                     <div className="flex justify-end mt-1">
                                         <Button className="bg-oxfordBlue text-white"
-                                                onClick={handleCPFSubmit}>Verificar</Button>
+                                                onClick={handlePhoneCheck}>Verificar</Button>
                                     </div>
                                 )
                                 }
@@ -346,12 +357,12 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
                                     <Label htmlFor="phone" className="text-right text-blue-800">
-                                        Contato
+                                        CPF
                                     </Label>
                                     <Input
-                                        id="phone"
-                                        name="phone"
-                                        value={patientData?.phone}
+                                        id="cpf"
+                                        name="cpf"
+                                        value={patientData?.cpf}
                                         onChange={handleInputChange}
                                         className="col-span-3"
                                     />
@@ -405,6 +416,19 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
                                         value={patientData?.cep}
                                         onChange={handleInputChange}
                                         className="col-span-3"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-4 items-center gap-4">
+                                    <Label htmlFor="cep" className="text-right text-blue-800">
+                                        Diagnóstico
+                                    </Label>
+                                    <Input
+                                        id="diagnostic"
+                                        name="diagnostic"
+                                        type="text"
+                                        value={patientData?.diagnostic}
+                                        onChange={handleInputChange}
+                                        className="col-span-3 h-16"
                                     />
                                 </div>
                                 <div className="grid grid-cols-4 items-center gap-4">
