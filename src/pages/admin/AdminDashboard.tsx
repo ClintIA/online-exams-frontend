@@ -347,10 +347,10 @@ export function AdminDashboard() {
                 <Table>
                   <TableHeader>
                     <TableRow>
-                      <TableHead>Nome do Exame</TableHead>
+                      <TableHead>Nome do Procedimento</TableHead>
                       <TableHead>Quantidade Realizada</TableHead>
                       <TableHead>Valor Total</TableHead>
-                      <TableHead>Pagamento aos Médicos</TableHead>
+                      <TableHead>Pagamento aos Profissionais</TableHead>
                       <TableHead>Lucro</TableHead>
                     </TableRow>
                   </TableHeader>

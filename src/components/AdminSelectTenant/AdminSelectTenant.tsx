@@ -3,7 +3,6 @@ import ClinicCard, {Clinic} from "@/components/AdminSelectTenant/ClinicCard.tsx"
 import {useLocation, useNavigate} from "react-router-dom";
 import {Spinner} from "@/components/ui/Spinner.tsx";
 import logoClintia from "@/assets/ClintIA-MarcaRGB-Verti-Cor-FundoOxford.png";
-import {Button} from "@/components/ui/button.tsx";
 import {useAuth} from "@/hooks/auth.tsx";
 
 const AdminSelectTenant: React.FC = () => {
@@ -29,14 +28,12 @@ const AdminSelectTenant: React.FC = () => {
         setIsLoading(true)
 
        const result = await auth.login(login, tenantID)
-        setIsLoading(false)
         if (result?.status === "success" && result.data !== null) {
-                return navigate('/admin/home');
+            setIsLoading(false)
+            return navigate('/admin/home');
         }
     }
         return (
-        <div>
-            { isLoading ? ( <Spinner /> ) :  (
                 <div>
                     <main className="min-h-screen flex">
                         <div className="hidden sm:flex-1 bg-oxfordBlue sm:flex flex-col items-center justify-center p-8">
@@ -65,6 +62,11 @@ const AdminSelectTenant: React.FC = () => {
                                         className="mx-auto rounded-full"
                                     />
                                 </div>
+                                {isLoading ? (
+                                    <div className="flex justify-center">
+                                        <Spinner className="w-52 h-24"/>
+                                    </div>
+                                ) : (
                                     <div className="flex-1 bg-white p-8 flex flex-col">
                                         <div className="max-w-md mx-auto w-full space-y-4">
                                             <h2 className="text-3xl font-bold mb-2">{`Olá, ${name}!`}</h2>
@@ -79,21 +81,11 @@ const AdminSelectTenant: React.FC = () => {
                                             ))}
                                         </div>
                                     </div>
-                                <div className="flex justify-center sm:justify-end">
-                                    <Button
-                                        type="submit"
-                                        className="w-1/2 rounded-full bg-[#0B1A2B] hover:bg-[#152942]"
-                                    >
-                                        Acessar
-                                    </Button>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </main>
                 </div>
-            )}
-        </div>
-    );
-
+        );
 }
 export default AdminSelectTenant;

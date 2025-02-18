@@ -5,7 +5,7 @@ export const genderOptions = [
     { value: 'Outros', label: 'Outros' }
 ];
 export const examOptions = [
-    { value: 'exame', label: 'Exame' },
+    { value: 'exame', label: 'Procedimento' },
     { value: 'consulta', label: 'Consulta' },
 ];
 export const roleOptions = [

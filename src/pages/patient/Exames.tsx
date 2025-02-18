@@ -105,13 +105,13 @@ export function Exames() {
           data: new Date(exam.examDate).toLocaleDateString('pt-BR'),
           horario: new Date(exam.examDate).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }),
           resultado: exam.status,
-          resumo: `Resumo do exame ${exam.exam.exam_name}`
+          resumo: `Resumo do Procedimento: ${exam.exam.exam_name}`
         }));
 
         setExames(apiExames);
         setFilteredExames(apiExames);
       } catch (error) {
-        console.error("Erro ao buscar exames:", error);
+        console.error("Erro ao buscar procedimento:", error);
       }
     }
 

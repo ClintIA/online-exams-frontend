@@ -23,6 +23,7 @@ export interface DadosPaciente {
     dob?: string
     cpf?: string
     cep?: string
+    diagnostic?: string
     canal?: string
     gender?: string
     exams?: any[]

@@ -19,7 +19,7 @@ const Login: React.FC = () => {
     const [showPassword, setShowPassword] = useState(false);
     const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const checkToken = async () => {
@@ -42,8 +42,6 @@ const Login: React.FC = () => {
             } catch (error) {
                 console.error("Erro ao decodificar token:", error);
                 auth.logOut();
-            } finally {
-                setIsLoading(false);
             }
         };
 
@@ -52,6 +50,7 @@ const Login: React.FC = () => {
 
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        setIsLoading(true)
 
         if (!identifier || !password) {
             setErrorMessage('Preencha seu usuário e senha.');
@@ -60,7 +59,6 @@ const Login: React.FC = () => {
         }
 
         const result = await auth.loginToTenant(identifier, password);
-        setIsLoading(true)
         if (!result) {
             setErrorMessage('Erro ao realizar login');
             setIsErrorModalOpen(true);
@@ -78,13 +76,19 @@ const Login: React.FC = () => {
 
         if (result.status === "success" && result.data !== null) {
             setIsLoading(false)
-            return navigate('/select-tenant', { state: result.data });
+            if (result.data.token) {
+                const decoded: ITokenPayload = jwtDecode(result.data.token);
+                if (decoded) {
+                    await auth.login(identifier, decoded.tenantId)
+                    return navigate('/admin/home')
+                }
+            } else {
+                return navigate('/select-tenant', {state: result.data});
+            }
         }
-    };
+    }
 
     return (
-        <div>
-        { isLoading ? ( <Spinner /> ) :  (
         <div>
             <main className="min-h-screen flex">
                 <div className="hidden sm:flex-1 bg-oxfordBlue sm:flex flex-col items-center justify-center p-8">
@@ -113,7 +117,12 @@ const Login: React.FC = () => {
                                 className="mx-auto rounded-full"
                             />
                         </div>
-                        <form onSubmit={handleLogin} className="space-y-4">
+                        {isLoading ? (
+                            <div className="flex justify-center">
+                                <Spinner className="w-52 h-24"/>
+                            </div>
+                        ) : (
+                            <form onSubmit={handleLogin} className="space-y-4">
                             <div className="space-y-2">
                                 <label htmlFor="identifier" className="block text-sm text-black font-medium">
                                     Usuário
@@ -178,7 +187,7 @@ const Login: React.FC = () => {
                                     Acessar
                                 </Button>
                             </div>
-                        </form>
+                        </form>)}
                     </div>
                 </div>
             </main>
@@ -191,9 +200,7 @@ const Login: React.FC = () => {
                 error={true}
             />
         </div>
-        )}
-        </div>
-    );
+        )
 
 };
 

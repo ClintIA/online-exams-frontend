@@ -18,7 +18,6 @@ export function ModalEditDados({ info, isOpen, onClose }: ModalEditDadosProps) {
   const [newValue, setNewValue] = useState(info?.value);
 
   const handleSave = () => {
-    console.log("Salvar nova informação:", newValue);
     onClose();
   };
 
