@@ -7,13 +7,13 @@ import apiClient from "@/lib/interceptor.ts";
 export const loginService = async (user: string, password: string): Promise<ILoginAdminWithTenant | undefined> => {
     try {
         const data = {
-            user: user,
+            login: user,
             password: password
         }
         if(user.includes('@')) {
-            data.user = user
+            data.login = user
         } else {
-            data.user = user.replace(/\D/g, '')
+            data.login = user.replace(/\D/g, '')
         }
 
 
