@@ -238,7 +238,6 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
                 return(<RegisterTenantExam title={title} isNewExam={submitNewExam}/>)
             case 'newLead':
                 return(<LeadRegister title={title} newLead={submitNewLead}/>)
-
         }
     }
     return (
