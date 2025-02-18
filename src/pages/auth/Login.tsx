@@ -78,9 +78,17 @@ const Login: React.FC = () => {
 
         if (result.status === "success" && result.data !== null) {
             setIsLoading(false)
-            return navigate('/select-tenant', { state: result.data });
+            if (result.data.token) {
+                const decoded: ITokenPayload = jwtDecode(result.data.token);
+                if (decoded) {
+                    await auth.login(identifier, decoded.tenantId)
+                    return navigate('/admin/home')
+                }
+            } else {
+                return navigate('/select-tenant', {state: result.data});
+            }
         }
-    };
+    }
 
     return (
         <div>

@@ -12,7 +12,8 @@ export interface ILoginAdmin {
 export interface ILoginAdminWithTenant {
     status: string;
     message: string;
-    data?: any[]
+    token?: string;
+    data?: any
 }
 export type IAuthContextType = {
     token?: string;
@@ -29,7 +30,7 @@ export type IAuthContextType = {
 }
 export interface ITokenPayload {
     userId: number;
-    tenantId?: number;
+    tenantId: number;
     role: ProfileRole;
     exp: number;
     iat: number;
