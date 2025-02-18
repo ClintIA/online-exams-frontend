@@ -137,7 +137,6 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
                         if(result?.data.status === "success") {
                             if(result?.data.data.length === 0) {
                                 setDoctors(undefined)
-                                setErro('Não possui médico cadastrado para esse exame')
                                 setIsLoading(false)
                                 return
                             } else {
@@ -497,7 +496,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
                                     <Spinner size={16} className="text-muted-foreground" />
                                 </div>
                             ) : (
-                                <Select disabled={!doctors} value={selectedDoctor} onValueChange={setSelectedDoctor}>
+                                <Select disabled={!patientData} value={selectedDoctor} onValueChange={setSelectedDoctor}>
                                     <SelectTrigger className="col-span-3" id="doctor">
                                         <SelectValue placeholder="Selecione o Médico"/>
                                     </SelectTrigger>
