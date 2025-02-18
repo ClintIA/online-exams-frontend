@@ -90,7 +90,7 @@ const AdminSidebar: React.FC = () => {
               <li>
                 <Link to="/admin/upload-exames" className="flex items-center p-2 rounded-lg hover:bg-gray-700">
                   <Microscope className="mr-2" size={24}/>
-                  <span>Portal de Exames</span>
+                  <span>Portal de Procedimentos</span>
                 </Link>
               </li>
               {hasAccess(auth.role, 'default') && (<li>
@@ -129,7 +129,7 @@ const AdminSidebar: React.FC = () => {
                               className="flex items-center p-2 mt-2 mr-2 rounded-lg hover:bg-gray-700"
                           >
                             <Contact2 className="mr-2" size={12}/>
-                            <span>Médicos</span>
+                            <span>Profissionais da Saúde</span>
                           </Link>
                           <Link to="/admin/registrar-admin"
                                 className="flex items-center p-2 rounded-lg hover:bg-gray-700">

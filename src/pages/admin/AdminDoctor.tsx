@@ -120,9 +120,9 @@ const AdminDoctor: React.FC = () => {
 
     return (
         <div className="w-full p-10 mx-auto">
-            <h1 className="text-3xl mb-6 font-bold tracking-tight">Médicos</h1>
+            <h1 className="text-3xl mb-6 font-bold tracking-tight">Profissionais</h1>
             <div className="flex flex-col md:flex-row gap-3 mb-6">
-                <Cards name='Total de Médicos' content={doctors?.length}/>
+                <Cards name='Total de Profissionais' content={doctors?.length}/>
             </div>
             <div className="flex justify-items-start ml-2 mb-3">
                 <div>
@@ -137,7 +137,7 @@ const AdminDoctor: React.FC = () => {
                         doctors.length === 0 ?
                             (
                                 <div className="p-10">
-                                    <NoDataTable message="Não possui médicos cadastrados"/>
+                                    <NoDataTable message="Não possui profissionais da saúde cadastrados"/>
                                 </div>
                             ) : (
                                 <Table>

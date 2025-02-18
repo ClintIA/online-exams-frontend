@@ -96,7 +96,7 @@ const AdminTenantExams: React.FC = () => {
         setIsGeneralModalOpen(true)
     }
     const handleConfirmationDelete = (id: number) => {
-        setGeneralMessage("Deseja deletar o exame selecionado?")
+        setGeneralMessage("Deseja deletar o procedimento selecionado?")
         setTitle('Confirmação de Exclusão')
         setAction('Excluir')
         setDeleteId(id)
@@ -109,7 +109,7 @@ const AdminTenantExams: React.FC = () => {
                 await deleteExam(deleteId,auth.tenantId).then(
                     (result) => {
                         if(result.message && result.message.includes('FK_')){
-                            handleModalMessage('Não é possível deletar o exame que está relacionado com um médico')
+                            handleModalMessage('Não é possível deletar o procedimento que está relacionado com um médico')
                             return
                         } else {
                             return fetchExams().then()
@@ -138,7 +138,7 @@ const AdminTenantExams: React.FC = () => {
                 </div>
                 <div className="flex justify-items-start ml-2 mb-3">
                     <div>
-                        <Button onClick={() => openFlexiveModal('Cadastrar Exame',ModalType.newExam)}
+                        <Button onClick={() => openFlexiveModal('Cadastrar Procedimento',ModalType.newExam)}
                                 className="p-4 text-base bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Adicionar
                             Procedimento</Button>
                     </div>
@@ -149,14 +149,14 @@ const AdminTenantExams: React.FC = () => {
                             exames.length === 0 ?
                                 (
                                     <div className="p-10">
-                                        <NoDataTable message="Não possui exames cadastrados"/>
+                                        <NoDataTable message="Não possui procedimentos cadastrados"/>
                                     </div>
                                 ) : (
                                     <Table>
                                         <TableHeader>
                                             <TableRow>
                                                 <TableHead className="text-oxfordBlue">Nome do Procedimento</TableHead>
-                                                <TableHead className="text-oxfordBlue">Médicos</TableHead>
+                                                <TableHead className="text-oxfordBlue">Profissionais</TableHead>
                                                 <TableHead className="text-oxfordBlue">Tipo do Procedimento</TableHead>
                                                 <TableHead className="text-oxfordBlue">Preço do Procedimento</TableHead>
                                                 <TableHead className="text-oxfordBlue">Valor do Médico</TableHead>

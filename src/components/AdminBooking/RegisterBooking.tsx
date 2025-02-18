@@ -106,7 +106,7 @@ const RegisterBooking: React.FC<BookingModalProps> = ({title,dadosPaciente, isNe
                 }
 
             } catch (error) {
-                setErro("Não possível carregar os Médicos")
+                setErro("Não possível carregar os profissionais")
                 console.error(error)
             }
         }

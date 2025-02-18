@@ -192,7 +192,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
     const submitNewExam = async (examData: IExam, tenantId: number) => {
         if(modalMessage) {
             const result =  await createExam(examData, tenantId)
-            modalMessage('Exame cadastrado com sucesso')
+            modalMessage('Procedimento cadastrado com sucesso')
             return result
         }
     }
@@ -201,7 +201,7 @@ const ModalRender: React.FC<ModalRegisterProps> = ({ isStepper = false,isOpen, o
             await updateExam(examData, tenantId)
                 .then((result) => {
                     if (result.data.status === "success") {
-                        modalMessage('Exame Atualizado com sucesso')
+                        modalMessage('Procedimento Atualizado com sucesso')
                         onClose()
                     } else {
                         return new Error('Não foi possível atualizar exame' + result.message)

@@ -149,7 +149,7 @@ const RegisterBookingAndPatient: React.FC<BookingModalProps> = ({title,handleMod
                 }
 
             } catch (error) {
-                setErro("Não possível carregar os Médicos")
+                setErro("Não possível carregar os profissionais")
                 console.error(error)
             }
         }

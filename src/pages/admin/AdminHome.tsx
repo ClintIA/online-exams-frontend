@@ -189,7 +189,7 @@ const AdminHome: React.FC = () => {
             <div className="grid gap-6 grid-cols-1 lg:grid-cols-4">
               <Card className="md:col-span-2">
                 <CardHeader className="flex flex-row items-center justify-between">
-                  <CardTitle>MÉDICOS ATENDENDO HOJE</CardTitle>
+                  <CardTitle>PROFISSIONAIS ATENDENDO HOJE</CardTitle>
                   <div className="flex items-center">
                     <Button
                         variant="ghost"

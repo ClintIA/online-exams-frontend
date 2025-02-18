@@ -129,7 +129,7 @@ const AdminBooking: React.FC = () =>  {
                                     className="flex flex-col sm:flex-row gap-2 justify-between text-base text-oxfordBlue">
                                     <div className="mt-1.5 flex gap-2">
                                         <Button
-                                            onClick={() => openFlexiveModal('Agendamento de Exame', ModalType.newBookingPatient)}
+                                            onClick={() => openFlexiveModal('Agendamento de Procedimento', ModalType.newBookingPatient)}
                                             className="bg-oxfordBlue text-white hover:bg-blue-900" type="submit">Realizar
                                             Agendamento
                                         </Button>

@@ -122,7 +122,7 @@ const AdminPatient: React.FC = () => {
                 await deletePatient(deleteId.toString(),auth.tenantId).then(
                     (result) => {
                         if(result.message && result.message.includes('FK_')){
-                            handleModalMessage('Não é possível deletar um paciente com agendamento ou exame realizado')
+                            handleModalMessage('Não é possível deletar um paciente com agendamento ou procedimento realizado')
                             return
                         } else {
                             return result

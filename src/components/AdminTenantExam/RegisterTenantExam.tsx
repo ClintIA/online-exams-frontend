@@ -71,7 +71,7 @@ const RegisterTenantExam: React.FC<RegisterExamProps> = ({dadosIniciais,title, i
 
             }
         } catch (error) {
-            setErro('Erro ao carregar médicos' + error)
+            setErro('Erro ao carregar profissionais' + error)
         }
     }, [auth.tenantId])
     useEffect(() => {
